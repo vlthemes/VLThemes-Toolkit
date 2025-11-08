@@ -54,6 +54,12 @@ class UploadMimes extends BaseModule {
 		// Add WebP support
 		$mimes['webp'] = 'image/webp';
 
+		// Add font file support
+		$mimes['otf'] = 'font/otf';
+		$mimes['ttf'] = 'font/ttf';
+		$mimes['woff'] = 'font/woff';
+		$mimes['woff2'] = 'font/woff2';
+
 		return apply_filters( 'vlt_helper_upload_mimes', $mimes );
 	}
 }

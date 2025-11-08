@@ -65,48 +65,48 @@ $theme_ok  = is_child_theme();
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
 				<?php if ( $server_ok ) : ?>
-					<mark class="true"><?php esc_html_e( 'Server Settings', 'vlt-framework' ); ?></mark>
-					<span class="vlt-badge true"><?php esc_html_e( 'No Problems', 'vlt-framework' ); ?></span>
+					<mark class="true"><?php esc_html_e( 'Server Settings', 'vlt-helper' ); ?></mark>
+					<span class="vlt-badge true"><?php esc_html_e( 'No Problems', 'vlt-helper' ); ?></span>
 				<?php else : ?>
-					<mark class="false"><?php esc_html_e( 'Server Settings', 'vlt-framework' ); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e( 'Some Problems', 'vlt-framework' ); ?></span>
+					<mark class="false"><?php esc_html_e( 'Server Settings', 'vlt-helper' ); ?></mark>
+					<span class="vlt-badge false"><?php esc_html_e( 'Some Problems', 'vlt-helper' ); ?></span>
 				<?php endif; ?>
 			</div>
 
 			<div class="vlt-widget__content">
 
 				<div class="notice notice-info inline mb-sm">
-					<p><?php printf( esc_html__( '%1$sNote:%2$s These settings affect %3$sonly the speed of demo content import%4$s. Low values will not break the site — they are %5$snot critical%6$s.', 'vlt-framework' ), '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' ); ?></p>
+					<p><?php printf( esc_html__( '%1$sNote:%2$s These settings affect %3$sonly the speed of demo content import%4$s. Low values will not break the site — they are %5$snot critical%6$s.', 'vlt-helper' ), '<strong>', '</strong>', '<strong>', '</strong>', '<strong>', '</strong>' ); ?></p>
 				</div>
 
 				<table class="widefat" cellspacing="0">
 					<tbody>
 						<tr>
-							<td><?php esc_html_e( 'PHP Version:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'PHP Version:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $php_ok, $php_version ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Memory Limit:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Memory Limit:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $memory_ok, $memory_limit ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Max Execution Time:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Max Execution Time:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $exec_time_ok, $max_exec_time . ' sec' ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Max Input Time:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Max Input Time:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $input_time_ok, $max_input_time . ' sec' ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Post Max Size:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Post Max Size:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $post_size_ok, $max_post ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Upload Max Filesize:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Upload Max Filesize:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $upload_size_ok, $max_upload ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Max Input Vars:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Max Input Vars:', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $input_vars_ok, $max_input_vars ); ?></td>
 						</tr>
 					</tbody>
@@ -120,11 +120,11 @@ $theme_ok  = is_child_theme();
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
 				<?php if ( $wp_ok ) : ?>
-					<mark class="true"><?php esc_html_e( 'WordPress Settings', 'vlt-framework' ); ?></mark>
-					<span class="vlt-badge true"><?php esc_html_e( 'No Problems', 'vlt-framework' ); ?></span>
+					<mark class="true"><?php esc_html_e( 'WordPress Settings', 'vlt-helper' ); ?></mark>
+					<span class="vlt-badge true"><?php esc_html_e( 'No Problems', 'vlt-helper' ); ?></span>
 				<?php else : ?>
-					<mark class="false"><?php esc_html_e( 'WordPress Settings', 'vlt-framework' ); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e( 'Some Problems', 'vlt-framework' ); ?></span>
+					<mark class="false"><?php esc_html_e( 'WordPress Settings', 'vlt-helper' ); ?></mark>
+					<span class="vlt-badge false"><?php esc_html_e( 'Some Problems', 'vlt-helper' ); ?></span>
 				<?php endif; ?>
 			</div>
 
@@ -132,24 +132,24 @@ $theme_ok  = is_child_theme();
 				<table class="widefat" cellspacing="0">
 					<tbody>
 						<tr>
-							<td><?php esc_html_e( 'Home URL:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Home URL:', 'vlt-helper' ); ?></td>
 							<td><a href="<?php echo esc_url( home_url( '/' ) ); ?>" target="_blank"><?php echo esc_url( home_url( '/' ) ); ?></a></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Site URL:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Site URL:', 'vlt-helper' ); ?></td>
 							<td><a href="<?php echo esc_url( site_url( '/' ) ); ?>" target="_blank"><?php echo esc_url( site_url( '/' ) ); ?></a></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'WP Version:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'WP Version:', 'vlt-helper' ); ?></td>
 							<td><?php echo esc_html( $wp_version ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Memory Limit (WP):', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Memory Limit (WP):', 'vlt-helper' ); ?></td>
 							<td><?php echo vlt_status( $wp_memory_ok, $memory_limit ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'WP Debug:', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $wp_debug_ok, WP_DEBUG ? esc_html__( 'Enabled', 'vlt-framework' ) : esc_html__( 'Disabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'WP Debug:', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $wp_debug_ok, WP_DEBUG ? esc_html__( 'Enabled', 'vlt-helper' ) : esc_html__( 'Disabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 					</tbody>
 				</table>
@@ -163,11 +163,11 @@ $theme_ok  = is_child_theme();
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
 				<?php if ( $theme_ok ) : ?>
-					<mark class="true"><?php esc_html_e( 'Theme Config', 'vlt-framework' ); ?></mark>
-					<span class="vlt-badge true"><?php esc_html_e( 'No Problems', 'vlt-framework' ); ?></span>
+					<mark class="true"><?php esc_html_e( 'Theme Config', 'vlt-helper' ); ?></mark>
+					<span class="vlt-badge true"><?php esc_html_e( 'No Problems', 'vlt-helper' ); ?></span>
 				<?php else : ?>
-					<mark class="false"><?php esc_html_e( 'Theme Config', 'vlt-framework' ); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e( 'Some Problems', 'vlt-framework' ); ?></span>
+					<mark class="false"><?php esc_html_e( 'Theme Config', 'vlt-helper' ); ?></mark>
+					<span class="vlt-badge false"><?php esc_html_e( 'Some Problems', 'vlt-helper' ); ?></span>
 				<?php endif; ?>
 			</div>
 
@@ -175,19 +175,19 @@ $theme_ok  = is_child_theme();
 				<table class="widefat" cellspacing="0">
 					<tbody>
 						<tr>
-							<td><?php esc_html_e( 'Theme Name:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Theme Name:', 'vlt-helper' ); ?></td>
 							<td><?php echo esc_html( wp_get_theme()->get( 'Name' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Child Theme:', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $theme_ok, $theme_ok ? esc_html__( 'Enabled', 'vlt-framework' ) : esc_html__( 'Disabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'Child Theme:', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $theme_ok, $theme_ok ? esc_html__( 'Enabled', 'vlt-helper' ) : esc_html__( 'Disabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Version:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Version:', 'vlt-helper' ); ?></td>
 							<td><?php echo esc_html( wp_get_theme()->get( 'Version' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'Author:', 'vlt-framework' ); ?></td>
+							<td><?php esc_html_e( 'Author:', 'vlt-helper' ); ?></td>
 							<td><?php echo wp_kses_post( wp_get_theme()->get( 'Author' ) ); ?></td>
 						</tr>
 					</tbody>
@@ -196,7 +196,7 @@ $theme_ok  = is_child_theme();
 				<!-- Child Theme Prompt -->
 				<?php if ( ! is_child_theme() ) : ?>
 					<div class="notice notice-info">
-						<p><?php printf( esc_html__( '%1$sRecommendation:%2$s We recommend working with a %3$schild theme%4$s to safely customize styles and functions without losing changes on theme updates.', 'vlt-framework' ), '<strong>', '</strong>', '<strong>', '</strong>' ); ?></p>
+						<p><?php printf( esc_html__( '%1$sRecommendation:%2$s We recommend working with a %3$schild theme%4$s to safely customize styles and functions without losing changes on theme updates.', 'vlt-helper' ), '<strong>', '</strong>', '<strong>', '</strong>' ); ?></p>
 					</div>
 				<?php endif; ?>
 			</div>

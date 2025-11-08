@@ -197,6 +197,29 @@ if ( ! function_exists( 'vlt_aos_render' ) ) {
 // 	'once' => 'true',
 // ] );
 
+// ========================================
+// CUSTOM FONTS
+// ========================================
+
+// add_filter( 'vlt_helper_register_custom_fonts', function( $fonts ) {
+
+// 	// Simple font registration
+// 	$fonts['Mulish'] = [
+// 		'label' => 'Mulish',
+// 		'variants' => [ '300', '400', '500', '600', '700', '800' ],
+// 		'category' => 'theme_fonts',
+// 		'category_label' => esc_html__( 'Leedo Fonts', 'textdomain' ),
+// 	];
+
+// 	$fonts['Montserrat'] = [
+// 		'label' => 'Montserrat',
+// 		'variants' => [ '400', '500', '600', '700', '800' ],
+// 		'category' => 'theme_fonts',
+// 		'category_label' => esc_html__( 'Leedo Fonts', 'textdomain' ),
+// 	];
+
+// 	return $fonts;
+// });
 
 // ========================================
 // Elementor Functions

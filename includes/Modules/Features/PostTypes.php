@@ -49,7 +49,7 @@ class PostTypes extends BaseModule {
 		$this->register_slide_post_type();
 
 		// Allow themes to register additional post types
-		do_action( 'vlt_framework_register_post_types' );
+		do_action( 'vlt_helper_register_post_types' );
 	}
 
 	/**
@@ -60,7 +60,7 @@ class PostTypes extends BaseModule {
 		$this->register_slide_category_taxonomy();
 
 		// Allow themes to register additional taxonomies
-		do_action( 'vlt_framework_register_taxonomies' );
+		do_action( 'vlt_helper_register_taxonomies' );
 	}
 
 	/**
@@ -100,7 +100,7 @@ class PostTypes extends BaseModule {
 		];
 
 		// Allow themes to modify slide post type args
-		$args = apply_filters( 'vlt_framework_slide_post_type_args', $args );
+		$args = apply_filters( 'vlt_helper_slide_post_type_args', $args );
 
 		register_post_type( 'slide', $args );
 	}
@@ -143,7 +143,7 @@ class PostTypes extends BaseModule {
 		];
 
 		// Allow themes to modify slide category taxonomy args
-		$args = apply_filters( 'vlt_framework_slide_category_taxonomy_args', $args );
+		$args = apply_filters( 'vlt_helper_slide_category_taxonomy_args', $args );
 
 		register_taxonomy( 'slide_category', [ 'slide' ], $args );
 	}

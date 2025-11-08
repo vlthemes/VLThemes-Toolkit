@@ -115,7 +115,7 @@ class Updater {
 	 */
 	private function get_remote_data() {
 		// Check transient cache
-		$cache_key = 'vlt_framework_update_' . md5( $this->remote_url );
+		$cache_key = 'vlt_helper_update_' . md5( $this->remote_url );
 		$cached_data = get_transient( $cache_key );
 
 		if ( $cached_data !== false ) {
@@ -148,7 +148,7 @@ class Updater {
 	 * Clear update cache
 	 */
 	public function clear_cache() {
-		$cache_key = 'vlt_framework_update_' . md5( $this->remote_url );
+		$cache_key = 'vlt_helper_update_' . md5( $this->remote_url );
 		delete_transient( $cache_key );
 	}
 }

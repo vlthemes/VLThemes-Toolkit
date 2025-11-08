@@ -47,7 +47,7 @@ class ContactForm7 extends BaseModule {
 		add_filter( 'wpcf7_autop_or_not', '__return_false' );
 
 		// Allow themes to add custom CF7 modifications
-		do_action( 'vlt_framework_cf7_init' );
+		do_action( 'vlt_helper_cf7_init' );
 	}
 
 	/**

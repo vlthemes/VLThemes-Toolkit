@@ -1017,7 +1017,7 @@ class Elementor extends BaseModule {
 	private function get_aos_animations() {
 		// Check if AOS module is loaded
 		if ( ! class_exists( 'VLT\Helper\Modules\Features\AOS' ) ) {
-			return [ 'none' => esc_html__( 'None', 'vlt-framework' ) ];
+			return [ 'none' => esc_html__( 'None', 'vlt-helper' ) ];
 		}
 
 		return \VLT\Helper\Modules\Features\AOS::get_animations();

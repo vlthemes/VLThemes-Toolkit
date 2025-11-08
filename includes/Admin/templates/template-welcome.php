@@ -22,22 +22,22 @@ $theme_version = $theme->get( 'Version' );
 	</div>
 
 	<div class="vlt-widget-welcome__content">
-		<span class="vlt-badge"><?php printf( esc_html__( 'v%s', 'vlt-framework' ), $theme_version ); ?></span>
+		<span class="vlt-badge"><?php printf( esc_html__( 'v%s', 'vlt-helper' ), $theme_version ); ?></span>
 
-		<h1><?php printf( esc_html__( 'Getting started with %s', 'vlt-framework' ), $theme_name ); ?></h1>
+		<h1><?php printf( esc_html__( 'Getting started with %s', 'vlt-helper' ), $theme_name ); ?></h1>
 
 		<div class="notice notice-info inline mt-sm">
-			<p><?php esc_html_e( 'Your theme is successfully installed and ready to go!', 'vlt-framework' ); ?></p>
+			<p><?php esc_html_e( 'Your theme is successfully installed and ready to go!', 'vlt-helper' ); ?></p>
 		</div>
 
 		<p class="mt-sm">
-			<?php esc_html_e( 'Thank you for selecting our premium themes. Your journey to a beautiful, high-performing website starts now.', 'vlt-framework' ); ?>
+			<?php esc_html_e( 'Thank you for selecting our premium themes. Your journey to a beautiful, high-performing website starts now.', 'vlt-helper' ); ?>
 		</p>
 
 		<p class="mt-sm">
-			<?php esc_html_e( 'From sleek portfolios to powerful business hubs, our themes are crafted to impress and convert. You\'re not just building a site — you\'re launching a digital experience.', 'vlt-framework' ); ?>
+			<?php esc_html_e( 'From sleek portfolios to powerful business hubs, our themes are crafted to impress and convert. You\'re not just building a site — you\'re launching a digital experience.', 'vlt-helper' ); ?>
 		</p>
 
-		<p class="mt-sm"><?php esc_html_e( 'Let\'s make it unforgettable.', 'vlt-framework' ); ?></p>
+		<p class="mt-sm"><?php esc_html_e( 'Let\'s make it unforgettable.', 'vlt-helper' ); ?></p>
 	</div>
 </div>

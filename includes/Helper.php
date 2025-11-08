@@ -152,7 +152,7 @@ class Helper {
 			'Features\\PostTypes',
 			'Features\\UploadMimes',
 			'Features\\Widgets',
-			'Features\\KirkiCustomFonts',
+			'Features\\CustomFonts',
 			'Features\\SocialIcons',
 			'Features\\PostViews',
 			'Features\\AOS',

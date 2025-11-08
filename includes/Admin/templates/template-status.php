@@ -30,31 +30,31 @@ function vlt_status( $condition, $value = '' ) {
 	<div class="vlt-masonry-item">
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
-				<?php esc_html_e( 'PHP Extensions', 'vlt-framework' ); ?>
+				<?php esc_html_e( 'PHP Extensions', 'vlt-helper' ); ?>
 			</div>
 
 			<div class="vlt-widget__content">
 				<table class="widefat" cellspacing="0">
 					<tbody>
 						<tr>
-							<td><?php esc_html_e( 'cURL', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $curl_enabled, esc_html__( 'Enabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'cURL', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $curl_enabled, esc_html__( 'Enabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'GD Library', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $gd_enabled, esc_html__( 'Enabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'GD Library', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $gd_enabled, esc_html__( 'Enabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'ZIP Archive', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $zip_enabled, esc_html__( 'Enabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'ZIP Archive', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $zip_enabled, esc_html__( 'Enabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'DOM', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $dom_enabled, esc_html__( 'Enabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'DOM', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $dom_enabled, esc_html__( 'Enabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 						<tr>
-							<td><?php esc_html_e( 'XML', 'vlt-framework' ); ?></td>
-							<td><?php echo vlt_status( $xml_enabled, esc_html__( 'Enabled', 'vlt-framework' ) ); ?></td>
+							<td><?php esc_html_e( 'XML', 'vlt-helper' ); ?></td>
+							<td><?php echo vlt_status( $xml_enabled, esc_html__( 'Enabled', 'vlt-helper' ) ); ?></td>
 						</tr>
 					</tbody>
 				</table>
@@ -66,7 +66,7 @@ function vlt_status( $condition, $value = '' ) {
 	<div class="vlt-masonry-item">
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
-				<?php esc_html_e( 'Active Plugins', 'vlt-framework' ); ?>
+				<?php esc_html_e( 'Active Plugins', 'vlt-helper' ); ?>
 			</div>
 
 			<div class="vlt-widget__content">

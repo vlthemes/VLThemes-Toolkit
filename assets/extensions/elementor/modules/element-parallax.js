@@ -280,21 +280,25 @@ export default class ElementParallaxModule {
 	 * Setup refresh handlers for dynamic content
 	 */
 	setupRefreshHandlers() {
-		// Elementor integration
-		if (window.elementorFrontend && window.elementorFrontend.hooks && window.elementorFrontend.hooks.addAction) {
-			window.elementorFrontend.hooks.addAction('frontend/element_ready/global', (scope) => {
-				// Convert jQuery object to DOM element if needed
+		// Wait for Elementor frontend to be fully initialized
+		window.addEventListener('elementor/frontend/init', () => {
+			if (!window.elementorFrontend?.hooks) return;
+
+			// Hook into every widget/section/column that becomes ready
+			elementorFrontend.hooks.addAction('frontend/element_ready/global', (scope) => {
+
 				const element = scope instanceof HTMLElement ? scope : scope[0];
 
-				// Initialize parallax on new element
+				// Initialize parallax (your existing method)
 				const triggers = this.initParallax(element);
 
 				// Refresh after a short delay
 				setTimeout(() => {
 					triggers.forEach(st => st?.refresh());
 				}, 150);
+
 			});
-		}
+		});
 	}
 
 	/**

@@ -129,33 +129,40 @@ export default class ContainerExtensionsModule {
 	 * @param {HTMLElement} element
 	 */
 	equalHeightContainerInit(element) {
+
 		if (!element.classList.contains('has-equal-height-block-yes')) {
 			return;
 		}
-
 		const resizeHandler = () => {
-			// Find all widget containers
+			const dataResetOnDevices = element.getAttribute('data-reset-equal-height-on-devices') || '[]';
+			const resetOnDevice = this.parseDataAttribute(dataResetOnDevices);
+			const currentDevice = this.getCurrentDevice();
+
 			const items = element.querySelectorAll('.elementor-widget-container > div');
 
 			if (items.length === 0) {
 				return;
 			}
 
-			// Reset heights
+			if (resetOnDevice.includes(currentDevice)) {
+				items.forEach(item => {
+					item.style.height = '';
+					item.style.minHeight = '';
+				});
+				return;
+			}
+
 			items.forEach(item => {
-				item.style.height = 'auto';
+				item.style.height = '';
+				item.style.minHeight = '';
 			});
 
-			// Find max height
 			let maxHeight = 0;
 			items.forEach(item => {
-				const height = item.offsetHeight;
-				if (height > maxHeight) {
-					maxHeight = height;
-				}
+				const h = item.offsetHeight;
+				if (h > maxHeight) maxHeight = h;
 			});
 
-			// Apply max height to all items
 			items.forEach(item => {
 				item.style.height = maxHeight + 'px';
 			});
@@ -245,22 +252,27 @@ export default class ContainerExtensionsModule {
 	/**
 	 * Setup Elementor hooks
 	 */
-	setupElementorHooks() {
-		if (typeof elementorFrontend === 'undefined' || !elementorFrontend.hooks) {
-			return;
-		}
+	setupRefreshHandlers() {
 
-		// Register hooks for each container extension
-		elementorFrontend.hooks.addAction('frontend/element_ready/container', (scope) => {
-			// Convert jQuery object to DOM element if needed
-			const element = scope instanceof HTMLElement ? scope : scope[0];
+		// Wait for Elementor frontend to be fully initialized
+		window.addEventListener('elementor/frontend/init', () => {
+			if (!window.elementorFrontend?.hooks) return;
 
-			if (element) {
-				this.stretchContainerInit(element);
-				this.paddingToContainerInit(element);
-				this.stickyContainerInit(element);
-				this.equalHeightContainerInit(element);
-			}
+			// Hook into every widget/section/column that becomes ready
+			elementorFrontend.hooks.addAction('frontend/element_ready/global', (scope) => {
+
+				const element = scope instanceof HTMLElement ? scope : scope[0];
+
+				if (element) {
+					this.stretchContainerInit(element);
+					this.paddingToContainerInit(element);
+					this.stickyContainerInit(element);
+					this.equalHeightContainerInit(element);
+				}
+
+			});
 		});
+
 	}
+
 }

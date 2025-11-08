@@ -50,6 +50,9 @@ class Elementor extends BaseModule {
 	 */
 	protected function init() {
 		$this->assets_url  = VLT_HELPER_URL . 'assets/';
+
+		// Enqueue all assets
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ], 1 );
 	}
 
 	/**
@@ -57,6 +60,77 @@ class Elementor extends BaseModule {
 	 */
 	public function register() {
 		add_action( 'elementor/init', [ $this, 'init_elementor' ] );
+	}
+
+	/**
+	 * Enqueue all elementor assets
+	 */
+	public function enqueue_assets() {
+		// ===================================
+		// SCRIPTS
+		// ===================================
+		wp_enqueue_script(
+			'vlt-extension-elementor',
+			$this->assets_url . 'extensions/elementor/elementor-bundle.js',
+			[
+				'vlt-aos',
+				'vlt-gsap',
+				'vlt-scrolltrigger',
+				'vlt-jarallax',
+				'vlt-jarallax-video'
+			],
+			VLT_HELPER_VERSION,
+			true
+		);
+
+		// ===================================
+		// STYLES
+		// ===================================
+		wp_enqueue_style( 'vlt-aos' );
+		wp_enqueue_style( 'vlt-jarallax' );
+		wp_enqueue_style( 'vlt-jarallax-video' );
+	}
+
+	/**
+	 * Enqueue editor styles
+	 */
+	public function editor_styles() {
+		// Enqueue main editor CSS
+		wp_enqueue_style(
+			'vlt-elementor-editor',
+			$this->assets_url . 'extensions/elementor/elementor-editor.css',
+			[],
+			VLT_HELPER_VERSION
+		);
+
+		// Add inline CSS for badge customization
+		$this->add_badge_styles();
+	}
+
+	/**
+	 * Add badge styles to editor
+	 */
+	private function add_badge_styles() {
+		$theme = wp_get_theme();
+		$theme_name = $theme->get( 'Name' );
+
+		$badge_config = apply_filters( 'vlt_helper_elementor_badge', [
+			'text' => $theme_name,
+		] );
+
+		if ( empty( $badge_config['text'] ) ) {
+			return;
+		}
+
+		$custom_css = sprintf(
+			'#elementor-panel-elements-wrapper .elementor-element .icon i[class*="-badge"]::after,
+			#elementor-panel-elements-wrapper .elementor-element .icon .vlt-badge::after {
+				content: "%s";
+			}',
+			esc_attr( $badge_config['text'] )
+		);
+
+		wp_add_inline_style( 'vlt-elementor-editor', $custom_css );
 	}
 
 	/**
@@ -180,48 +254,6 @@ class Elementor extends BaseModule {
 	}
 
 	/**
-	 * Enqueue editor styles
-	 */
-	public function editor_styles() {
-		// Enqueue main editor CSS
-		wp_enqueue_style(
-			'vlt-helper-elementor',
-			$this->assets_url . 'css/elementor.css',
-			[],
-			VLT_HELPER_VERSION
-		);
-
-		// Add inline CSS for badge customization
-		$this->add_badge_styles();
-	}
-
-	/**
-	 * Add badge styles to editor
-	 */
-	private function add_badge_styles() {
-		$theme = wp_get_theme();
-		$theme_name = $theme->get( 'Name' );
-
-		$badge_config = apply_filters( 'vlt_helper_elementor_badge', [
-			'text' => $theme_name,
-		] );
-
-		if ( empty( $badge_config['text'] ) ) {
-			return;
-		}
-
-		$custom_css = sprintf(
-			'#elementor-panel-elements-wrapper .elementor-element .icon i[class*="-badge"]::after,
-			#elementor-panel-elements-wrapper .elementor-element .icon .vlt-badge::after {
-				content: "%s";
-			}',
-			esc_attr( $badge_config['text'] )
-		);
-
-		wp_add_inline_style( 'vlt-helper-elementor', $custom_css );
-	}
-
-	/**
 	 * Hide Elementor Pro promo widgets
 	 *
 	 * Removes promotion widgets when Elementor Pro is not installed
@@ -268,7 +300,7 @@ class Elementor extends BaseModule {
 				'name'          => 'socicons',
 				'label'         => esc_html__( 'Socicons', 'vlt-helper' ),
 				'url'           => $this->assets_url . 'fonts/socicons/socicons.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/socicons/socicons.css' ],
+				'enqueue'       => false, // CSS loaded globally in SocialIcons module
 				'prefix'        => 'socicon-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'socicon-twitter',
@@ -585,6 +617,32 @@ class Elementor extends BaseModule {
 			]
 		);
 
+		$element->add_control(
+			'vlt_equal_height_popover',
+			[
+				'label'     => esc_html__( 'Equal Height Settings', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_equal_height_widgets' => 'yes' ],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_equal_height_widgets_reset_on_devices',
+			[
+				'label'       => esc_html__( 'Reset On Device', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SELECT2,
+				'multiple'    => true,
+				'label_block' => true,
+				'default'     => $default_reset_devices,
+				'options'     => $breakpoints,
+				'condition'   => [ 'vlt_equal_height_widgets' => 'yes' ],
+			]
+		);
+
+		$element->end_popover();
+
 		$element->end_controls_section();
 	}
 
@@ -613,6 +671,16 @@ class Elementor extends BaseModule {
 				wp_json_encode( $settings['vlt_padding_to_container_reset_on_devices'] )
 			);
 		}
+
+		// Equal height reset on devices
+		if ( isset( $settings['vlt_equal_height_widgets_reset_on_devices'] ) ) {
+			$widget->add_render_attribute(
+				'_wrapper',
+				'data-reset-equal-height-on-devices',
+				wp_json_encode( $settings['vlt_equal_height_widgets_reset_on_devices'] )
+			);
+		}
+
 	}
 
 	/**
@@ -947,36 +1015,12 @@ class Elementor extends BaseModule {
 	 * @return array Array of animations.
 	 */
 	private function get_aos_animations() {
-		return apply_filters( 'vlt_helper_elementor_aos_animations', [
-			'none'          => esc_html__( 'None', 'vlt-helper' ),
-			'fade'          => esc_html__( 'Fade', 'vlt-helper' ),
-			'fade-up'       => esc_html__( 'Fade Up', 'vlt-helper' ),
-			'fade-down'     => esc_html__( 'Fade Down', 'vlt-helper' ),
-			'fade-left'     => esc_html__( 'Fade Left', 'vlt-helper' ),
-			'fade-right'    => esc_html__( 'Fade Right', 'vlt-helper' ),
-			'fade-up-right' => esc_html__( 'Fade Up Right', 'vlt-helper' ),
-			'fade-up-left'  => esc_html__( 'Fade Up Left', 'vlt-helper' ),
-			'fade-down-right' => esc_html__( 'Fade Down Right', 'vlt-helper' ),
-			'fade-down-left' => esc_html__( 'Fade Down Left', 'vlt-helper' ),
-			'flip-up'       => esc_html__( 'Flip Up', 'vlt-helper' ),
-			'flip-down'     => esc_html__( 'Flip Down', 'vlt-helper' ),
-			'flip-left'     => esc_html__( 'Flip Left', 'vlt-helper' ),
-			'flip-right'    => esc_html__( 'Flip Right', 'vlt-helper' ),
-			'slide-up'      => esc_html__( 'Slide Up', 'vlt-helper' ),
-			'slide-down'    => esc_html__( 'Slide Down', 'vlt-helper' ),
-			'slide-left'    => esc_html__( 'Slide Left', 'vlt-helper' ),
-			'slide-right'   => esc_html__( 'Slide Right', 'vlt-helper' ),
-			'zoom-in'       => esc_html__( 'Zoom In', 'vlt-helper' ),
-			'zoom-in-up'    => esc_html__( 'Zoom In Up', 'vlt-helper' ),
-			'zoom-in-down'  => esc_html__( 'Zoom In Down', 'vlt-helper' ),
-			'zoom-in-left'  => esc_html__( 'Zoom In Left', 'vlt-helper' ),
-			'zoom-in-right' => esc_html__( 'Zoom In Right', 'vlt-helper' ),
-			'zoom-out'      => esc_html__( 'Zoom Out', 'vlt-helper' ),
-			'zoom-out-up'   => esc_html__( 'Zoom Out Up', 'vlt-helper' ),
-			'zoom-out-down' => esc_html__( 'Zoom Out Down', 'vlt-helper' ),
-			'zoom-out-left' => esc_html__( 'Zoom Out Left', 'vlt-helper' ),
-			'zoom-out-right' => esc_html__( 'Zoom Out Right', 'vlt-helper' ),
-		] );
+		// Check if AOS module is loaded
+		if ( ! class_exists( 'VLT\Helper\Modules\Features\AOS' ) ) {
+			return [ 'none' => esc_html__( 'None', 'vlt-framework' ) ];
+		}
+
+		return \VLT\Helper\Modules\Features\AOS::get_animations();
 	}
 
 	/**

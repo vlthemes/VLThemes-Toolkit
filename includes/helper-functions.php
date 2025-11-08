@@ -175,6 +175,30 @@ if ( ! function_exists( 'vlt_acf_populate_social_icons' ) ) {
 }
 
 // ========================================
+// AOS
+// ========================================
+
+if ( ! function_exists( 'vlt_aos_get_animations' ) ) {
+	function vlt_aos_get_animations() {
+		return \VLT\Helper\Modules\AOS\AOS::get_animations();
+	}
+}
+
+if ( ! function_exists( 'vlt_aos_render' ) ) {
+	function vlt_aos_render( $animation, $args = [] ) {
+		return \VLT\Helper\Modules\AOS\AOS::render_attrs( $animation, $args );
+	}
+}
+
+// vlt_aos_render( 'fade-up', [
+// 	'duration' => 1000,
+// 	'delay' => 100,
+// 	'offset' => 200,
+// 	'once' => 'true',
+// ] );
+
+
+// ========================================
 // Elementor Functions
 // ========================================
 

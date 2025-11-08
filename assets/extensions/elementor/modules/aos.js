@@ -80,11 +80,15 @@ export default class AOSModule {
 			this.refreshHard();
 		});
 
-		// Refresh AOS when Elementor widgets are rendered
-		if (window.elementorFrontend && window.elementorFrontend.hooks && window.elementorFrontend.hooks.addAction) {
-			window.elementorFrontend.hooks.addAction('frontend/element_ready/global', () => {
+		// Wait for Elementor frontend to be fully initialized
+		window.addEventListener('elementor/frontend/init', () => {
+			if (!window.elementorFrontend?.hooks) return;
+
+			// Hook into every widget/section/column that becomes ready
+			elementorFrontend.hooks.addAction('frontend/element_ready/global', (scope) => {
 				this.refresh();
 			});
-		}
+		});
+
 	}
 }

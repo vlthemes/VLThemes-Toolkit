@@ -1,8 +1,3 @@
-/**
- * VLT Framework - Main JavaScript
- * Vanilla JavaScript implementation (no jQuery)
- */
-
 import AOSModule from './modules/aos.js';
 import JarallaxModule from './modules/jarallax.js';
 import ElementParallaxModule from './modules/element-parallax.js';
@@ -107,7 +102,7 @@ import ContainerExtensionsModule from './modules/container-extensions.js';
 
 		// Initialize Container Extensions
 		containerExtensionsModule.init();
-		containerExtensionsModule.setupElementorHooks();
+		containerExtensionsModule.setupRefreshHandlers();
 
 		document.dispatchEvent(new CustomEvent('vlt.site-loaded'));
 

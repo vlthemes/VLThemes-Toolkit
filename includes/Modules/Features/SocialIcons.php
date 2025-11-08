@@ -36,13 +36,6 @@ class SocialIcons extends BaseModule {
 	protected $version = '1.0.0';
 
 	/**
-	 * Socicons CSS URL
-	 *
-	 * @var string
-	 */
-	private $socicons_url;
-
-	/**
 	 * Shareable networks supported by Sharer.js
 	 * Format: 'slug' => ['label' => 'Display Name', 'attrs' => ['attr1', 'attr2']]
 	 *
@@ -81,14 +74,6 @@ class SocialIcons extends BaseModule {
 	];
 
 	/**
-	 * Initialize module
-	 */
-	protected function init() {
-		// Set Socicons URL
-		$this->socicons_url = VLT_HELPER_URL . 'assets/fonts/socicons/socicons.css';
-	}
-
-	/**
 	 * Register module
 	 */
 	public function register() {
@@ -104,24 +89,8 @@ class SocialIcons extends BaseModule {
 	 * Enqueue CSS and JS assets
 	 */
 	public function enqueue_assets() {
-		// Enqueue Socicons CSS if file exists
-		if ( file_exists( str_replace( VLT_HELPER_URL, VLT_HELPER_PATH, $this->socicons_url ) ) ) {
-			wp_enqueue_style(
-				'vlt-helper-socicons',
-				$this->socicons_url,
-				[],
-				VLT_HELPER_VERSION
-			);
-		}
-
-		// Enqueue Sharer.js (local)
-		wp_enqueue_script(
-			'vlt-helper-sharer',
-			VLT_HELPER_URL . 'assets/vendors/js/sharer.min.js',
-			[],
-			VLT_HELPER_VERSION,
-			true
-		);
+		wp_enqueue_style( 'vlt-font-socicons' );
+		wp_enqueue_script( 'vlt-sharer' );
 	}
 
 	/**

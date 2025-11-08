@@ -31,6 +31,13 @@ class Helper {
 	private $modules = array();
 
 	/**
+	 * Plugin assets directory URL
+	 *
+	 * @var string
+	 */
+	private $plugin_assets_dir;
+
+	/**
 	 * Get instance
 	 *
 	 * @return Helper
@@ -56,9 +63,14 @@ class Helper {
 	 * Initialize hooks
 	 */
 	private function init_hooks() {
+		$this->plugin_assets_dir = VLT_HELPER_URL . 'assets/';
+
 		// Enqueue admin scripts
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		add_action( 'customize_controls_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+
+		// Register all helper assets (don't enqueue yet)
+		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ], 1 );
 	}
 
 	/**
@@ -67,7 +79,7 @@ class Helper {
 	public function enqueue_admin_scripts() {
 		wp_enqueue_script(
 			'vlt-helper-admin',
-			VLT_HELPER_URL . 'assets/js/admin.js',
+			$this->plugin_assets_dir . 'js/admin.js',
 			[], // 'customize-controls'
 			VLT_HELPER_VERSION,
 			true
@@ -75,10 +87,42 @@ class Helper {
 
 		wp_enqueue_style(
 			'vlt-helper-admin',
-			VLT_HELPER_URL . 'assets/css/admin.css',
+			$this->plugin_assets_dir . 'css/admin.css',
 			[],
 			VLT_HELPER_VERSION
 		);
+	}
+
+	/**
+	 * Register all helper assets
+	 *
+	 * Registers scripts and styles but doesn't enqueue them
+	 * Other modules can enqueue these as dependencies
+	 */
+	public function register_assets() {
+		// ===================================
+		// VENDORS
+		// ===================================
+		wp_register_script( 'vlt-gsap', $this->plugin_assets_dir . 'vendors/js/gsap.js', [], VLT_HELPER_VERSION, true );
+		wp_register_script( 'vlt-scrolltrigger', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltrigger.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'vlt-scrolltoplugin', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltoplugin.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'vlt-textplugin', $this->plugin_assets_dir . 'vendors/js/gsap-textplugin.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'vlt-observer', $this->plugin_assets_dir . 'vendors/js/gsap-observer.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'vlt-draggable', $this->plugin_assets_dir . 'vendors/js/gsap-raggable.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
+
+		wp_register_script( 'vlt-jarallax', $this->plugin_assets_dir .'vendors/js/jarallax.js', [], VLT_HELPER_VERSION, true );
+		wp_register_script( 'vlt-jarallax-video', $this->plugin_assets_dir .'vendors/js/jarallax-video.js', [], VLT_HELPER_VERSION, true );
+		wp_register_style( 'vlt-jarallax', $this->plugin_assets_dir . 'vendors/css/jarallax.css', [], VLT_HELPER_VERSION );
+
+		wp_register_script( 'vlt-aos', $this->plugin_assets_dir .'vendors/js/aos.js', [], VLT_HELPER_VERSION, true );
+		wp_register_style( 'vlt-aos', $this->plugin_assets_dir . 'vendors/css/aos.css', [], VLT_HELPER_VERSION );
+
+		wp_register_script( 'vlt-sharer', $this->plugin_assets_dir . 'vendors/js/sharer.js', [], VLT_HELPER_VERSION, true );
+
+		wp_register_style( 'vlt-font-socicons', $this->plugin_assets_dir . 'fonts/socicons/socicons.css', [], VLT_HELPER_VERSION );
+
+		// Allow themes/plugins to register additional assets
+		do_action( 'vlt_helper/register_assets' );
 	}
 
 	/**
@@ -111,6 +155,7 @@ class Helper {
 			'Features\\KirkiCustomFonts',
 			'Features\\SocialIcons',
 			'Features\\PostViews',
+			'Features\\AOS',
 			// Integrations
 			'Integrations\\Elementor',
 			'Integrations\\ContactForm7',

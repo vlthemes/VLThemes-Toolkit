@@ -149,7 +149,6 @@ class Helper {
 	private function init_modules() {
 		$modules = array(
 			// Core feature modules
-			'Features\\PostTypes',
 			'Features\\UploadMimes',
 			'Features\\Widgets',
 			'Features\\CustomFonts',

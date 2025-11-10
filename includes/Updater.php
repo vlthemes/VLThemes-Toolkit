@@ -72,6 +72,49 @@ class Updater {
 	 */
 	private function init_hooks() {
 		add_filter( 'site_transient_update_plugins', array( $this, 'check_update' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+	}
+
+	/**
+	* Show admin notice about available update
+	*/
+	public function admin_notice() {
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
+
+		$update_plugins = get_site_transient( 'update_plugins' );
+
+		if ( ! isset( $update_plugins->response[ $this->plugin_slug ] ) ) {
+			return;
+		}
+
+		$plugin_data = get_plugin_data( $this->plugin_file );
+		$plugin_name = $plugin_data['Name'] ?? dirname( $this->plugin_slug );
+		$new_version = $update_plugins->response[ $this->plugin_slug ]->new_version;
+
+		// Прямая ссылка на обновление
+		$update_url = wp_nonce_url(
+			self_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $this->plugin_slug ) ),
+			'upgrade-plugin_' . $this->plugin_slug
+		);
+
+		?>
+		<div class="notice notice-warning is-dismissible">
+			<p>
+				<strong><?php echo esc_html( $plugin_name ); ?></strong> —
+				<?php printf(
+					esc_html__( 'version %s is available.', 'vlt-helper' ),
+					'<strong>' . esc_html( $new_version ) . '</strong>'
+				); ?>
+			</p>
+			<p>
+				<a href="<?php echo esc_url( $update_url ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Update now', 'vlt-helper' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**

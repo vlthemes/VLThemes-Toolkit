@@ -51,3 +51,11 @@ add_action( 'plugins_loaded', function() {
 		VLT\Helper\Admin\Dashboard::instance();
 	}
 }, 25 );
+
+add_action('init', function() {
+    if (class_exists('VLT\Helper\Updater')) {
+        $updater = new \VLT\Helper\Updater(WP_PLUGIN_DIR . '/vlt-helper/vlt-helper.php', 'https://твой-сайт.com/update/vlt-helper.json');
+        $updater->clear_cache();
+        error_log('VLT Helper: кэш обновлений очищен');
+    }
+});

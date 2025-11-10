@@ -21,8 +21,8 @@ define( 'VLT_HELPER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'VLT_HELPER_URL', plugin_dir_url( __FILE__ ) );
 define( 'VLT_HELPER_BASENAME', plugin_basename( __FILE__ ) );
 
-// Define update URL (uncomment and set your update JSON URL)
-// define( 'VLT_HELPER_UPDATE_URL', 'https://your-domain.com/updates/vlthemes-helper.json' );
+// Define update URL
+define( 'VLT_HELPER_UPDATE_URL', 'https://vlthemes.me/plugins/updates/vlthemes-helper-plugin.json' );
 
 // Load helper functions
 require_once VLT_HELPER_PATH . 'includes/helper-functions.php';

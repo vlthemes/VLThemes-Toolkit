@@ -200,4 +200,13 @@ class Helper {
 	public function get_module( $module ) {
 		return isset( $this->modules[ $module ] ) ? $this->modules[ $module ] : null;
 	}
+
+	public static function minify_css( $css ) {
+		$css = preg_replace( '/\s+/', ' ', $css );
+		$css = preg_replace( '/\/\*[^\!](.*?)\*\//s', '', $css );
+		$css = preg_replace( '/\s?([\{\};,])\s?/', '$1', $css );
+		$css = str_replace( [';}', '} '], '}', $css );
+		return trim( $css );
+	}
+
 }

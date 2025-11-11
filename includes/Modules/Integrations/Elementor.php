@@ -36,6 +36,8 @@ class Elementor extends BaseModule {
 	 */
 	private $assets_url;
 
+	public static $hasRunCustomCSS = [];
+
 	/**
 	 * Check if module should load
 	 *
@@ -89,6 +91,18 @@ class Elementor extends BaseModule {
 		wp_enqueue_style( 'aos' );
 		wp_enqueue_style( 'jarallax' );
 		wp_enqueue_style( 'jarallax-video' );
+	}
+
+	public function enqueue_scripts_editor() {
+
+		wp_enqueue_script(
+			'vlt-custom-css',
+			$this->assets_url . 'extensions/elementor/elementor-custom-css.js',
+			[],
+			VLT_HELPER_VERSION,
+			true
+		);
+
 	}
 
 	/**
@@ -394,17 +408,21 @@ class Elementor extends BaseModule {
 	 *
 	 * Adds custom controls and attributes to Elementor elements
 	 */
+
+	// ANCHOR REGISTER ELEMENT EXTENSIONS
 	private function register_element_extensions() {
 		// Register controls for containers
 		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_layout_extensions_controls' ], 10, 2 );
 		add_action( 'elementor/element/container/section_background/after_section_end', [ $this, 'register_jarallax_controls' ], 10, 2 );
 		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_aos_controls' ], 10, 2 );
 		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_element_parallax_controls' ], 10, 2 );
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_custom_css_controls' ], 10, 2 );
 
 		// Register controls for common widgets
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_element_parallax_controls' ], 10, 2 );
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_layout_extensions_controls' ], 10, 2 );
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_aos_controls' ], 10, 2 );
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_custom_css_controls' ], 10, 2 );
 
 		// Render for containers
 		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_layout_extensions_attributes' ] );
@@ -416,6 +434,17 @@ class Elementor extends BaseModule {
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_layout_extensions_attributes' ] );
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_aos_attributes' ] );
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_element_parallax_attributes' ] );
+
+		// Render custom css
+		add_action( 'elementor/element/parse_css', [ $this, 'add_post_css' ], 10, 2 );
+		add_action('elementor/css-file/post/parse', [ $this, 'add_page_settings_css' ] );
+		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'enqueue_scripts_editor' ] );
+
+		// Render attrs
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_attribute_controls' ], 10, 2 );
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_attribute_controls' ], 10, 2 );
+		add_action( 'elementor/element/after_add_attributes', [ $this, 'render_attributes' ] );
+
 	}
 
 	/**
@@ -914,7 +943,7 @@ class Elementor extends BaseModule {
 				],
 				'default' => [
 					'unit' => 'px',
-					'size' => 0.8,
+					'size' => 1,
 				],
 			]
 		);
@@ -1286,6 +1315,198 @@ class Elementor extends BaseModule {
 
 			if ( $scale_val !== '' ) {
 				$widget->add_render_attribute( '_wrapper', 'data-element-scale', $scale_val );
+			}
+		}
+	}
+
+	/**
+	 * Register Custom CSS controls
+	 *
+	 * @param object $element Elementor element.
+	 * @param array  $args    Element arguments.
+	 */
+	public function register_custom_css_controls( $element, $args ) {
+		$element->start_controls_section(
+			'vlt_section_custom_css', [
+				'label' => esc_html__( 'VLT Custom CSS', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
+			]
+		);
+
+		$element->add_control(
+			'vlt_custom_css_description', [
+				'type'            => \Elementor\Controls_Manager::RAW_HTML,
+				'raw'             => __( 'Use "selector" to target wrapper element. Examples:<br>selector {color: red;} // For main element<br>selector .child-element {margin: 10px;} // For child element<br>.my-class {text-align: center;} // Or use any custom selector', 'vlt-helper' ),
+				'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+			]
+		);
+
+		$element->add_control(
+			'vlt_custom_css', [
+				'label'       => esc_html__( 'Custom CSS', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::CODE,
+				'language'    => 'css',
+				'rows'        => 20,
+				'render_type' => 'ui',
+				'separator'   => 'none',
+			]
+		);
+
+		$element->end_controls_section();
+
+		// Allow themes to add custom controls
+		do_action( 'vlt_helper_elementor_custom_css_controls', $element, $args );
+	}
+
+	private function needAppendCustomCSSforWidget( $uid ) {
+		$need_append = false;
+		$tmp = self::$hasRunCustomCSS;
+
+		if ( ! in_array( $uid, $tmp ) ) {
+			$need_append = true;
+			$tmp[] = $uid;
+		}
+
+		self::$hasRunCustomCSS = $tmp;
+		return $need_append;
+	}
+
+    /**
+     * @param $post_css \Elementor\Core\Files\CSS\Post
+     * @param $element \Elementor\Element_Base
+     * @return void
+     */
+	// ANCHOR RENDER CSS
+	public function add_post_css( $post_css, $element ) {
+		if ( ! $post_css || ! $post_css instanceof \Elementor\Core\Files\CSS\Post ) {
+			return;
+		}
+
+		if ( ! $element || ! method_exists( $element, 'get_settings' ) ) {
+			return;
+		}
+
+		$settings = $element->get_settings();
+		if ( empty( $settings['vlt_custom_css'] ) || ! is_string( $settings['vlt_custom_css'] ) ) {
+			return;
+		}
+
+		$css = trim( $settings['vlt_custom_css'] );
+		if ( $css === '' ) {
+			return;
+		}
+
+		$unique_uid = $element->get_name() . $element->get_id();
+
+		if ( ! $this->needAppendCustomCSSforWidget( $unique_uid ) ) {
+			return;
+		}
+
+		$selector = '';
+		if ( method_exists( $post_css, 'get_element_unique_selector' ) && $element ) {
+			$selector = $post_css->get_element_unique_selector( $element );
+		}
+
+		if ( empty( $selector ) ) {
+			return;
+		}
+
+		$css = str_replace( 'selector', $selector, $css );
+
+		$css = preg_replace( '#<script(.*?)>(.*?)</script>#is', '', $css );
+		$css = strip_tags( $css );
+
+		if ( $css === '' ) {
+			return;
+		}
+
+		$element_name = $element->get_name() ?? 'unknown';
+		$css = "/* VLT Custom CSS for {$element_name} */\n" . $css . "\n/* End VLT Custom CSS */";
+
+		$css = \VLT\Helper\Helper::minify_css( $css );
+
+		$stylesheet = $post_css->get_stylesheet();
+		if ( ! $stylesheet || ! method_exists( $stylesheet, 'add_raw_css' ) ) {
+			return;
+		}
+
+		$stylesheet->add_raw_css( $css );
+
+	}
+
+	public function add_page_settings_css( $post_css ) {
+		if ( ! $post_css instanceof \Elementor\Core\Files\CSS\Post ) {
+			return;
+		}
+
+		$document = \Elementor\Plugin::$instance->documents->get( $post_css->get_post_id() );
+		if ( ! $document ) {
+			return;
+		}
+
+		$css = $document->get_settings( 'vlt_custom_css' ) ?? '';
+		$css = trim( $css );
+
+		if ( $css === '' ) {
+			return;
+		}
+
+		$css = str_replace( 'selector', $document->get_css_wrapper_selector(), $css );
+		$css = strip_tags( $css );
+		$css = preg_replace( '#<script.*?>.*?</script>#is', '', $css );
+
+		if ( $css === '' ) {
+			return;
+		}
+
+		$css = "/* VLT Document Custom CSS */\n" . $css . "\n/* End VLT Document CSS */";
+
+		$css = \VLT\Helper\Helper::minify_css( $css );
+
+		$post_css->get_stylesheet()->add_raw_css( $css );
+	}
+
+	public function register_attribute_controls( $element, $args ) {
+
+		$element->start_controls_section(
+			'vlt_section_custom_attributes', [
+				'label' => esc_html__( 'VLT Custom Attributes', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
+			]
+		);
+
+		$element->add_control(
+			'vlt_custom_attributes', [
+				'label'       => esc_html__( 'Custom Attributes', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::TEXTAREA,
+				'dynamic'     => [ 'active' => true ],
+				'placeholder' => 'key|value',
+				'description' => sprintf(
+					esc_html__( 'Set custom attributes for the wrapper element. Each attribute in a separate line. Separate key from value using %s.', 'vlt-helper' ),
+					'<code>|</code>'
+				),
+			]
+		);
+
+		$element->end_controls_section();
+
+		// Allow themes to add custom controls
+		do_action( 'vlt_helper_elementor_add_custom_attributes_controls', $element, $args );
+	}
+
+	public function render_attributes( $element ) {
+		$settings = $element->get_settings_for_display();
+
+		if ( empty( $settings['vlt_custom_attributes'] ) ) {
+			return;
+		}
+
+		$attributes = \Elementor\Utils::parse_custom_attributes( $settings['vlt_custom_attributes'], "\n" );
+		$blacklist  = [ 'id', 'class', 'data-id', 'data-settings', 'data-element_type', 'data-widget_type', 'data-model-cid' ];
+
+		foreach ( $attributes as $key => $value ) {
+			if ( ! in_array( $key, $blacklist, true ) ) {
+				$element->add_render_attribute( '_wrapper', $key, $value );
 			}
 		}
 	}

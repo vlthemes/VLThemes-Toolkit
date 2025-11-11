@@ -48,36 +48,46 @@ class Updater {
 	/**
 	 * Constructor
 	 *
-	 * @param string $plugin_file Plugin file path
-	 * @param string $remote_url Remote update JSON URL
+	 * Initializes the updater with plugin information and sets up
+	 * WordPress hooks for automatic update checks.
+	 *
+	 * @param string $plugin_file Full path to main plugin file.
+	 * @param string $remote_url  URL to remote JSON file with update info.
 	 */
 	public function __construct( $plugin_file, $remote_url ) {
 		$this->plugin_file = $plugin_file;
 		$this->plugin_slug = plugin_basename( $plugin_file );
 		$this->remote_url  = $remote_url;
 
-		// Get current version
+		// Get current plugin version
 		if ( ! function_exists( 'get_plugin_data' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		$plugin_data = get_plugin_data( $plugin_file );
 		$this->current_version = $plugin_data['Version'];
 
-		// Initialize hooks
+		// Initialize WordPress hooks
 		$this->init_hooks();
 	}
 
 	/**
-	 * Initialize hooks
+	 * Initialize WordPress hooks
+	 *
+	 * Registers filters and actions for:
+	 * - Checking plugin updates via WordPress update system
+	 * - Displaying admin notices when updates are available
 	 */
 	private function init_hooks() {
+		// Hook into WordPress plugin update check
 		add_filter( 'site_transient_update_plugins', array( $this, 'check_update' ) );
+
+		// Display admin notice when update is available
 		add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 	}
 
 	/**
-	* Show admin notice about available update
-	*/
+	 * Show admin notice about available update
+	 */
 	public function admin_notice() {
 		if ( ! current_user_can( 'update_plugins' ) ) {
 			return;
@@ -93,7 +103,7 @@ class Updater {
 		$plugin_name = $plugin_data['Name'] ?? dirname( $this->plugin_slug );
 		$new_version = $update_plugins->response[ $this->plugin_slug ]->new_version;
 
-		// Прямая ссылка на обновление
+		// Direct link to update action
 		$update_url = wp_nonce_url(
 			self_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $this->plugin_slug ) ),
 			'upgrade-plugin_' . $this->plugin_slug
@@ -118,12 +128,16 @@ class Updater {
 	}
 
 	/**
-	 * Check for updates
+	 * Check for plugin updates
 	 *
-	 * @param object $transient Update transient
-	 * @return object
+	 * Hooks into WordPress update system to check for plugin updates
+	 * from a remote JSON endpoint.
+	 *
+	 * @param object $transient WordPress update transient object.
+	 * @return object Modified transient with update information.
 	 */
 	public function check_update( $transient ) {
+		// Skip if no plugins are checked
 		if ( empty( $transient->checked ) ) {
 			return $transient;
 		}
@@ -135,10 +149,11 @@ class Updater {
 			return $transient;
 		}
 
-		// Check if update is available
+		// Extract version and package information
 		$new_version = isset( $remote_data->new_version ) ? (string) $remote_data->new_version : null;
 		$package = isset( $remote_data->package ) ? (string) $remote_data->package : '';
 
+		// Add update response if newer version is available
 		if ( $new_version && $package && version_compare( $this->current_version, $new_version, '<' ) ) {
 			$transient->response[ $this->plugin_slug ] = (object) array(
 				'slug'        => dirname( $this->plugin_slug ),
@@ -152,12 +167,15 @@ class Updater {
 	}
 
 	/**
-	 * Get remote update data
+	 * Get remote update data from JSON endpoint
 	 *
-	 * @return object|false
+	 * Fetches update information from remote URL and caches the result
+	 * for 12 hours to reduce API calls.
+	 *
+	 * @return object|false Update data object or false on failure.
 	 */
 	private function get_remote_data() {
-		// Check transient cache
+		// Check transient cache first
 		$cache_key = 'vlt_helper_update_' . md5( $this->remote_url );
 		$cached_data = get_transient( $cache_key );
 
@@ -165,23 +183,26 @@ class Updater {
 			return $cached_data;
 		}
 
-		// Fetch remote data
+		// Fetch remote data via HTTP
 		$response = wp_remote_get( $this->remote_url, array(
 			'timeout' => 10,
 		) );
 
+		// Handle request errors
 		if ( is_wp_error( $response ) ) {
 			return false;
 		}
 
+		// Parse JSON response
 		$body = wp_remote_retrieve_body( $response );
 		$data = json_decode( $body );
 
+		// Validate required fields
 		if ( ! $data || ! isset( $data->new_version ) || ! isset( $data->package ) ) {
 			return false;
 		}
 
-		// Cache for 12 hours
+		// Cache for 12 hours to reduce API calls
 		set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
 
 		return $data;
@@ -189,6 +210,9 @@ class Updater {
 
 	/**
 	 * Clear update cache
+	 *
+	 * Removes cached update data to force a fresh check.
+	 * Useful for manual update checks or troubleshooting.
 	 */
 	public function clear_cache() {
 		$cache_key = 'vlt_helper_update_' . md5( $this->remote_url );

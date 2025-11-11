@@ -1,10 +1,3 @@
-/**
- * VLT Elementor Main Entry Point
- *
- * Initializes and coordinates all Elementor extension modules
- */
-
-import { isMobileDevice, debounceResize, initResizeHandlers } from './core/utils.js';
 import AOSModule from './modules/aos.js';
 import JarallaxModule from './modules/jarallax.js';
 import ElementParallaxModule from './modules/element-parallax.js';
@@ -15,24 +8,80 @@ import ContainerExtensionsModule from './modules/container-extensions.js';
 	'use strict';
 
 	// ===================================
-	// INITIALIZATION
+	// UTILITY FUNCTIONS
 	// ===================================
 
-	// Initialize resize handlers
-	initResizeHandlers();
+	// Resize handlers registry
+	const resizeHandlers = [];
+	let resizeTimeout;
+
+	/**
+	 * Handle resize events with debouncing
+	 * @param {Event} event
+	 */
+	function handleResize(event) {
+		if (resizeHandlers.length) {
+			clearTimeout(resizeTimeout);
+			resizeTimeout = setTimeout(() => {
+				resizeHandlers.forEach(handler => {
+					if (typeof handler === 'function') {
+						handler(event);
+					}
+				});
+			}, 250);
+		}
+	}
+
+	// Register resize handlers
+	window.addEventListener('load', handleResize);
+	window.addEventListener('resize', handleResize);
+	window.addEventListener('orientationchange', handleResize);
+
+	/**
+	 * Check if device is mobile
+	 * @returns {boolean}
+	 */
+	function isMobileDevice() {
+		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+	}
+
+	/**
+	 * Debounced resize handler with callback registry
+	 * If callback is provided, registers it for resize events
+	 * If no callback, triggers resize event manually
+	 *
+	 * @param {Function|undefined} callback - Function to call on resize
+	 */
+	function debounceResize(callback) {
+		if (typeof callback === 'function') {
+			// Register callback if not already registered
+			if (!resizeHandlers.includes(callback)) {
+				resizeHandlers.push(callback);
+			}
+		} else {
+			// Trigger resize event manually
+			if (typeof Event === 'function') {
+				window.dispatchEvent(new Event('resize'));
+			} else if (document.createEvent) {
+				const evt = document.createEvent('UIEvents');
+				evt.initUIEvent('resize', true, false, window, 0);
+				window.dispatchEvent(evt);
+			}
+		}
+	}
 
 	// ===================================
 	// MODULES
 	// ===================================
 
-	// Initialize modules with shared utilities
+	// Initialize modules
 	const aosModule = new AOSModule({ isMobileDevice, debounceResize });
 	const jarallaxModule = new JarallaxModule({ isMobileDevice, debounceResize });
 	const elementParallaxModule = new ElementParallaxModule({ isMobileDevice, debounceResize });
 	const containerExtensionsModule = new ContainerExtensionsModule({ debounceResize });
 
 	// ===================================
-	// SITE LOADED
+	// INITIALIZATION
 	// ===================================
 
 	/**
@@ -56,7 +105,6 @@ import ContainerExtensionsModule from './modules/container-extensions.js';
 		containerExtensionsModule.init();
 		containerExtensionsModule.setupRefreshHandlers();
 
-		// Dispatch custom event
 		document.dispatchEvent(new CustomEvent('vlt.site-loaded'));
 
 		console.info('VLT Helper initialized');

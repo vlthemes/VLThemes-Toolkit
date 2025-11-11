@@ -201,11 +201,28 @@ class Helper {
 		return isset( $this->modules[ $module ] ) ? $this->modules[ $module ] : null;
 	}
 
+	/**
+	 * Minify CSS code
+	 *
+	 * Removes unnecessary whitespace, comments, and formatting from CSS
+	 * to reduce file size and improve loading performance.
+	 *
+	 * @param string $css CSS code to minify.
+	 * @return string Minified CSS code.
+	 */
 	public static function minify_css( $css ) {
+		// Reduce multiple spaces to single space
 		$css = preg_replace( '/\s+/', ' ', $css );
+
+		// Remove comments (except /*! important comments)
 		$css = preg_replace( '/\/\*[^\!](.*?)\*\//s', '', $css );
+
+		// Remove spaces around CSS syntax characters
 		$css = preg_replace( '/\s?([\{\};,])\s?/', '$1', $css );
+
+		// Clean up trailing semicolons and spaces after closing braces
 		$css = str_replace( [';}', '} '], '}', $css );
+
 		return trim( $css );
 	}
 

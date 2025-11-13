@@ -9,6 +9,7 @@ use VLT\Helper\Modules\Integrations\Elementor\Extensions\AosExtension;
 use VLT\Helper\Modules\Integrations\Elementor\Extensions\ElementParallaxExtension;
 use VLT\Helper\Modules\Integrations\Elementor\Extensions\CustomAttributesExtension;
 use VLT\Helper\Modules\Integrations\Elementor\Extensions\CustomCssExtension;
+use VLT\Helper\Modules\Integrations\Elementor\Extensions\HeaderFooterExtensions;
 use VLT\Helper\Modules\Integrations\Elementor\IconSets;
 use VLT\Helper\Modules\Integrations\Elementor\Helpers;
 
@@ -24,6 +25,7 @@ require_once __DIR__ . '/Elementor/Extensions/AosExtension.php';
 require_once __DIR__ . '/Elementor/Extensions/ElementParallaxExtension.php';
 require_once __DIR__ . '/Elementor/Extensions/CustomAttributesExtension.php';
 require_once __DIR__ . '/Elementor/Extensions/CustomCssExtension.php';
+require_once __DIR__ . '/Elementor/Extensions/HeaderFooterExtensions.php';
 require_once __DIR__ . '/Elementor/IconSets.php';
 require_once __DIR__ . '/Elementor/Helpers.php';
 
@@ -107,6 +109,7 @@ class Elementor extends BaseModule
 			'layout'           => new LayoutExtensions(),
 			'custom_attrs'     => new CustomAttributesExtension(),
 			'custom_css'       => new CustomCssExtension(),
+			'header_footer'    => new HeaderFooterExtensions(),
 		];
 	}
 

@@ -217,6 +217,16 @@ class Dashboard
 			array($this, 'render_status_page')
 		);
 
+		// Header / Footer
+		add_submenu_page(
+			$this->dashboard_slug,
+			esc_html__('Header / Footer Builder', 'vlt-helper'),
+			esc_html__('Header / Footer', 'vlt-helper'),
+			'manage_options',
+			'edit.php?post_type=vlt_hfb',
+			'',
+		);
+
 		// Help Center
 		add_submenu_page(
 			$this->dashboard_slug,

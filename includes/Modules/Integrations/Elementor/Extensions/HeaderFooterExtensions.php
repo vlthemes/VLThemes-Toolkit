@@ -35,27 +35,10 @@ class HeaderFooterExtensions extends BaseExtension
 	}
 
 	/**
-	 * Check if extension should load
-	 *
-	 * Only loads in development mode (WP_DEBUG enabled)
-	 *
-	 * @return bool
-	 */
-	protected function can_register()
-	{
-		return true;
-		// return defined('WP_DEBUG') && WP_DEBUG === true;
-	}
-
-	/**
 	 * Register extension hooks
 	 */
 	protected function register_hooks()
 	{
-		// Only register if WP_DEBUG is enabled
-		if (! $this->can_register()) {
-			return;
-		}
 		// Register custom post type
 		add_action('init', [$this, 'register_post_type']);
 
@@ -611,6 +594,7 @@ class HeaderFooterExtensions extends BaseExtension
 			if ($key === 'title') {
 				$new_columns['template_type']  = esc_html__('Type', 'vlt-helper');
 				$new_columns['display_rules']  = esc_html__('Display Rules', 'vlt-helper');
+				$new_columns['exclude_rules']  = esc_html__('Exclude Rules', 'vlt-helper');
 			}
 		}
 
@@ -639,7 +623,10 @@ class HeaderFooterExtensions extends BaseExtension
 				break;
 
 			case 'display_rules':
-				$rules = get_field('display_rules', $post_id);
+			case 'exclude_rules':
+				$field_name = $column === 'display_rules' ? 'display_rules' : 'exclude_rules';
+				$rules = get_field($field_name, $post_id);
+
 				if ($rules && is_array($rules)) {
 					$rule_labels = [];
 					$choices = $this->prepare_rule_choices();

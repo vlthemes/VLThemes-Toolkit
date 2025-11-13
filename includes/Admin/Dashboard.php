@@ -217,15 +217,17 @@ class Dashboard
 			array($this, 'render_status_page')
 		);
 
-		// Header / Footer
-		add_submenu_page(
-			$this->dashboard_slug,
-			esc_html__('Header / Footer Builder', 'vlt-helper'),
-			esc_html__('Header / Footer', 'vlt-helper'),
-			'manage_options',
-			'edit.php?post_type=vlt_hfb',
-			'',
-		);
+		// Header / Footer - only if Elementor and ACF are active
+		if (defined('ELEMENTOR_VERSION') && function_exists('acf_add_local_field_group')) {
+			add_submenu_page(
+				$this->dashboard_slug,
+				esc_html__('Header / Footer Builder', 'vlt-helper'),
+				esc_html__('Header / Footer', 'vlt-helper'),
+				'manage_options',
+				'edit.php?post_type=vlt_hfb',
+				'',
+			);
+		}
 
 		// Help Center
 		add_submenu_page(

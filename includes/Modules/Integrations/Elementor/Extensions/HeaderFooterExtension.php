@@ -57,9 +57,20 @@ class HeaderFooterExtension extends BaseExtension
 		// Admin columns
 		add_filter('manage_vlt_hfb_posts_columns', [$this, 'add_admin_columns']);
 		add_action('manage_vlt_hfb_posts_custom_column', [$this, 'render_admin_columns'], 10, 2);
+		add_filter('manage_edit-vlt_hfb_sortable_columns', [$this, 'make_columns_sortable']);
+
+		// Add post states
+		add_filter('display_post_states', [$this, 'add_template_type_state'], 10, 2);
+
+		// Admin filters
+		add_action('restrict_manage_posts', [$this, 'add_template_type_filter']);
+		add_filter('parse_query', [$this, 'filter_by_template_type']);
 
 		// Admin scripts
 		add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
+
+		// Register shortcode
+		add_shortcode('hfb_template', [$this, 'render_shortcode']);
 
 		add_filter('single_template', [$this, 'load_canvas_template']);
 		add_action('template_redirect', [$this, 'block_template_frontend']);
@@ -147,6 +158,49 @@ class HeaderFooterExtension extends BaseExtension
 	}
 
 	/**
+	 * Render shortcode [hfb_template]
+	 *
+	 * Usage: [hfb_template id="123"]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
+	 */
+	public function render_shortcode($atts)
+	{
+		$atts = shortcode_atts([
+			'id' => '',
+		], $atts, 'hfb_template');
+
+		if (empty($atts['id'])) {
+			return '';
+		}
+
+		if (!class_exists('\Elementor\Plugin')) {
+			return '';
+		}
+
+		$template_id = intval($atts['id']);
+
+		// Verify it's a vlt_hfb post type
+		if (get_post_type($template_id) !== 'vlt_hfb') {
+			return '';
+		}
+
+		// Get Elementor content
+		$content = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($template_id);
+
+		if (empty($content)) {
+			return '';
+		}
+
+		return sprintf(
+			'<div class="vlt-hfb-template" data-template-id="%d">%s</div>',
+			$template_id,
+			$content
+		);
+	}
+
+	/**
 	 * Enqueue admin scripts and localize data
 	 */
 	public function enqueue_admin_scripts()
@@ -200,9 +254,11 @@ class HeaderFooterExtension extends BaseExtension
 					'type'          => 'select',
 					'required'      => 1,
 					'choices'       => [
-						'header' => esc_html__('Header', 'vlt-helper'),
-						'footer' => esc_html__('Footer', 'vlt-helper'),
-						'404'    => esc_html__('404 Page', 'vlt-helper'),
+						'header'  => esc_html__('Header', 'vlt-helper'),
+						'footer'  => esc_html__('Footer', 'vlt-helper'),
+						'404'     => esc_html__('404 Page', 'vlt-helper'),
+						'submenu' => esc_html__('Submenu', 'vlt-helper'),
+						'custom'  => esc_html__('Custom', 'vlt-helper'),
 					],
 					'default_value' => 'header',
 				],
@@ -378,7 +434,7 @@ class HeaderFooterExtension extends BaseExtension
 			],
 			'Post Types' => $this->get_post_types_rules(),
 			'Specific Target' => [
-				'specifics' => 'Specific Pages / Posts / Taxonomies, etc.',
+				'specifics' => 'Specific Pages',
 			],
 		];
 	}
@@ -639,10 +695,9 @@ class HeaderFooterExtension extends BaseExtension
 			$new_columns[$key] = $value;
 
 			if ($key === 'title') {
-				$new_columns['template_type']  = esc_html__('Type', 'vlt-helper');
-				$new_columns['display_rules']  = esc_html__('Display Rules', 'vlt-helper');
-				$new_columns['exclude_rules']  = esc_html__('Exclude Rules', 'vlt-helper');
-				$new_columns['note']           = esc_html__('Note', 'vlt-helper');
+				$new_columns['display_rules'] = esc_html__('Display Rules', 'vlt-helper');
+				$new_columns['note']          = esc_html__('Note', 'vlt-helper');
+				$new_columns['shortcode']     = esc_html__('Shortcode', 'vlt-helper');
 			}
 		}
 
@@ -658,34 +713,23 @@ class HeaderFooterExtension extends BaseExtension
 	public function render_admin_columns($column, $post_id)
 	{
 		switch ($column) {
-			case 'template_type':
-				$type = get_field('template_type', $post_id);
-				if ($type) {
-					$types = [
-						'header' => esc_html__('Header', 'vlt-helper'),
-						'footer' => esc_html__('Footer', 'vlt-helper'),
-						'404'    => esc_html__('404 Page', 'vlt-helper'),
-					];
-					echo '<strong>' . esc_html($types[$type] ?? $type) . '</strong>';
-				}
-				break;
-
 			case 'display_rules':
-			case 'exclude_rules':
-				$field_name = $column === 'display_rules' ? 'display_rules' : 'exclude_rules';
-				$rules = get_field($field_name, $post_id);
+				// Get both display and exclude rules
+				$display_rules = get_field('display_rules', $post_id);
+				$exclude_rules = get_field('exclude_rules', $post_id);
+				$choices = $this->prepare_rule_choices();
 
-				if ($rules && is_array($rules)) {
+				$output = [];
+
+				// Process Display Rules
+				if ($display_rules && is_array($display_rules)) {
 					$rule_labels = [];
-					$choices = $this->prepare_rule_choices();
-
-					foreach ($rules as $rule) {
+					foreach ($display_rules as $rule) {
 						$rule_value = $rule['rule'] ?? '';
 						if (empty($rule_value)) {
 							continue;
 						}
 
-						// Find the label for this rule
 						$label = '';
 						foreach ($choices as $options) {
 							if (isset($options[$rule_value])) {
@@ -694,7 +738,6 @@ class HeaderFooterExtension extends BaseExtension
 							}
 						}
 
-						// If it's a specific target, add the post/term name
 						if ($rule_value === 'specifics' && !empty($rule['specifics'])) {
 							$specific_id = $rule['specifics'];
 							$queried_object = get_post($specific_id);
@@ -713,14 +756,51 @@ class HeaderFooterExtension extends BaseExtension
 					}
 
 					if (!empty($rule_labels)) {
-						echo '<ul style="margin: 0; padding: 0;">';
-						foreach ($rule_labels as $label) {
-							echo '<li>' . esc_html($label) . '</li>';
-						}
-						echo '</ul>';
-					} else {
-						echo '—';
+						$output[] = '<strong>' . esc_html__('Display:', 'vlt-helper') . '</strong> ' . esc_html(implode(', ', $rule_labels));
 					}
+				}
+
+				// Process Exclude Rules
+				if ($exclude_rules && is_array($exclude_rules)) {
+					$rule_labels = [];
+					foreach ($exclude_rules as $rule) {
+						$rule_value = $rule['rule'] ?? '';
+						if (empty($rule_value)) {
+							continue;
+						}
+
+						$label = '';
+						foreach ($choices as $options) {
+							if (isset($options[$rule_value])) {
+								$label = $options[$rule_value];
+								break;
+							}
+						}
+
+						if ($rule_value === 'specifics' && !empty($rule['specifics'])) {
+							$specific_id = $rule['specifics'];
+							$queried_object = get_post($specific_id);
+							if (!$queried_object) {
+								$queried_object = get_term($specific_id);
+							}
+							if ($queried_object) {
+								$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
+								$label .= ': ' . $name;
+							}
+						}
+
+						if ($label) {
+							$rule_labels[] = $label;
+						}
+					}
+
+					if (!empty($rule_labels)) {
+						$output[] = '<strong>' . esc_html__('Exclusion:', 'vlt-helper') . '</strong> ' . esc_html(implode(', ', $rule_labels));
+					}
+				}
+
+				if (!empty($output)) {
+					echo implode('<br>', $output);
 				} else {
 					echo '—';
 				}
@@ -728,15 +808,119 @@ class HeaderFooterExtension extends BaseExtension
 
 			case 'note':
 				$note = get_field('note', $post_id);
-				if (!empty($note)) {
-					echo '<div style="white-space: pre-wrap;">';
+				if ($note) {
 					echo esc_html($note);
-					echo '</div>';
 				} else {
 					echo '—';
 				}
 				break;
+
+			case 'shortcode':
+				$shortcode = '[hfb_template id="' . $post_id . '"]';
+				echo '<input type="text" readonly value="' . esc_attr($shortcode) . '" style="width: 100%; font-family: monospace; font-size: 12px; padding: 4px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 2px;" onclick="this.select(); document.execCommand(\'copy\'); this.style.background=\'#d4edda\'; setTimeout(() => this.style.background=\'#f0f0f1\', 1000);" title="' . esc_attr__('Click to copy', 'vlt-helper') . '" />';
+				break;
 		}
+	}
+
+	/**
+	 * Make columns sortable
+	 *
+	 * @param array $columns Sortable columns.
+	 * @return array
+	 */
+	public function make_columns_sortable($columns)
+	{
+		return $columns;
+	}
+
+	/**
+	 * Add template type to post states
+	 *
+	 * @param array   $post_states Post states.
+	 * @param WP_Post $post        Post object.
+	 * @return array
+	 */
+	public function add_template_type_state($post_states, $post)
+	{
+		if ($post->post_type !== 'vlt_hfb') {
+			return $post_states;
+		}
+
+		$type = get_field('template_type', $post->ID);
+		if ($type) {
+			$types = [
+				'header'  => esc_html__('Header', 'vlt-helper'),
+				'footer'  => esc_html__('Footer', 'vlt-helper'),
+				'404'     => esc_html__('404 Page', 'vlt-helper'),
+				'submenu' => esc_html__('Submenu', 'vlt-helper'),
+				'custom'  => esc_html__('Custom', 'vlt-helper'),
+			];
+			$post_states['vlt_hfb_type'] = $types[$type] ?? $type;
+		}
+
+		return $post_states;
+	}
+
+	/**
+	 * Add template type filter dropdown
+	 */
+	public function add_template_type_filter()
+	{
+		global $typenow;
+
+		if ($typenow !== 'vlt_hfb') {
+			return;
+		}
+
+		$current_type = isset($_GET['template_type_filter']) ? sanitize_text_field($_GET['template_type_filter']) : '';
+
+		$types = [
+			''        => esc_html__('All Types', 'vlt-helper'),
+			'header'  => esc_html__('Header', 'vlt-helper'),
+			'footer'  => esc_html__('Footer', 'vlt-helper'),
+			'404'     => esc_html__('404 Page', 'vlt-helper'),
+			'submenu' => esc_html__('Submenu', 'vlt-helper'),
+			'custom'  => esc_html__('Custom', 'vlt-helper'),
+		];
+
+		echo '<select name="template_type_filter" id="template_type_filter">';
+		foreach ($types as $value => $label) {
+			printf(
+				'<option value="%s"%s>%s</option>',
+				esc_attr($value),
+				selected($current_type, $value, false),
+				esc_html($label)
+			);
+		}
+		echo '</select>';
+	}
+
+	/**
+	 * Filter posts by template type
+	 *
+	 * @param WP_Query $query The WP_Query instance.
+	 */
+	public function filter_by_template_type($query)
+	{
+		global $pagenow, $typenow;
+
+		if ($pagenow !== 'edit.php' || $typenow !== 'vlt_hfb' || !is_admin()) {
+			return;
+		}
+
+		if (!isset($_GET['template_type_filter']) || empty($_GET['template_type_filter'])) {
+			return;
+		}
+
+		$template_type = sanitize_text_field($_GET['template_type_filter']);
+
+		$query->set('meta_query', [
+			[
+				'key'     => 'template_type',
+				'value'   => $template_type,
+				'compare' => '=',
+			],
+		]);
 	}
 
 	/**

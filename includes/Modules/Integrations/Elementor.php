@@ -326,7 +326,7 @@ class Elementor extends BaseModule
 	public function register_locations($elementor_theme_manager)
 	{
 		// Default locations
-		$locations = ['header', 'footer', '404'];
+		$locations = [];
 
 		/**
 		 * Filter Elementor theme locations

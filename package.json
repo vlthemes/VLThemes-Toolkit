@@ -1,9 +1,11 @@
 {
   "devDependencies": {
+    "adm-zip": "^0.5.16",
     "vite": "^6.4.1"
   },
   "name": "vlthemes_helper_plugin",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "dependencies": {
     "aos": "^2.3.4",

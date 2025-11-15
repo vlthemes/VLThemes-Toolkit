@@ -73,7 +73,7 @@ class TemplatePartsExtension extends BaseExtension
 		add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
 
 		// Register shortcode
-		add_shortcode('template_part', [$this, 'render_shortcode']);
+		add_shortcode('vlt_template_part', [$this, 'render_shortcode']);
 
 		add_filter('single_template', [$this, 'load_canvas_template']);
 		add_action('template_redirect', [$this, 'block_template_frontend']);
@@ -172,7 +172,7 @@ class TemplatePartsExtension extends BaseExtension
 	{
 		$atts = shortcode_atts([
 			'id' => '',
-		], $atts, 'template_part');
+		], $atts, 'vlt_template_part');
 
 		if (empty($atts['id'])) {
 			return '';
@@ -484,10 +484,10 @@ class TemplatePartsExtension extends BaseExtension
 	 */
 	public function render_shortcode_meta_box($post)
 	{
-		$shortcode = '[template_part id="' . $post->ID . '"]';
-		?>
+		$shortcode = '[vlt_template_part id="' . $post->ID . '"]';
+?>
 		<input type="text" readonly value="<?php echo esc_attr($shortcode); ?>" style="width: 100%; font-family: monospace; font-size: 12px; padding: 6px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 3px; cursor: pointer;" onclick="this.select(); document.execCommand('copy'); this.style.background='#d4edda'; setTimeout(() => this.style.background='#f0f0f1', 1000);" title="<?php esc_attr_e('Click to copy', 'vlt-helper'); ?>" />
-		<?php
+<?php
 	}
 
 	/**
@@ -867,7 +867,7 @@ class TemplatePartsExtension extends BaseExtension
 				break;
 
 			case 'shortcode':
-				$shortcode = '[template_part id="' . $post_id . '"]';
+				$shortcode = '[vlt_template_part id="' . $post_id . '"]';
 				echo '<input type="text" readonly value="' . esc_attr($shortcode) . '" style="width: 100%; font-family: monospace; font-size: 12px; padding: 4px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 2px;" onclick="this.select(); document.execCommand(\'copy\'); this.style.background=\'#d4edda\'; setTimeout(() => this.style.background=\'#f0f0f1\', 1000);" title="' . esc_attr__('Click to copy', 'vlt-helper') . '" />';
 				break;
 		}

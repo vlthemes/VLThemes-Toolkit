@@ -68,6 +68,15 @@
 .vlt-theme-dashboard .mt-md {
   margin-top: 1.5rem !important;
 }
+.vlt-theme-dashboard .mt-lg {
+  margin-top: 2rem !important;
+}
+.vlt-theme-dashboard {
+  /* Padding utilities */
+}
+.vlt-theme-dashboard .pb-sm {
+  padding-bottom: 1rem !important;
+}
 .vlt-theme-dashboard .notice {
   margin: 0;
 }

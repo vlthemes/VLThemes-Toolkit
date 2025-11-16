@@ -99,7 +99,7 @@ export default class ContainerExtensionsModule {
 			const currentDevice = this.getCurrentDevice();
 
 			// Find fake container for offset calculation
-			const fakeContainer = document.querySelector('.container');
+			let fakeContainer = document.querySelector('.container');
 			if (!fakeContainer) {
 				fakeContainer = document.createElement('div');
 				fakeContainer.className = 'container';

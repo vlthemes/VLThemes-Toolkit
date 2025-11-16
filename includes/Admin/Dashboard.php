@@ -82,6 +82,55 @@ class Dashboard
 	public $theme_author;
 
 	/**
+	 * Documentation URL
+	 *
+	 * @var string
+	 */
+	public $docs_url;
+
+	/**
+	 * Knowledge Base URL
+	 *
+	 * @var string
+	 */
+	public $knowledge_base_url;
+
+	/**
+	 * Changelog URL
+	 *
+	 * @var string
+	 */
+	public $changelog_url;
+
+	/**
+	 * Support URL
+	 *
+	 * @var string
+	 */
+	public $support_url;
+
+	/**
+	 * Support Policy URL
+	 *
+	 * @var string
+	 */
+	public $support_policy_url;
+
+	/**
+	 * Elementor Partner URL
+	 *
+	 * @var string
+	 */
+	public $elementor_partner_url;
+
+	/**
+	 * Fornex Partner URL
+	 *
+	 * @var string
+	 */
+	public $fornex_partner_url;
+
+	/**
 	 * Get instance
 	 *
 	 * @return Dashboard
@@ -108,6 +157,15 @@ class Dashboard
 		$this->theme_version = $this->theme->get('Version');
 		$this->theme_slug    = $this->theme->get_template();
 		$this->theme_author  = $this->theme->get('Author');
+
+		// Set helper links
+		$this->docs_url = 'https://docs.vlthemes.me/docs/';
+		$this->knowledge_base_url = 'https://docs.vlthemes.me/knowbase/';
+		$this->changelog_url = 'https://docs.vlthemes.me/changelog/';
+		$this->support_url = 'https://docs.vlthemes.me/support/';
+		$this->support_policy_url = 'https://themeforest.net/page/item_support_policy';
+		$this->elementor_partner_url = 'https://be.elementor.com/visit/?bta=65732&nci=5352';
+		$this->fornex_partner_url = 'https://fornex.com/c/ffg4ni/';
 
 		$this->init_hooks();
 	}

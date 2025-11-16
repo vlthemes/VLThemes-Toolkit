@@ -1,7 +1,8 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { copyFileSync } from 'fs';
+import { copyFileSync, writeFileSync } from 'fs';
+import * as sass from 'sass';
 import AdmZip from 'adm-zip';
 
 export default defineConfig({
@@ -15,7 +16,34 @@ export default defineConfig({
 		outDir: './assets/extensions/elementor',
 		emptyOutDir: false,
 	},
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+			},
+		},
+	},
 	plugins: [
+		{
+			name: 'compile-scss',
+			configureServer(server) {
+				// Watch SCSS files in dev mode
+				server.watcher.add(resolve(__dirname, 'includes/Admin/css/**/*.scss'));
+			},
+			buildStart() {
+				// Compile SCSS on build
+				const result = sass.compile(resolve(__dirname, 'includes/Admin/css/dashboard.scss'), {
+					style: 'expanded'
+				});
+
+				writeFileSync(
+					resolve(__dirname, 'includes/Admin/css/dashboard.css'),
+					result.css
+				);
+
+				console.log('✓ SCSS compiled: dashboard.scss → dashboard.css');
+			},
+		},
 		{
 			name: 'copy-libs',
 			writeBundle() {

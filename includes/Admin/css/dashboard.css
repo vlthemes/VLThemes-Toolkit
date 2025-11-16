@@ -153,8 +153,8 @@
   overflow: hidden;
   border: 1px solid var(--color-light);
   border-radius: var(--radius-md);
-  transition: transform 0.3s ease;
   will-change: transform;
+  transition: transform 0.3s ease;
 }
 @media (max-width: 782px) {
   .vlt-widget-welcome__image {
@@ -231,6 +231,9 @@
   width: calc(33.333% - 20px);
   margin: 10px;
 }
+.vlt-masonry-item > * + * {
+  margin-top: 20px;
+}
 
 .vlt-masonry-sizer {
   width: calc(33.333% - 20px);
@@ -249,5 +252,3 @@
     width: calc(100% - 20px);
   }
 }
-
-/*# sourceMappingURL=dashboard.css.map */

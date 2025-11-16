@@ -180,11 +180,10 @@ class Elementor extends BaseModule
 	 */
 	private function add_badge_styles()
 	{
-		$theme = wp_get_theme();
-		$theme_name = $theme->get('Name');
+		$dashboard = \VLT\Helper\Admin\Dashboard::instance();
 
 		$badge_config = apply_filters('vlt_helper_elementor_badge', [
-			'text' => $theme_name,
+			'text' => $dashboard->theme_name,
 		]);
 
 		if (empty($badge_config['text'])) {

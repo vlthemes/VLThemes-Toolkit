@@ -47,6 +47,41 @@ class Dashboard
 	private $dashboard_url;
 
 	/**
+	 * Theme object
+	 *
+	 * @var \WP_Theme
+	 */
+	public $theme;
+
+	/**
+	 * Theme name
+	 *
+	 * @var string
+	 */
+	public $theme_name;
+
+	/**
+	 * Theme version
+	 *
+	 * @var string
+	 */
+	public $theme_version;
+
+	/**
+	 * Theme slug
+	 *
+	 * @var string
+	 */
+	public $theme_slug;
+
+	/**
+	 * Theme author
+	 *
+	 * @var string
+	 */
+	public $theme_author;
+
+	/**
 	 * Get instance
 	 *
 	 * @return Dashboard
@@ -66,6 +101,13 @@ class Dashboard
 	{
 		$this->dashboard_path = VLT_HELPER_PATH . 'includes/Admin/';
 		$this->dashboard_url  = VLT_HELPER_URL . 'includes/Admin/';
+
+		// Set theme properties
+		$this->theme         = wp_get_theme();
+		$this->theme_name    = $this->theme->get('Name');
+		$this->theme_version = $this->theme->get('Version');
+		$this->theme_slug    = $this->theme->get_template();
+		$this->theme_author  = $this->theme->get('Author');
 
 		$this->init_hooks();
 	}
@@ -95,13 +137,10 @@ class Dashboard
 			return '';
 		}
 
-		$theme = wp_get_theme();
-		$theme_name = $theme->get('Name');
-
 		return sprintf(
 			/* translators: 1: theme name, 2: opening link tag, 3: closing link tag */
 			esc_html__('Enjoyed %1$s? Please leave us a %2$s★★★★★%3$s rating. We really appreciate your support!', 'vlt-helper'),
-			'<strong>' . esc_html($theme_name) . '</strong>',
+			'<strong>' . esc_html($this->theme_name) . '</strong>',
 			'<a href="https://themeforest.net/downloads" target="_blank" rel="noopener">',
 			'</a>'
 		);
@@ -121,10 +160,7 @@ class Dashboard
 			return '';
 		}
 
-		$theme = wp_get_theme();
-		$theme_version = $theme->get('Version');
-
-		return sprintf(esc_html__('Version %s', 'vlt-helper'), esc_html($theme_version));
+		return sprintf(esc_html__('Version %s', 'vlt-helper'), esc_html($this->theme_version));
 	}
 
 	/**
@@ -143,13 +179,10 @@ class Dashboard
 	 */
 	public function add_admin_menu()
 	{
-		$theme = wp_get_theme();
-		$theme_name = $theme->get('Name');
-
 		// Main menu page
 		add_menu_page(
-			$theme_name,
-			$theme_name,
+			$this->theme_name,
+			$this->theme_name,
 			'manage_options',
 			$this->dashboard_slug,
 			array($this, 'render_welcome_page'),
@@ -298,6 +331,10 @@ class Dashboard
 					<div class="nav-tab-wrapper">
 
 						<?php foreach ($menu_items as $item) :
+							// Skip Template Parts from navigation tabs
+							if (strpos($item[2], 'edit.php?post_type=vlt_tp') !== false) {
+								continue;
+							}
 							$class = isset($_GET['page']) && $_GET['page'] === $item[2] ? ' nav-tab-active' : '';
 						?>
 							<a href="<?php echo esc_url(admin_url('admin.php?page=' . $item[2])); ?>" class="nav-tab<?php echo esc_attr($class); ?>">
@@ -329,11 +366,8 @@ class Dashboard
 	{
 		$template_file = $this->dashboard_path . 'templates/' . $template . '.php';
 
-		$theme         = wp_get_theme();
-		$theme_name    = $theme->get('Name');
-
 		echo '<div class="wrap">';
-		echo '<h2>' . sprintf(esc_html__('%s Dashboard', 'vlt-helper'), esc_html($theme_name)) . '</h2>';
+		echo '<h2>' . sprintf(esc_html__('%s Dashboard', 'vlt-helper'), esc_html($this->theme_name)) . '</h2>';
 
 		$this->render_header();
 		echo '<div class="vlt-theme-dashboard__content vlt-theme-dashboard--' . esc_attr($template) . '">';

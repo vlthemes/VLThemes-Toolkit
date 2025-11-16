@@ -10,21 +10,17 @@
 if (! defined('ABSPATH')) {
 	exit;
 }
-
-$theme         = wp_get_theme();
-$theme_name    = $theme->get('Name');
-$theme_version = $theme->get('Version');
 ?>
 
 <div class="vlt-widget-welcome">
 	<div class="vlt-widget-welcome__image">
-		<img src="<?php echo esc_url(get_template_directory_uri() . '/screenshot.jpg'); ?>" alt="<?php echo esc_attr($theme_name); ?>">
+		<img src="<?php echo esc_url(get_template_directory_uri() . '/screenshot.jpg'); ?>" alt="<?php echo esc_attr($this->theme_name); ?>">
 	</div>
 
 	<div class="vlt-widget-welcome__content">
-		<span class="vlt-badge"><?php printf(esc_html__('v%s', 'vlt-helper'), $theme_version); ?></span>
+		<span class="vlt-badge"><?php printf(esc_html__('v%s', 'vlt-helper'), $this->theme_version); ?></span>
 
-		<h1><?php printf(esc_html__('Getting started with %s', 'vlt-helper'), $theme_name); ?></h1>
+		<h1><?php printf(esc_html__('Getting started with %s', 'vlt-helper'), $this->theme_name); ?></h1>
 
 		<div class="notice notice-info inline mt-sm">
 			<p><?php esc_html_e('Your theme is successfully installed and ready to go!', 'vlt-helper'); ?></p>

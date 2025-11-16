@@ -174,6 +174,7 @@ class Helper
 			'Integrations\\VisualPortfolio',
 			'Integrations\\WooCommerce',
 			'Integrations\\ACF',
+			'Integrations\\ACFProUpdater',
 		);
 
 		foreach ($modules as $module) {

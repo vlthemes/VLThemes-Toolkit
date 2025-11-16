@@ -71,7 +71,7 @@ $theme_ok  = is_child_theme();
 					<span class="vlt-badge true"><?php esc_html_e('No Problems', 'vlt-helper'); ?></span>
 				<?php else : ?>
 					<mark class="false"><?php esc_html_e('Server Settings', 'vlt-helper'); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e('Some Problems', 'vlt-helper'); ?></span>
+					<span class="vlt-badge false"><?php esc_html_e('Can be improved', 'vlt-helper'); ?></span>
 				<?php endif; ?>
 			</div>
 
@@ -126,7 +126,7 @@ $theme_ok  = is_child_theme();
 					<span class="vlt-badge true"><?php esc_html_e('No Problems', 'vlt-helper'); ?></span>
 				<?php else : ?>
 					<mark class="false"><?php esc_html_e('WordPress Settings', 'vlt-helper'); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e('Some Problems', 'vlt-helper'); ?></span>
+					<span class="vlt-badge false"><?php esc_html_e('Can be improved', 'vlt-helper'); ?></span>
 				<?php endif; ?>
 			</div>
 
@@ -169,7 +169,7 @@ $theme_ok  = is_child_theme();
 					<span class="vlt-badge true"><?php esc_html_e('No Problems', 'vlt-helper'); ?></span>
 				<?php else : ?>
 					<mark class="false"><?php esc_html_e('Theme Config', 'vlt-helper'); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e('Some Problems', 'vlt-helper'); ?></span>
+					<span class="vlt-badge false"><?php esc_html_e('Can be improved', 'vlt-helper'); ?></span>
 				<?php endif; ?>
 			</div>
 
@@ -178,7 +178,7 @@ $theme_ok  = is_child_theme();
 					<tbody>
 						<tr>
 							<td><?php esc_html_e('Theme Name:', 'vlt-helper'); ?></td>
-							<td><?php echo esc_html(wp_get_theme()->get('Name')); ?></td>
+							<td><?php echo esc_html($this->theme_name); ?></td>
 						</tr>
 						<tr>
 							<td><?php esc_html_e('Child Theme:', 'vlt-helper'); ?></td>
@@ -186,11 +186,11 @@ $theme_ok  = is_child_theme();
 						</tr>
 						<tr>
 							<td><?php esc_html_e('Version:', 'vlt-helper'); ?></td>
-							<td><?php echo esc_html(wp_get_theme()->get('Version')); ?></td>
+							<td><?php echo esc_html($this->theme_version); ?></td>
 						</tr>
 						<tr>
 							<td><?php esc_html_e('Author:', 'vlt-helper'); ?></td>
-							<td><?php echo wp_kses_post(wp_get_theme()->get('Author')); ?></td>
+							<td><?php echo wp_kses_post($this->theme_author); ?></td>
 						</tr>
 					</tbody>
 				</table>

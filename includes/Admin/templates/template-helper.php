@@ -11,10 +11,6 @@ if (! defined('ABSPATH')) {
 	exit;
 }
 
-$theme      = wp_get_theme();
-$theme_name = $theme->get('Name');
-$theme_slug = $theme->get_template();
-
 ?>
 
 <div class="vlt-masonry-grid">
@@ -60,7 +56,7 @@ $theme_slug = $theme->get_template();
 						printf(
 							/* translators: %s: theme name */
 							esc_html__('If you got %s through a subscription (for example, from Envato Elements), please remember that item support isn\'t included.', 'vlt-helper'),
-							'<strong>' . esc_html($theme_name) . '</strong>'
+							'<strong>' . esc_html($this->theme_name) . '</strong>'
 						);
 						?>
 					</p>
@@ -84,7 +80,7 @@ $theme_slug = $theme->get_template();
 				<p><?php esc_html_e('Got a question? Check our Documentation or Knowledge Base first — the answer might already be there!', 'vlt-helper'); ?></p>
 
 				<div class="vlt-btn-group mt-xs">
-					<a target="_blank" rel="noopener" href="<?php echo esc_url('https://docs.vlthemes.me/docs/' . $theme_slug); ?>" class="button button-primary mt-sm">
+					<a target="_blank" rel="noopener" href="<?php echo esc_url('https://docs.vlthemes.me/docs/' . $this->theme_slug); ?>" class="button button-primary mt-sm">
 						<?php esc_html_e('Visit Documentation', 'vlt-helper'); ?>
 					</a>
 					<a target="_blank" rel="noopener" href="https://docs.vlthemes.me/knowbase/" class="button button-secondary mt-sm">
@@ -109,7 +105,7 @@ $theme_slug = $theme->get_template();
 					<li><?php esc_html_e('Fresh updates to make your experience even better.', 'vlt-helper'); ?></li>
 				</ul>
 
-				<a target="_blank" rel="noopener" href="<?php echo esc_url('https://docs.vlthemes.me/changelog/' . $theme_slug); ?>" class="button button-primary mt-sm">
+				<a target="_blank" rel="noopener" href="<?php echo esc_url('https://docs.vlthemes.me/changelog/' . $this->theme_slug); ?>" class="button button-primary mt-sm">
 					<?php esc_html_e('Visit Changelog', 'vlt-helper'); ?>
 				</a>
 			</div>

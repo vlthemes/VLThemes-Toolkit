@@ -13,21 +13,6 @@ if (! defined('ABSPATH')) {
 use VLT\Helper\ThemeActivation\ThemeActivation;
 
 /**
- * Show activation notice
- */
-if (! function_exists('vlthemes_theme_activation_notice')) {
-	function vlthemes_theme_activation_notice()
-	{
-?>
-		<div class="notice notice-warning">
-			<p><?php esc_html_e('Want automatic updates and premium support? Simply activate your theme license.', 'vlthemes-toolkit'); ?></p>
-			<p><?php echo sprintf(__('<a href="%s" class="button button-primary">Activate Theme</a>', 'vlthemes-toolkit'), admin_url('admin.php?page=vlt-dashboard-activate-theme')); ?></p>
-		</div>
-		<?php
-	}
-}
-
-/**
  * Check if theme is activated
  *
  * @return bool
@@ -184,7 +169,6 @@ if (! class_exists('VLThemesThemeActivation')) {
 				update_option($this->slug . '_is_activated', 0);
 				add_action('admin_post_' . $this->slug . '_activate_license', [$this, 'action_activate_license']);
 				add_action('vlt_dashboard_print_form', [$this, 'license_form']);
-				add_action('admin_notices', 'vlthemes_theme_activation_notice');
 			}
 		}
 
@@ -222,7 +206,7 @@ if (! class_exists('VLThemesThemeActivation')) {
 		 */
 		public function activated_form()
 		{
-		?>
+?>
 			<div class="vlt-widget">
 				<div class="vlt-widget__title">
 					<mark class="true"><?php esc_html_e('Theme License', 'vlthemes-toolkit'); ?></mark>

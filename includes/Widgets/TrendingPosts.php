@@ -47,22 +47,16 @@ class TrendingPosts extends PostsWidget
 			$args['widget_id'] = $this->id;
 		}
 
-		// Check ACF availability
-		if (! $this->check_acf_availability($args)) {
-			return;
-		}
-
 		$title = ! empty($instance['title']) ? $instance['title'] : '';
 		$title = apply_filters('widget_title', $title, $instance, $this->id_base);
 
-		$widget_id = $args['widget_id'];
-		$posts_count = $this->get_acf_field('trending_posts_number_of_posts', $widget_id, 5);
-		$layout = $this->get_acf_field('trending_posts_layout', $widget_id, 'list');
+		$posts_count = ! empty($instance['posts_count']) ? absint($instance['posts_count']) : 5;
+		$layout = ! empty($instance['layout']) ? $instance['layout'] : 'list';
 
 		// Query trending posts (recent posts with most views)
 		$query_args = [
 			'post_type'           => 'post',
-			'posts_per_page'      => absint($posts_count),
+			'posts_per_page'      => $posts_count,
 			'date_query'          => [
 				[
 					'after' => '30 days ago', // Posts from last 30 days
@@ -131,7 +125,18 @@ class TrendingPosts extends PostsWidget
 	 */
 	public function form($instance)
 	{
+		// Set default values
+		$defaults = [
+			'title' => '',
+			'posts_count' => 5,
+			'layout' => 'list'
+		];
+
+		$instance = wp_parse_args((array) $instance, $defaults);
+
 		$title = isset($instance['title']) ? esc_attr($instance['title']) : '';
+		$posts_count = isset($instance['posts_count']) ? absint($instance['posts_count']) : 5;
+		$layout = isset($instance['layout']) ? esc_attr($instance['layout']) : 'list';
 		?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
@@ -144,8 +149,41 @@ class TrendingPosts extends PostsWidget
 				type="text"
 				value="<?php echo esc_attr($title); ?>" />
 		</p>
-		<p class="description">
-			<?php esc_html_e('Displays posts from the last 30 days sorted by views count. Configure layout and posts count using Advanced Custom Fields below.', 'vlthemes-toolkit'); ?>
+
+		<p>
+			<label for="<?php echo esc_attr($this->get_field_id('posts_count')); ?>">
+				<?php esc_html_e('Number of Posts:', 'vlthemes-toolkit'); ?>
+			</label>
+			<input
+				class="tiny-text"
+				id="<?php echo esc_attr($this->get_field_id('posts_count')); ?>"
+				name="<?php echo esc_attr($this->get_field_name('posts_count')); ?>"
+				type="number"
+				min="1"
+				max="20"
+				step="1"
+				value="<?php echo esc_attr($posts_count); ?>" />
+			<br>
+			<small><?php esc_html_e('Enter the number of posts to display (1-20).', 'vlthemes-toolkit'); ?></small>
+		</p>
+
+		<p>
+			<label for="<?php echo esc_attr($this->get_field_id('layout')); ?>">
+				<?php esc_html_e('Layout:', 'vlthemes-toolkit'); ?>
+			</label>
+			<select
+				class="widefat"
+				id="<?php echo esc_attr($this->get_field_id('layout')); ?>"
+				name="<?php echo esc_attr($this->get_field_name('layout')); ?>">
+				<option value="list" <?php selected($layout, 'list'); ?>>
+					<?php esc_html_e('List', 'vlthemes-toolkit'); ?>
+				</option>
+				<option value="slider" <?php selected($layout, 'slider'); ?>>
+					<?php esc_html_e('Slider', 'vlthemes-toolkit'); ?>
+				</option>
+			</select>
+			<br>
+			<small><?php esc_html_e('Choose how to display the posts.', 'vlthemes-toolkit'); ?></small>
 		</p>
 <?php
 	}
@@ -160,7 +198,25 @@ class TrendingPosts extends PostsWidget
 	public function update($new_instance, $old_instance)
 	{
 		$instance = $old_instance;
+
+		// Sanitize and save all fields
 		$instance['title'] = sanitize_text_field($new_instance['title']);
+		$instance['posts_count'] = absint($new_instance['posts_count']);
+		$instance['layout'] = sanitize_text_field($new_instance['layout']);
+
+		// Validate posts count
+		if ($instance['posts_count'] < 1) {
+			$instance['posts_count'] = 5;
+		}
+		if ($instance['posts_count'] > 20) {
+			$instance['posts_count'] = 20;
+		}
+
+		// Validate layout
+		if (! in_array($instance['layout'], ['list', 'slider'], true)) {
+			$instance['layout'] = 'list';
+		}
+
 		return $instance;
 	}
 }

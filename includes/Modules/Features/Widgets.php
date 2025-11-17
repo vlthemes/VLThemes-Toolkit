@@ -43,8 +43,6 @@ class Widgets extends BaseModule
 	 * @var array
 	 */
 	private $widgets = [
-		'Instagram'      => 'VLT\Helper\Widgets\Instagram',
-		'Socials'        => 'VLT\Helper\Widgets\Socials',
 		'RecentPosts'    => 'VLT\Helper\Widgets\RecentPosts',
 		'PopularPosts'   => 'VLT\Helper\Widgets\PopularPosts',
 		'TrendingPosts'  => 'VLT\Helper\Widgets\TrendingPosts',

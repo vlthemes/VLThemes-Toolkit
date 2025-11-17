@@ -144,43 +144,4 @@ abstract class PostsWidget extends \WP_Widget
 		</div>
 <?php
 	}
-
-	/**
-	 * Get ACF field with fallback
-	 *
-	 * @param string $field Field name.
-	 * @param mixed  $widget_id Widget ID.
-	 * @param mixed  $default Default value.
-	 * @return mixed Field value or default.
-	 */
-	protected function get_acf_field($field, $widget_id, $default = null)
-	{
-		if (! function_exists('get_field')) {
-			return $default;
-		}
-
-		$value = get_field($field, 'widget_' . $widget_id);
-		return ! empty($value) ? $value : $default;
-	}
-
-	/**
-	 * Check if ACF is available
-	 *
-	 * @param array $args Widget args.
-	 * @return bool
-	 */
-	protected function check_acf_availability($args)
-	{
-		if (function_exists('get_field')) {
-			return true;
-		}
-
-		if (current_user_can('manage_options')) {
-			echo $args['before_widget'];
-			echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlthemes-toolkit') . '</p>';
-			echo $args['after_widget'];
-		}
-
-		return false;
-	}
 }

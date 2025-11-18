@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Social Icons Module
+ * Template Parts Module
  *
  * @package VLT Helper
  */
@@ -60,6 +60,7 @@ class TemplateParts extends BaseModule
 		// Add template content filters
 		add_filter('vlt_tp_header', [$this, 'get_header_content']);
 		add_filter('vlt_tp_footer', [$this, 'get_footer_content']);
+		add_filter('vlt_tp_above_footer', [$this, 'get_above_footer_content']);
 		add_filter('vlt_tp_404', [$this, 'get_404_content']);
 
 		// Admin columns
@@ -262,11 +263,12 @@ class TemplateParts extends BaseModule
 					'type'          => 'select',
 					'required'      => 1,
 					'choices'       => [
-						'header'  => esc_html__('Header', 'vlthemes-toolkit'),
-						'footer'  => esc_html__('Footer', 'vlthemes-toolkit'),
-						'404'     => esc_html__('404 Page', 'vlthemes-toolkit'),
-						'submenu' => esc_html__('Submenu', 'vlthemes-toolkit'),
-						'custom'  => esc_html__('Custom', 'vlthemes-toolkit'),
+						'header'        => esc_html__('Header', 'vlthemes-toolkit'),
+						'footer'        => esc_html__('Footer', 'vlthemes-toolkit'),
+						'above_footer'  => esc_html__('Above Footer', 'vlthemes-toolkit'),
+						'404'           => esc_html__('404 Page', 'vlthemes-toolkit'),
+						'submenu'       => esc_html__('Submenu', 'vlthemes-toolkit'),
+						'custom'        => esc_html__('Custom', 'vlthemes-toolkit'),
 					],
 					'default_value' => 'header',
 				],
@@ -840,6 +842,16 @@ class TemplateParts extends BaseModule
 	}
 
 	/**
+	 * Get above footer content
+	 *
+	 * @return string
+	 */
+	public function get_above_footer_content()
+	{
+		return $this->get_template_content('above_footer');
+	}
+
+	/**
 	 * Get 404 content
 	 *
 	 * @return string
@@ -948,24 +960,43 @@ class TemplateParts extends BaseModule
 						if ($rule_value === 'specifics' && !empty($rule['specifics'])) {
 							$specifics = $rule['specifics'];
 							$specifics_array = is_array($specifics) ? $specifics : [$specifics];
-							$names = [];
+							$linked_names = [];
 
 							foreach ($specifics_array as $specific_item) {
 								$specific_id = is_object($specific_item) ? $specific_item->ID : $specific_item;
 								$queried_object = get_post($specific_id);
+								$is_term = false;
 
 								if (!$queried_object) {
 									$queried_object = get_term($specific_id);
+									$is_term = true;
 								}
 
 								if ($queried_object) {
 									$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
-									$names[] = $name;
+
+									// Create permalink
+									if ($is_term) {
+										$permalink = get_term_link($specific_id, $queried_object->taxonomy);
+									} else {
+										$permalink = get_permalink($specific_id);
+									}
+
+									if ($permalink && !is_wp_error($permalink)) {
+										$linked_names[] = sprintf(
+											'<a href="%s" target="_blank" title="%s">%s</a>',
+											esc_url($permalink),
+											esc_attr__('View', 'vlthemes-toolkit') . ': ' . esc_attr($name),
+											esc_html($name)
+										);
+									} else {
+										$linked_names[] = esc_html($name);
+									}
 								}
 							}
 
-							if (!empty($names)) {
-								$label .= ': ' . implode(', ', $names);
+							if (!empty($linked_names)) {
+								$label .= ': ' . implode(', ', $linked_names);
 							}
 						}
 
@@ -975,7 +1006,7 @@ class TemplateParts extends BaseModule
 					}
 
 					if (!empty($rule_labels)) {
-						$output[] = '<strong>' . esc_html__('Display:', 'vlthemes-toolkit') . '</strong> ' . esc_html(implode(', ', $rule_labels));
+						$output[] = '<strong>' . esc_html__('Display:', 'vlthemes-toolkit') . '</strong> ' . implode(', ', $rule_labels);
 					}
 				}
 
@@ -999,24 +1030,43 @@ class TemplateParts extends BaseModule
 						if ($rule_value === 'specifics' && !empty($rule['specifics'])) {
 							$specifics = $rule['specifics'];
 							$specifics_array = is_array($specifics) ? $specifics : [$specifics];
-							$names = [];
+							$linked_names = [];
 
 							foreach ($specifics_array as $specific_item) {
 								$specific_id = is_object($specific_item) ? $specific_item->ID : $specific_item;
 								$queried_object = get_post($specific_id);
+								$is_term = false;
 
 								if (!$queried_object) {
 									$queried_object = get_term($specific_id);
+									$is_term = true;
 								}
 
 								if ($queried_object) {
 									$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
-									$names[] = $name;
+
+									// Create permalink
+									if ($is_term) {
+										$permalink = get_term_link($specific_id, $queried_object->taxonomy);
+									} else {
+										$permalink = get_permalink($specific_id);
+									}
+
+									if ($permalink && !is_wp_error($permalink)) {
+										$linked_names[] = sprintf(
+											'<a href="%s" target="_blank" title="%s">%s</a>',
+											esc_url($permalink),
+											esc_attr__('View', 'vlthemes-toolkit') . ': ' . esc_attr($name),
+											esc_html($name)
+										);
+									} else {
+										$linked_names[] = esc_html($name);
+									}
 								}
 							}
 
-							if (!empty($names)) {
-								$label .= ': ' . implode(', ', $names);
+							if (!empty($linked_names)) {
+								$label .= ': ' . implode(', ', $linked_names);
 							}
 						}
 
@@ -1026,7 +1076,7 @@ class TemplateParts extends BaseModule
 					}
 
 					if (!empty($rule_labels)) {
-						$output[] = '<strong>' . esc_html__('Exclusion:', 'vlthemes-toolkit') . '</strong> ' . esc_html(implode(', ', $rule_labels));
+						$output[] = '<strong>' . esc_html__('Exclusion:', 'vlthemes-toolkit') . '</strong> ' . implode(', ', $rule_labels);
 					}
 				}
 
@@ -1080,11 +1130,12 @@ class TemplateParts extends BaseModule
 		$type = get_field('template_type', $post->ID);
 		if ($type) {
 			$types = [
-				'header'  => esc_html__('Header', 'vlthemes-toolkit'),
-				'footer'  => esc_html__('Footer', 'vlthemes-toolkit'),
-				'404'     => esc_html__('404 Page', 'vlthemes-toolkit'),
-				'submenu' => esc_html__('Submenu', 'vlthemes-toolkit'),
-				'custom'  => esc_html__('Custom', 'vlthemes-toolkit'),
+				'header'        => esc_html__('Header', 'vlthemes-toolkit'),
+				'footer'        => esc_html__('Footer', 'vlthemes-toolkit'),
+				'above_footer'  => esc_html__('Above Footer', 'vlthemes-toolkit'),
+				'404'           => esc_html__('404 Page', 'vlthemes-toolkit'),
+				'submenu'       => esc_html__('Submenu', 'vlthemes-toolkit'),
+				'custom'        => esc_html__('Custom', 'vlthemes-toolkit'),
 			];
 			$post_states['vlt_tp_type'] = $types[$type] ?? $type;
 		}
@@ -1106,12 +1157,13 @@ class TemplateParts extends BaseModule
 		$current_type = isset($_GET['template_type_filter']) ? sanitize_text_field($_GET['template_type_filter']) : '';
 
 		$types = [
-			''        => esc_html__('All Types', 'vlthemes-toolkit'),
-			'header'  => esc_html__('Header', 'vlthemes-toolkit'),
-			'footer'  => esc_html__('Footer', 'vlthemes-toolkit'),
-			'404'     => esc_html__('404 Page', 'vlthemes-toolkit'),
-			'submenu' => esc_html__('Submenu', 'vlthemes-toolkit'),
-			'custom'  => esc_html__('Custom', 'vlthemes-toolkit'),
+			''              => esc_html__('All Types', 'vlthemes-toolkit'),
+			'header'        => esc_html__('Header', 'vlthemes-toolkit'),
+			'footer'        => esc_html__('Footer', 'vlthemes-toolkit'),
+			'above_footer'  => esc_html__('Above Footer', 'vlthemes-toolkit'),
+			'404'           => esc_html__('404 Page', 'vlthemes-toolkit'),
+			'submenu'       => esc_html__('Submenu', 'vlthemes-toolkit'),
+			'custom'        => esc_html__('Custom', 'vlthemes-toolkit'),
 		];
 
 		echo '<select name="template_type_filter" id="template_type_filter">';

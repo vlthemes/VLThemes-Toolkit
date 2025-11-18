@@ -299,28 +299,36 @@ if (! function_exists('vlt_is_woocommerce_page')) {
 }
 
 // ========================================
-// Elementor Functions
+// Template Parts Functions
 // ========================================
-
-if (! function_exists('vlt_get_elementor_templates')) {
-	/**
-	 * Get list of Elementor templates
-	 *
-	 * @param string|null $type Template type (page, section, widget, etc.).
-	 * @return array Array of template IDs and titles.
-	 */
-	function vlt_get_elementor_templates($type = null)
-	{
-		return \VLT\Helper\Modules\Integrations\Elementor::get_elementor_templates($type);
-	}
-}
 
 if (! function_exists('vlt_get_vlt_templates')) {
 	/**
-	 * Get list of VLT templates
+	 * Get list of VLT Template Parts
 	 *
-	 * @param string|null $type Template type (page, section, widget, etc.).
-	 * @return array Array of template IDs and titles.
+	 * Retrieves published template parts filtered by type (header, footer, above_footer, 404, custom, submenu).
+	 * Returns an associative array with template IDs as keys and titles as values.
+	 * Commonly used to populate dropdowns in ACF fields or Elementor controls.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string|null $type Optional. Template type to filter by (header, footer, above_footer, 404, custom, submenu).
+	 *                          If null, returns all template parts. Default null.
+	 * @return array Array of template IDs and titles in format [id => title].
+	 *               Returns [0 => 'Select a Template'] if none found.
+	 *
+	 * @example
+	 * // Get all template parts
+	 * $all_templates = vlt_get_vlt_templates();
+	 *
+	 * // Get only header templates
+	 * $headers = vlt_get_vlt_templates('header');
+	 *
+	 * // Get only footer templates
+	 * $footers = vlt_get_vlt_templates('footer');
+	 *
+	 * // Get only above footer templates
+	 * $above_footers = vlt_get_vlt_templates('above_footer');
 	 */
 	function vlt_get_vlt_templates($type = null)
 	{
@@ -328,12 +336,51 @@ if (! function_exists('vlt_get_vlt_templates')) {
 	}
 }
 
+// ========================================
+// Elementor Functions
+// ========================================
+
+if (! function_exists('vlt_get_elementor_templates')) {
+	/**
+	 * Get list of Elementor templates
+	 *
+	 * Retrieves Elementor library templates filtered by type.
+	 * Useful for populating template selectors in custom widgets or theme options.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string|null $type Optional. Template type (page, section, widget, container, etc.).
+	 *                          If null, returns all template types. Default null.
+	 * @return array Array of template IDs and titles in format [id => title].
+	 *
+	 * @example
+	 * // Get all Elementor templates
+	 * $all = vlt_get_elementor_templates();
+	 *
+	 * // Get only section templates
+	 * $sections = vlt_get_elementor_templates('section');
+	 */
+	function vlt_get_elementor_templates($type = null)
+	{
+		return \VLT\Helper\Modules\Integrations\Elementor::get_elementor_templates($type);
+	}
+}
+
 if (! function_exists('vlt_render_elementor_template')) {
 	/**
-	 * Render Elementor template
+	 * Render Elementor template by ID
+	 *
+	 * Outputs the complete Elementor template content with all styles and scripts.
+	 * Use this to programmatically display Elementor templates in your theme.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param int $template_id Template ID to render.
-	 * @return string Rendered template HTML.
+	 * @return string Rendered template HTML markup.
+	 *
+	 * @example
+	 * // Render a specific template
+	 * echo vlt_render_elementor_template(123);
 	 */
 	function vlt_render_elementor_template($template_id)
 	{
@@ -343,15 +390,21 @@ if (! function_exists('vlt_render_elementor_template')) {
 
 if (! function_exists('vlt_is_built_with_elementor')) {
 	/**
-	 * Check if current post/page is built with Elementor.
+	 * Check if current post/page is built with Elementor
 	 *
 	 * Determines whether the current post was created using Elementor page builder.
 	 * Useful for conditional logic when displaying different layouts or styles.
+	 * Returns false if Elementor is not active or post is not built with it.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @global WP_Post $post Current post object.
 	 * @return bool True if post is built with Elementor and Elementor is active, false otherwise.
+	 *
+	 * @example
+	 * if (vlt_is_built_with_elementor()) {
+	 *     // Load Elementor-specific styles
+	 * }
 	 */
 	function vlt_is_built_with_elementor()
 	{

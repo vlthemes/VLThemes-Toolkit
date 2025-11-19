@@ -43,42 +43,110 @@ class DemoImport extends BaseModule
 		}
 
 		// Register import files
-		add_filter('pt-ocdi/import_files', [$this, 'import_files']);
+		add_filter('ocdi/import_files', [$this, 'import_files']);
 
 		// Disable regenerate thumbnails for performance
-		add_filter('pt-ocdi/regenerate_thumbnails_in_content_import', '__return_false');
+		add_filter('ocdi/regenerate_thumbnails_in_content_import', '__return_false');
+
+		// Before content import setup
+		add_action('ocdi/before_content_import', [$this, 'before_content_import']);
 
 		// After import setup
-		add_action('pt-ocdi/after_import', [$this, 'after_import_setup']);
+		add_action('ocdi/after_import', [$this, 'after_import_setup']);
 	}
 
 	/**
 	 * Register demo import files
 	 *
-	 * @return array Demo import configuration.
+	 * @return array Demo import configuration (array of demos).
 	 */
 	public function import_files()
 	{
-		// Default demo structure
-		$demo = [
-			'import_file_name'             => esc_html__('Demo Import', 'vlthemes-toolkit'),
-			'local_import_file'            => '',
-			'local_import_widget_file'     => '',
-			'local_import_customizer_file' => '',
-		];
+		// Allow theme to define demo files (single demo or array of demos)
+		$demos = apply_filters('vlt_helper_demo_import_files', []);
 
-		// Allow theme to define demo files
-		$demo = apply_filters('vlt_helper_demo_import_file', $demo);
-
-		// Remove empty values
-		$demo = array_filter($demo);
-
-		// Must have at least content file
-		if (empty($demo['local_import_file'])) {
+		// If empty, return empty array
+		if (empty($demos)) {
 			return [];
 		}
 
-		return [$demo];
+		// If single demo (associative array), wrap in array
+		if (isset($demos['import_file_name']) || isset($demos['local_import_file'])) {
+			$demos = [$demos];
+		}
+
+		// Filter and validate demos
+		$valid_demos = [];
+		foreach ($demos as $demo) {
+			// Remove empty values
+			$demo = array_filter($demo);
+
+			// Must have at least content file
+			if (! empty($demo['local_import_file'])) {
+				$valid_demos[] = $demo;
+			}
+		}
+
+		return $valid_demos;
+	}
+
+	/**
+	 * Before content import setup
+	 *
+	 * Runs before content is imported
+	 *
+	 * @param array $selected_import Selected demo data.
+	 */
+	public function before_content_import($selected_import)
+	{
+		// Delete default "Hello World" post
+		$this->delete_default_content();
+
+		// Delete all widgets from sidebars
+		$this->delete_sidebar_widgets();
+
+		// Update Elementor options before content import
+		$elementor_options = [
+			'elementor_unfiltered_files_upload'    => true,
+			'elementor_disable_color_schemes'      => 'yes',
+			'elementor_disable_typography_schemes' => 'yes',
+		];
+
+		foreach ($elementor_options as $key => $value) {
+			update_option($key, $value);
+		}
+
+		// Action hook for themes to add custom setup before content import
+		do_action('vlt_helper_before_content_import', $selected_import);
+	}
+
+	/**
+	 * Delete all widgets from sidebars
+	 *
+	 * Clears all widgets from all registered sidebars before import
+	 * to prevent conflicts with demo content
+	 */
+	private function delete_sidebar_widgets()
+	{
+		// Get all registered sidebars
+		global $wp_registered_sidebars;
+
+		if (empty($wp_registered_sidebars)) {
+			return;
+		}
+
+		// Get current widgets
+		$sidebars_widgets = get_option('sidebars_widgets', array());
+
+		// Clear all sidebars except wp_inactive_widgets
+		foreach (array_keys($wp_registered_sidebars) as $sidebar_id) {
+			if (isset($sidebars_widgets[$sidebar_id])) {
+				$sidebars_widgets[$sidebar_id] = array();
+			}
+		}
+
+		// Update the option
+		update_option('sidebars_widgets', $sidebars_widgets);
 	}
 
 	/**
@@ -86,8 +154,10 @@ class DemoImport extends BaseModule
 	 *
 	 * Runs after demo content is imported
 	 * Sets up menus, pages, Elementor, Revolution Slider, etc.
+	 *
+	 * @param array $selected_import Selected demo data.
 	 */
-	public function after_import_setup()
+	public function after_import_setup($selected_import)
 	{
 		global $wp_rewrite;
 
@@ -109,8 +179,11 @@ class DemoImport extends BaseModule
 		// Setup Elementor
 		$this->setup_elementor();
 
+		// Import Elementor kit
+		$this->import_elementor_kit();
+
 		// Action hook for themes to add custom setup
-		do_action('vlt_helper_after_demo_import');
+		do_action('vlt_helper_after_demo_import', $selected_import);
 	}
 
 	/**
@@ -227,9 +300,6 @@ class DemoImport extends BaseModule
 		// Update Elementor kit settings
 		$this->update_elementor_kit();
 
-		// Update Elementor options
-		$this->update_elementor_options();
-
 		// Update Elementor CPT support
 		$this->update_elementor_cpt_support();
 	}
@@ -283,31 +353,6 @@ class DemoImport extends BaseModule
 	}
 
 	/**
-	 * Update Elementor options
-	 */
-	private function update_elementor_options()
-	{
-		// Default options
-		$elementor_options = [
-			'elementor_experiment-container'               => 'inactive',
-			'elementor_experiment-container_grid'          => 'inactive',
-			'elementor_experiment-e_swiper_latest'         => 'inactive',
-			'elementor_experiment-e_optimized_css_loading' => 'inactive',
-			'elementor_experiment-e_font_icon_svg'         => 'inactive',
-			'elementor_unfiltered_files_upload'            => true,
-			'elementor_disable_color_schemes'              => 'yes',
-			'elementor_disable_typography_schemes'         => 'yes',
-		];
-
-		// Allow theme to override
-		$elementor_options = apply_filters('vlt_helper_demo_elementor_options', $elementor_options);
-
-		foreach ($elementor_options as $key => $value) {
-			update_option($key, $value);
-		}
-	}
-
-	/**
 	 * Update Elementor CPT support
 	 */
 	private function update_elementor_cpt_support()
@@ -328,6 +373,86 @@ class DemoImport extends BaseModule
 			update_option('elementor_cpt_support', $cpt_support);
 		}
 	}
+
+	/**
+	 * Import Elementor kit
+	 *
+	 * Imports Elementor kit data (templates, global colors, fonts, settings)
+	 */
+	private function import_elementor_kit()
+	{
+		if (! class_exists('\Elementor\Plugin')) {
+			return;
+		}
+
+		try {
+			// Get kit file path from filter
+			$kit_path = apply_filters('vlt_helper_demo_elementor_kit_path', '');
+
+			// Skip if no kit path provided
+			if (empty($kit_path) || ! file_exists($kit_path)) {
+				return;
+			}
+
+			// Check if import-export module exists
+			if (! isset(\Elementor\Plugin::$instance->app)) {
+				error_log('VLT Helper: Elementor app not available for kit import');
+				return;
+			}
+
+			$import_export_module = \Elementor\Plugin::$instance->app->get_component('import-export');
+
+			if (! $import_export_module || ! method_exists($import_export_module, 'import_kit')) {
+				error_log('VLT Helper: Elementor import-export module not available');
+				return;
+			}
+
+			// Import settings
+			$import_settings = [
+				'referrer' => 'remote',
+			];
+
+			// Allow theme to override import settings
+			$import_settings = apply_filters('vlt_helper_demo_elementor_kit_import_settings', $import_settings);
+
+			// Import the kit
+			$import_export_module->import_kit($kit_path, $import_settings);
+
+			// Clear cache after import
+			if (isset(\Elementor\Plugin::$instance->files_manager)) {
+				\Elementor\Plugin::$instance->files_manager->clear_cache();
+			}
+		} catch (\Exception $e) {
+			error_log('VLT Helper: Elementor kit import failed - ' . $e->getMessage());
+		}
+	}
+
+	/**
+	 * Delete default WordPress content
+	 *
+	 * Removes default "Hello World" post, "Sample Page", and default comment
+	 */
+	private function delete_default_content()
+	{
+		// Delete "Hello World" post
+		$default_post = get_page_by_title('Hello World', OBJECT, 'post');
+		if ($default_post) {
+			wp_delete_post($default_post->ID, true);
+		}
+
+		// Delete "Sample Page"
+		$sample_page = get_page_by_title('Sample Page');
+		if ($sample_page) {
+			wp_delete_post($sample_page->ID, true);
+		}
+
+		// Delete default comment
+		wp_delete_comment(1, true);
+
+		// Delete auto-draft posts
+		global $wpdb;
+		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE post_status = 'auto-draft'");
+	}
 }
 
 /**
@@ -337,20 +462,38 @@ class DemoImport extends BaseModule
  * 1. DEFINE DEMO IMPORT FILES
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_import_file', function( $demo ) {
+ * // Single demo
+ * add_filter( 'vlt_helper_demo_import_files', function() {
  *     return [
- *         'import_file_name'             => 'VLT Studio - Creative Agency',
+ *         'import_file_name'             => 'VLT Studio - Main Demo',
  *         'local_import_file'            => get_template_directory() . '/inc/demo/content.xml',
- *         'local_import_widget_file'     => get_template_directory() . '/inc/demo/widgets.wie',
+ *         'local_import_widget_file'     => get_template_directory() . '/inc/demo/widgets.json',
  *         'local_import_customizer_file' => get_template_directory() . '/inc/demo/customizer.dat',
+ *         'import_preview_image_url'     => get_template_directory_uri() . '/inc/demo/preview.jpg',
+ *         'preview_url'                  => 'https://demo.yoursite.com',
  *     ];
  * } );
  *
- * // Minimal example (only content)
- * add_filter( 'vlt_helper_demo_import_file', function( $demo ) {
+ * // Multiple demos
+ * add_filter( 'vlt_helper_demo_import_files', function() {
  *     return [
- *         'import_file_name'  => 'My Theme Demo',
- *         'local_import_file' => get_template_directory() . '/demo/content.xml',
+ *         [
+ *             'import_file_name'             => 'Demo 1 - Creative Agency',
+ *             'categories'                   => [ 'Business', 'Creative' ],
+ *             'local_import_file'            => get_template_directory() . '/inc/demo/demo1/content.xml',
+ *             'local_import_widget_file'     => get_template_directory() . '/inc/demo/demo1/widgets.json',
+ *             'local_import_customizer_file' => get_template_directory() . '/inc/demo/demo1/customizer.dat',
+ *             'import_preview_image_url'     => get_template_directory_uri() . '/inc/demo/demo1/preview.jpg',
+ *             'preview_url'                  => 'https://demo.yoursite.com/demo1',
+ *         ],
+ *         [
+ *             'import_file_name'             => 'Demo 2 - Portfolio',
+ *             'categories'                   => [ 'Portfolio' ],
+ *             'local_import_file'            => get_template_directory() . '/inc/demo/demo2/content.xml',
+ *             'local_import_widget_file'     => get_template_directory() . '/inc/demo/demo2/widgets.json',
+ *             'import_preview_image_url'     => get_template_directory_uri() . '/inc/demo/demo2/preview.jpg',
+ *             'preview_url'                  => 'https://demo.yoursite.com/demo2',
+ *         ],
  *     ];
  * } );
  *
@@ -504,7 +647,15 @@ class DemoImport extends BaseModule
  * } );
  *
  * ======================================
- * 10. CUSTOM POST-IMPORT ACTIONS
+ * 10. ELEMENTOR KIT IMPORT
+ * ======================================
+ *
+ * add_filter( 'vlt_helper_demo_elementor_kit_path', function( $path ) {
+ *     return get_template_directory() . '/inc/demo/elementor-kit.zip';
+ * } );
+ *
+ * ======================================
+ * 11. CUSTOM POST-IMPORT ACTIONS
  * ======================================
  *
  * add_action( 'vlt_helper_after_demo_import', function() {
@@ -540,54 +691,4 @@ class DemoImport extends BaseModule
  *         \Elementor\Plugin::$instance->files_manager->clear_cache();
  *     }
  * } );
- *
- * ======================================
- * 11. COMPLETE EXAMPLE
- * ======================================
- *
- * // Define all demo import settings in one place
- * function my_theme_demo_import_setup() {
- *
- *     // Demo files
- *     add_filter( 'vlt_helper_demo_import_file', function( $demo ) {
- *         return [
- *             'import_file_name'             => 'My Theme - Main Demo',
- *             'local_import_file'            => get_template_directory() . '/inc/demo/content.xml',
- *             'local_import_widget_file'     => get_template_directory() . '/inc/demo/widgets.wie',
- *             'local_import_customizer_file' => get_template_directory() . '/inc/demo/customizer.dat',
- *         ];
- *     } );
- *
- *     // Revolution Sliders
- *     add_filter( 'vlt_helper_demo_revsliders', function( $sliders ) {
- *         return [
- *             get_template_directory() . '/inc/demo/sliders/home-slider.zip',
- *         ];
- *     } );
- *
- *     // Menus
- *     add_filter( 'vlt_helper_demo_menus', function( $menus ) {
- *         return [
- *             'primary' => 'Main Menu',
- *             'footer'  => 'Footer Menu',
- *         ];
- *     } );
- *
- *     // Front page
- *     add_filter( 'vlt_helper_demo_front_page_title', function( $title ) {
- *         return 'Home';
- *     } );
- *
- *     // Elementor
- *     add_filter( 'vlt_helper_demo_elementor_cpt_support', function( $cpts ) {
- *         return [ 'page', 'post', 'portfolio' ];
- *     } );
- *
- *     // After import
- *     add_action( 'vlt_helper_after_demo_import', function() {
- *         update_option( 'my_theme_demo_imported', true );
- *         update_option( 'posts_per_page', 9 );
- *     } );
- * }
- * add_action( 'after_setup_theme', 'my_theme_demo_import_setup' );
  */

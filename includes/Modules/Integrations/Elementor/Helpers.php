@@ -213,30 +213,4 @@ class Helpers
 
 		return $options;
 	}
-
-	/**
-	 * Render Elementor template
-	 *
-	 * @param int $template_id Template ID to render.
-	 * @return string Rendered template HTML.
-	 */
-	public static function render_template($template_id)
-	{
-		if (! $template_id || ! class_exists('\Elementor\Frontend')) {
-			return '';
-		}
-
-		// Only render published templates
-		if ('publish' !== get_post_status($template_id)) {
-			return '';
-		}
-
-		// Get rendered template content
-		$content = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($template_id, false);
-
-		// Force enqueue Elementor styles for proper rendering
-		\Elementor\Plugin::$instance->frontend->enqueue_styles();
-
-		return $content;
-	}
 }

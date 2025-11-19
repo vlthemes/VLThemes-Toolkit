@@ -163,7 +163,7 @@ class Elementor extends BaseModule
 			esc_attr($badge_config['text'])
 		);
 
-		wp_add_inline_style('vlt-elementor-editor', $custom_css);
+		wp_add_inline_style('vlt-editor-styles', $custom_css);
 	}
 
 	/**
@@ -455,6 +455,46 @@ class Elementor extends BaseModule
 	 */
 	public static function render_template($template_id)
 	{
-		return Helpers::render_template($template_id);
+		if (! $template_id || ! class_exists('\Elementor\Frontend')) {
+			return '';
+		}
+
+		// Only render published templates
+		if ('publish' !== get_post_status($template_id)) {
+			return '';
+		}
+
+		// Prevent infinite recursion: check if template is trying to render itself
+		$current_post_id = get_the_ID();
+		if ($current_post_id && absint($template_id) === absint($current_post_id)) {
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				return '<!-- Template recursion prevented: Template #' . $template_id . ' cannot render itself -->';
+			}
+			return '';
+		}
+
+		// Track rendering stack to prevent nested recursion
+		static $rendering_stack = [];
+
+		if (in_array($template_id, $rendering_stack)) {
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				return '<!-- Template recursion prevented: Template #' . $template_id . ' is already being rendered -->';
+			}
+			return '';
+		}
+
+		// Add to rendering stack
+		$rendering_stack[] = $template_id;
+
+		// Get rendered template content
+		$content = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($template_id, false);
+
+		// Force enqueue Elementor styles for proper rendering
+		\Elementor\Plugin::$instance->frontend->enqueue_styles();
+
+		// Remove from rendering stack
+		array_pop($rendering_stack);
+
+		return $content;
 	}
 }

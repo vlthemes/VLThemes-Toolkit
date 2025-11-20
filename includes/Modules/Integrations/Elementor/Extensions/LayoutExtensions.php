@@ -4,7 +4,7 @@ namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
 
 use VLT\Toolkit\Modules\Integrations\Elementor\BaseExtension;
 
-if (! defined('ABSPATH')) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -13,8 +13,7 @@ if (! defined('ABSPATH')) {
  *
  * Handles Sticky Column, Stretch, Padding to Container, and Equal Height
  */
-class LayoutExtensions extends BaseExtension
-{
+class LayoutExtensions extends BaseExtension {
 	/**
 	 * Extension name
 	 *
@@ -23,43 +22,16 @@ class LayoutExtensions extends BaseExtension
 	protected $name = 'layout_extensions';
 
 	/**
-	 * Initialize extension
-	 */
-	protected function init(): void
-	{
-		// Extension initialization
-	}
-
-	/**
 	 * Register extension scripts
 	 */
-	public function register_scripts(): void
-	{
+	public function register_scripts() {
 		wp_enqueue_script(
 			'vlt-layout-extension',
-			plugin_dir_url(__FILE__) . 'js/LayoutExtensions.js',
+			plugin_dir_url( __FILE__ ) . 'js/LayoutExtensions.js',
 			[ 'gsap' ],
 			VLT_TOOLKIT_VERSION,
 			true,
 		);
-	}
-
-	/**
-	 * Register WordPress hooks
-	 */
-	protected function register_hooks(): void
-	{
-		// Register controls for containers
-		add_action('elementor/element/container/section_layout/after_section_end', [ $this, 'register_controls' ], 10, 2);
-
-		// Register controls for common widgets
-		add_action('elementor/element/common/_section_style/after_section_end', [ $this, 'register_controls' ], 10, 2);
-
-		// Render for containers
-		add_action('elementor/frontend/container/before_render', [ $this, 'render_attributes' ]);
-
-		// Render for common widgets
-		add_action('elementor/frontend/widget/before_render', [ $this, 'render_attributes' ]);
 	}
 
 	/**
@@ -68,18 +40,17 @@ class LayoutExtensions extends BaseExtension
 	 * Adds sticky column, stretch, and padding controls for containers
 	 * Functionality is provided by Sticky and Stretch modules
 	 *
-	 * @param object $element Elementor element instance.
-	 * @param array  $args    Element arguments.
+	 * @param object $element elementor element instance
+	 * @param array  $args    element arguments
 	 */
-	public function register_controls($element, $args): void
-	{
+	public function register_controls( $element, $args ) {
 		$breakpoints           = $this->get_elementor_breakpoints();
 		$default_reset_devices = $this->get_default_reset_devices();
 
 		$element->start_controls_section(
 			'vlt_section_layout_extensions',
 			[
-				'label' => esc_html__('VLT Layout Extensions', 'toolkit'),
+				'label' => esc_html__( 'VLT Layout Extensions', 'toolkit' ),
 				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
 			],
 		);
@@ -88,7 +59,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_sticky_column',
 			[
-				'label'        => esc_html__('Sticky Column', 'toolkit'),
+				'label'        => esc_html__( 'Sticky Column', 'toolkit' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'has-sticky-column',
 				'prefix_class' => '',
@@ -99,7 +70,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_stretch_enabled',
 			[
-				'label'        => esc_html__('Stretch', 'toolkit'),
+				'label'        => esc_html__( 'Stretch', 'toolkit' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'prefix_class' => '',
@@ -110,7 +81,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_stretch_settings_popover',
 			[
-				'label'     => esc_html__('Stretch Settings', 'toolkit'),
+				'label'     => esc_html__( 'Stretch Settings', 'toolkit' ),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
 				'condition' => [ 'vlt_stretch_enabled' => 'yes' ],
 			],
@@ -121,13 +92,13 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_stretch_side',
 			[
-				'label'   => esc_html__('Side', 'toolkit'),
+				'label'   => esc_html__( 'Side', 'toolkit' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
 				'default' => 'to-left',
 				'options' => [
-					'to-left'      => esc_html__('Left', 'toolkit'),
-					'to-right'     => esc_html__('Right', 'toolkit'),
-					'to-container' => esc_html__('Container', 'toolkit'),
+					'to-left'      => esc_html__( 'Left', 'toolkit' ),
+					'to-right'     => esc_html__( 'Right', 'toolkit' ),
+					'to-container' => esc_html__( 'Container', 'toolkit' ),
 				],
 				'prefix_class' => 'has-stretch-block-',
 				'condition'    => [ 'vlt_stretch_enabled' => 'yes' ],
@@ -137,7 +108,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_stretch_reset_on_devices',
 			[
-				'label'       => esc_html__('Reset On Device', 'toolkit'),
+				'label'       => esc_html__( 'Reset On Device', 'toolkit' ),
 				'type'        => \Elementor\Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'label_block' => true,
@@ -153,7 +124,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_padding_to_container',
 			[
-				'label'        => esc_html__('Padding to Container', 'toolkit'),
+				'label'        => esc_html__( 'Padding to Container', 'toolkit' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'prefix_class' => '',
@@ -164,7 +135,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_padding_settings_popover',
 			[
-				'label'     => esc_html__('Padding Settings', 'toolkit'),
+				'label'     => esc_html__( 'Padding Settings', 'toolkit' ),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
 				'condition' => [ 'vlt_padding_to_container' => 'yes' ],
 			],
@@ -175,12 +146,12 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_padding_to_container_side',
 			[
-				'label'   => esc_html__('Side', 'toolkit'),
+				'label'   => esc_html__( 'Side', 'toolkit' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
 				'default' => 'to-left',
 				'options' => [
-					'to-left'  => esc_html__('Left', 'toolkit'),
-					'to-right' => esc_html__('Right', 'toolkit'),
+					'to-left'  => esc_html__( 'Left', 'toolkit' ),
+					'to-right' => esc_html__( 'Right', 'toolkit' ),
 				],
 				'prefix_class' => 'has-padding-block-',
 				'condition'    => [ 'vlt_padding_to_container' => 'yes' ],
@@ -190,7 +161,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_padding_to_container_reset_on_devices',
 			[
-				'label'       => esc_html__('Reset On Device', 'toolkit'),
+				'label'       => esc_html__( 'Reset On Device', 'toolkit' ),
 				'type'        => \Elementor\Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'label_block' => true,
@@ -206,7 +177,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_equal_height_widgets',
 			[
-				'label'        => esc_html__('Equal Height', 'toolkit'),
+				'label'        => esc_html__( 'Equal Height', 'toolkit' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'prefix_class' => 'has-equal-height-block-',
@@ -217,7 +188,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_equal_height_popover',
 			[
-				'label'     => esc_html__('Equal Height Settings', 'toolkit'),
+				'label'     => esc_html__( 'Equal Height Settings', 'toolkit' ),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
 				'condition' => [ 'vlt_equal_height_widgets' => 'yes' ],
 			],
@@ -228,7 +199,7 @@ class LayoutExtensions extends BaseExtension
 		$element->add_control(
 			'vlt_equal_height_widgets_reset_on_devices',
 			[
-				'label'       => esc_html__('Reset On Device', 'toolkit'),
+				'label'       => esc_html__( 'Reset On Device', 'toolkit' ),
 				'type'        => \Elementor\Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'label_block' => true,
@@ -246,37 +217,60 @@ class LayoutExtensions extends BaseExtension
 	/**
 	 * Render Sticky & Stretch attributes
 	 *
-	 * @param object $widget Elementor widget instance.
+	 * @param object $widget elementor widget instance
 	 */
-	public function render_attributes($widget): void
-	{
+	public function render_attributes( $widget ) {
 		$settings = $widget->get_settings_for_display();
 
 		// Stretch reset on devices
-		if (isset($settings['vlt_stretch_reset_on_devices'])) {
+		if ( isset( $settings['vlt_stretch_reset_on_devices'] ) ) {
 			$widget->add_render_attribute(
 				'_wrapper',
 				'data-reset-on-devices',
-				wp_json_encode($settings['vlt_stretch_reset_on_devices']),
+				wp_json_encode( $settings['vlt_stretch_reset_on_devices'] ),
 			);
 		}
 
 		// Padding to container reset on devices
-		if (isset($settings['vlt_padding_to_container_reset_on_devices'])) {
+		if ( isset( $settings['vlt_padding_to_container_reset_on_devices'] ) ) {
 			$widget->add_render_attribute(
 				'_wrapper',
 				'data-reset-padding-to-container-on-devices',
-				wp_json_encode($settings['vlt_padding_to_container_reset_on_devices']),
+				wp_json_encode( $settings['vlt_padding_to_container_reset_on_devices'] ),
 			);
 		}
 
 		// Equal height reset on devices
-		if (isset($settings['vlt_equal_height_widgets_reset_on_devices'])) {
+		if ( isset( $settings['vlt_equal_height_widgets_reset_on_devices'] ) ) {
 			$widget->add_render_attribute(
 				'_wrapper',
 				'data-reset-equal-height-on-devices',
-				wp_json_encode($settings['vlt_equal_height_widgets_reset_on_devices']),
+				wp_json_encode( $settings['vlt_equal_height_widgets_reset_on_devices'] ),
 			);
 		}
+	}
+
+	/**
+	 * Initialize extension
+	 */
+	protected function init() {
+		// Extension initialization
+	}
+
+	/**
+	 * Register WordPress hooks
+	 */
+	protected function register_hooks() {
+		// Register controls for containers
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_controls' ], 10, 2 );
+
+		// Register controls for common widgets
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_controls' ], 10, 2 );
+
+		// Render for containers
+		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_attributes' ] );
+
+		// Render for common widgets
+		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_attributes' ] );
 	}
 }

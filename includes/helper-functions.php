@@ -1,17 +1,15 @@
 <?php
 
-if (! defined('ABSPATH')) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function vlt_toolkit_has()
-{
-	return class_exists('VLT\Toolkit\Toolkit');
+function vlt_toolkit_has() {
+	return class_exists( 'VLT\Toolkit\Toolkit' );
 }
 
-function vlt_toolkit_helper_plugin_instance()
-{
-	if (vlt_toolkit_has()) {
+function vlt_toolkit_helper_plugin_instance() {
+	if ( vlt_toolkit_has() ) {
 		return VLT\Toolkit\Toolkit::instance();
 	}
 
@@ -22,10 +20,9 @@ function vlt_toolkit_helper_plugin_instance()
 // Breadcrumbs
 // ========================================
 
-if (! function_exists('vlt_toolkit_breadcrumbs')) {
-	function vlt_toolkit_breadcrumbs($args = [])
-	{
-		return VLT\Toolkit\Modules\Features\Breadcrumbs::render($args);
+if ( !function_exists( 'vlt_toolkit_breadcrumbs' ) ) {
+	function vlt_toolkit_breadcrumbs( $args = [] ) {
+		return VLT\Toolkit\Modules\Features\Breadcrumbs::render( $args );
 	}
 }
 
@@ -33,53 +30,48 @@ if (! function_exists('vlt_toolkit_breadcrumbs')) {
 // Social Icons Functions
 // ========================================
 
-if (! function_exists('vlt_toolkit_get_social_icons')) {
+if ( !function_exists( 'vlt_toolkit_get_social_icons' ) ) {
 	/**
 	 * Get social icons list
 	 */
-	function vlt_toolkit_get_social_icons()
-	{
+	function vlt_toolkit_get_social_icons() {
 		return VLT\Toolkit\Modules\Features\SocialIcons::get_social_icons();
 	}
 }
 
-if (! function_exists('vlt_toolkit_get_sharable_icons')) {
+if ( !function_exists( 'vlt_toolkit_get_sharable_icons' ) ) {
 	/**
 	 * Get sharable social icons list
 	 */
-	function vlt_toolkit_get_sharable_icons()
-	{
+	function vlt_toolkit_get_sharable_icons() {
 		return VLT\Toolkit\Modules\Features\SocialIcons::SHAREABLE_NETWORKS;
 	}
 }
 
-if (! function_exists('vlt_toolkit_get_post_share_data')) {
+if ( !function_exists( 'vlt_toolkit_get_post_share_data' ) ) {
 	/**
 	 * Get post share data
 	 */
-	function vlt_toolkit_get_post_share_data()
-	{
+	function vlt_toolkit_get_post_share_data() {
 		return VLT\Toolkit\Modules\Features\SocialIcons::get_post_share_data();
 	}
 }
 
-if (! function_exists('vlt_toolkit_build_sharer_data_attrs')) {
+if ( !function_exists( 'vlt_toolkit_build_sharer_data_attrs' ) ) {
 	/**
 	 * Build sharer data attrs
 	 */
-	function vlt_toolkit_build_sharer_data_attrs($slug, $attrs)
-	{
-		return VLT\Toolkit\Modules\Features\SocialIcons::build_sharer_data_attrs($slug, $attrs);
+	function vlt_toolkit_build_sharer_data_attrs( $slug, $attrs ) {
+		return VLT\Toolkit\Modules\Features\SocialIcons::build_sharer_data_attrs( $slug, $attrs );
 	}
 }
 
-if (! function_exists('vlt_toolkit_get_post_share_buttons')) {
+if ( !function_exists( 'vlt_toolkit_get_post_share_buttons' ) ) {
 	/**
 	 * Get post share buttons HTML
 	 */
-	function vlt_toolkit_get_post_share_buttons($post_id = null, $style = 'style-1')
-	{
-		return VLT\Toolkit\Modules\Features\SocialIcons::get_post_share_buttons($post_id, $style);
+	function vlt_toolkit_get_post_share_buttons( $post_id = null, $style = 'style-1' ) {
+		return VLT\Toolkit\Modules\Features\SocialIcons::get_post_share_buttons( $post_id, $style );
 	}
 }
 
@@ -87,33 +79,30 @@ if (! function_exists('vlt_toolkit_get_post_share_buttons')) {
 // Post Views Functions
 // ========================================
 
-if (! function_exists('vlt_toolkit_set_post_views')) {
+if ( !function_exists( 'vlt_toolkit_set_post_views' ) ) {
 	/**
 	 * Set/increment post views
 	 */
-	function vlt_toolkit_set_post_views($post_id): void
-	{
-		VLT\Toolkit\Modules\Features\PostViews::set_views($post_id);
+	function vlt_toolkit_set_post_views( $post_id ) {
+		VLT\Toolkit\Modules\Features\PostViews::set_views( $post_id );
 	}
 }
 
-if (! function_exists('vlt_toolkit_get_post_views')) {
+if ( !function_exists( 'vlt_toolkit_get_post_views' ) ) {
 	/**
 	 * Get post views count
 	 */
-	function vlt_toolkit_get_post_views($post_id)
-	{
-		return VLT\Toolkit\Modules\Features\PostViews::get_views($post_id);
+	function vlt_toolkit_get_post_views( $post_id ) {
+		return VLT\Toolkit\Modules\Features\PostViews::get_views( $post_id );
 	}
 }
 
-if (! function_exists('vlt_toolkit_reset_post_views')) {
+if ( !function_exists( 'vlt_toolkit_reset_post_views' ) ) {
 	/**
 	 * Reset post views to zero
 	 */
-	function vlt_toolkit_reset_post_views($post_id): void
-	{
-		VLT\Toolkit\Modules\Features\PostViews::reset_views($post_id);
+	function vlt_toolkit_reset_post_views( $post_id ) {
+		VLT\Toolkit\Modules\Features\PostViews::reset_views( $post_id );
 	}
 }
 
@@ -121,23 +110,21 @@ if (! function_exists('vlt_toolkit_reset_post_views')) {
 // Contact Form 7 Functions
 // ========================================
 
-if (! function_exists('vlt_toolkit_get_cf7_forms')) {
+if ( !function_exists( 'vlt_toolkit_get_cf7_forms' ) ) {
 	/**
 	 * Get list of Contact Form 7 forms
 	 */
-	function vlt_toolkit_get_cf7_forms()
-	{
+	function vlt_toolkit_get_cf7_forms() {
 		return VLT\Toolkit\Modules\Integrations\ContactForm7::get_forms();
 	}
 }
 
-if (! function_exists('vlt_toolkit_render_cf7_form')) {
+if ( !function_exists( 'vlt_toolkit_render_cf7_form' ) ) {
 	/**
 	 * Render Contact Form 7 by ID
 	 */
-	function vlt_toolkit_render_cf7_form($form_id, $args = [])
-	{
-		return VLT\Toolkit\Modules\Integrations\ContactForm7::render_form($form_id, $args);
+	function vlt_toolkit_render_cf7_form( $form_id, $args = [] ) {
+		return VLT\Toolkit\Modules\Integrations\ContactForm7::render_form( $form_id, $args );
 	}
 }
 
@@ -145,13 +132,12 @@ if (! function_exists('vlt_toolkit_render_cf7_form')) {
 // Visual Portfolio
 // ========================================
 
-if (! function_exists('vlt_toolkit_render_vp_portfolio')) {
+if ( !function_exists( 'vlt_toolkit_render_vp_portfolio' ) ) {
 	/**
 	 * Render Visual Portfolio by ID
 	 */
-	function vlt_toolkit_render_vp_portfolio($portfolio_id, $args = [])
-	{
-		return VLT\Toolkit\Modules\Integrations\VisualPortfolio::render_portfolio($portfolio_id, $args);
+	function vlt_toolkit_render_vp_portfolio( $portfolio_id, $args = [] ) {
+		return VLT\Toolkit\Modules\Integrations\VisualPortfolio::render_portfolio( $portfolio_id, $args );
 	}
 }
 
@@ -159,17 +145,15 @@ if (! function_exists('vlt_toolkit_render_vp_portfolio')) {
 // AOS
 // ========================================
 
-if (! function_exists('vlt_toolkit_aos_get_animations')) {
-	function vlt_toolkit_aos_get_animations()
-	{
+if ( !function_exists( 'vlt_toolkit_aos_get_animations' ) ) {
+	function vlt_toolkit_aos_get_animations() {
 		return VLT\Toolkit\Modules\Features\AOS::get_animations();
 	}
 }
 
-if (! function_exists('vlt_toolkit_aos_render')) {
-	function vlt_toolkit_aos_render($animation, $args = [])
-	{
-		return VLT\Toolkit\Modules\Features\AOS::render_attrs($animation, $args);
+if ( !function_exists( 'vlt_toolkit_aos_render' ) ) {
+	function vlt_toolkit_aos_render( $animation, $args = [] ) {
+		return VLT\Toolkit\Modules\Features\AOS::render_attrs( $animation, $args );
 	}
 }
 
@@ -177,14 +161,13 @@ if (! function_exists('vlt_toolkit_aos_render')) {
 // WooCommerce Functions
 // ========================================
 
-if (! function_exists('vlt_toolkit_is_woocommerce_page')) {
+if ( !function_exists( 'vlt_toolkit_is_woocommerce_page' ) ) {
 	/**
 	 * Check if current page is a WooCommerce page
 	 */
-	function vlt_toolkit_is_woocommerce_page($page = '', $endpoint = '')
-	{
-		if (class_exists('VLT\Toolkit\Modules\Integrations\WooCommerce')) {
-			return VLT\Toolkit\Modules\Integrations\WooCommerce::is_woocommerce_page($page, $endpoint);
+	function vlt_toolkit_is_woocommerce_page( $page = '', $endpoint = '' ) {
+		if ( class_exists( 'VLT\Toolkit\Modules\Integrations\WooCommerce' ) ) {
+			return VLT\Toolkit\Modules\Integrations\WooCommerce::is_woocommerce_page( $page, $endpoint );
 		}
 
 		return false;
@@ -195,22 +178,20 @@ if (! function_exists('vlt_toolkit_is_woocommerce_page')) {
 // Elementor Functions
 // ========================================
 
-if (! function_exists('vlt_toolkit_render_elementor_template')) {
+if ( !function_exists( 'vlt_toolkit_render_elementor_template' ) ) {
 	/**
 	 * Render Elementor template by ID
 	 */
-	function vlt_toolkit_render_elementor_template($template_id)
-	{
-		return VLT\Toolkit\Modules\Integrations\Elementor::render_template($template_id);
+	function vlt_toolkit_render_elementor_template( $template_id ) {
+		return VLT\Toolkit\Modules\Integrations\Elementor::render_template( $template_id );
 	}
 }
 
-if (! function_exists('vlt_toolkit_is_built_with_elementor')) {
+if ( !function_exists( 'vlt_toolkit_is_built_with_elementor' ) ) {
 	/**
 	 * Check if current post/page is built with Elementor
 	 */
-	function vlt_toolkit_is_built_with_elementor()
-	{
+	function vlt_toolkit_is_built_with_elementor() {
 		return VLT\Toolkit\Modules\Integrations\Elementor::is_built_with_elementor();
 	}
 }
@@ -219,52 +200,47 @@ if (! function_exists('vlt_toolkit_is_built_with_elementor')) {
 // Populate Functions
 // ========================================
 
-if (! function_exists('vlt_toolkit_populate_post_name')) {
+if ( !function_exists( 'vlt_toolkit_populate_post_name' ) ) {
 	/**
 	 * Get post names by post type
 	 */
-	function vlt_toolkit_populate_post_name($post_type = 'post')
-	{
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_post_name($post_type);
+	function vlt_toolkit_populate_post_name( $post_type = 'post' ) {
+		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_post_name( $post_type );
 	}
 }
 
-if (! function_exists('vlt_toolkit_populate_taxonomies')) {
+if ( !function_exists( 'vlt_toolkit_populate_taxonomies' ) ) {
 	/**
 	 * Get taxonomies by taxonomy name
 	 */
-	function vlt_toolkit_populate_taxonomies($taxonomy = 'category')
-	{
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_taxonomies($taxonomy);
+	function vlt_toolkit_populate_taxonomies( $taxonomy = 'category' ) {
+		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_taxonomies( $taxonomy );
 	}
 }
 
-if (! function_exists('vlt_toolkit_populate_available_menus')) {
+if ( !function_exists( 'vlt_toolkit_populate_available_menus' ) ) {
 	/**
 	 * Get available menus
 	 */
-	function vlt_toolkit_populate_available_menus()
-	{
+	function vlt_toolkit_populate_available_menus() {
 		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_available_menus();
 	}
 }
 
-if (! function_exists('vlt_toolkit_populate_elementor_templates')) {
+if ( !function_exists( 'vlt_toolkit_populate_elementor_templates' ) ) {
 	/**
 	 * Get list of Elementor templates
 	 */
-	function vlt_toolkit_populate_elementor_templates($type = null)
-	{
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_elementor_templates($type);
+	function vlt_toolkit_populate_elementor_templates( $type = null ) {
+		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_elementor_templates( $type );
 	}
 }
 
-if (! function_exists('vlt_toolkit_populate_vp_portfolios')) {
+if ( !function_exists( 'vlt_toolkit_populate_vp_portfolios' ) ) {
 	/**
 	 * Get list of Visual Portfolio layouts
 	 */
-	function vlt_toolkit_populate_vp_portfolios()
-	{
+	function vlt_toolkit_populate_vp_portfolios() {
 		return VLT\Toolkit\Modules\Integrations\VisualPortfolio::populate_portfolios();
 	}
 }

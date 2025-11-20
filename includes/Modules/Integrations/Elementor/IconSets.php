@@ -2,7 +2,7 @@
 
 namespace VLT\Toolkit\Modules\Integrations\Elementor;
 
-if (! defined('ABSPATH')) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -11,8 +11,7 @@ if (! defined('ABSPATH')) {
  *
  * Manages custom icon sets for Elementor
  */
-class IconSets
-{
+class IconSets {
 	/**
 	 * Assets URL
 	 *
@@ -23,32 +22,30 @@ class IconSets
 	/**
 	 * Constructor
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		$this->assets_url = VLT_TOOLKIT_URL . 'assets/';
 	}
 
 	/**
 	 * Add custom icon tabs
 	 *
-	 * @param array $settings Icon settings.
+	 * @param array $settings icon settings
 	 *
 	 * @return array
 	 */
-	public function add_icon_tabs($settings)
-	{
+	public function add_icon_tabs( $settings ) {
 		$icon_sets = $this->get_icon_sets();
 
-		foreach ($icon_sets as $key => $icon_set) {
+		foreach ( $icon_sets as $key => $icon_set ) {
 			// Check if icon set files exist before adding
-			$css_path = str_replace(VLT_TOOLKIT_URL, VLT_TOOLKIT_PATH, $icon_set['url']);
+			$css_path = str_replace( VLT_TOOLKIT_URL, VLT_TOOLKIT_PATH, $icon_set['url'] );
 
-			if (file_exists($css_path)) {
+			if ( file_exists( $css_path ) ) {
 				$settings[ $key ] = $icon_set;
 			}
 		}
 
-		return apply_filters('vlt_toolkit_elementor_icon_tabs', $settings);
+		return apply_filters( 'vlt_toolkit_elementor_icon_tabs', $settings );
 	}
 
 	/**
@@ -56,13 +53,12 @@ class IconSets
 	 *
 	 * @return array
 	 */
-	private function get_icon_sets()
-	{
+	private function get_icon_sets() {
 		return [
 			// Socicons
 			'socicons' => [
 				'name'          => 'socicons',
-				'label'         => esc_html__('Socicons', 'toolkit'),
+				'label'         => esc_html__( 'Socicons', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/socicons/socicons.css',
 				'enqueue'       => false, // CSS loaded globally in SocialIcons module
 				'prefix'        => 'socicon-',
@@ -75,7 +71,7 @@ class IconSets
 			// ET-Line Icons
 			'etline' => [
 				'name'          => 'etline',
-				'label'         => esc_html__('ET-Line', 'toolkit'),
+				'label'         => esc_html__( 'ET-Line', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/etline/etl.css',
 				'enqueue'       => [ $this->assets_url . 'fonts/etline/etl.css' ],
 				'prefix'        => 'etl-',
@@ -88,7 +84,7 @@ class IconSets
 			// Icomoon
 			'icomoon' => [
 				'name'          => 'icomoon',
-				'label'         => esc_html__('Icomoon', 'toolkit'),
+				'label'         => esc_html__( 'Icomoon', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/icomoon/icnm.css',
 				'enqueue'       => [ $this->assets_url . 'fonts/icomoon/icnm.css' ],
 				'prefix'        => 'icnm-',
@@ -101,7 +97,7 @@ class IconSets
 			// Iconsmind
 			'iconsmind' => [
 				'name'          => 'iconsmind',
-				'label'         => esc_html__('Iconsmind', 'toolkit'),
+				'label'         => esc_html__( 'Iconsmind', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/iconsmind/iconsmind.css',
 				'enqueue'       => [ $this->assets_url . 'fonts/iconsmind/iconsmind.css' ],
 				'prefix'        => 'icnmd-',
@@ -114,7 +110,7 @@ class IconSets
 			// Linearicons
 			'linearicons' => [
 				'name'          => 'linearicons',
-				'label'         => esc_html__('Linearicons', 'toolkit'),
+				'label'         => esc_html__( 'Linearicons', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/linearicons/lnr.css',
 				'enqueue'       => [ $this->assets_url . 'fonts/linearicons/lnr.css' ],
 				'prefix'        => 'lnr-',
@@ -127,7 +123,7 @@ class IconSets
 			// Elusive Icons
 			'elusiveicons' => [
 				'name'          => 'elusiveicons',
-				'label'         => esc_html__('Elusive Icons', 'toolkit'),
+				'label'         => esc_html__( 'Elusive Icons', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/elusiveicons/el.css',
 				'enqueue'       => [ $this->assets_url . 'fonts/elusiveicons/el.css' ],
 				'prefix'        => 'el-',
@@ -140,7 +136,7 @@ class IconSets
 			// Icofont
 			'icofont' => [
 				'name'          => 'icofont',
-				'label'         => esc_html__('Icofont', 'toolkit'),
+				'label'         => esc_html__( 'Icofont', 'toolkit' ),
 				'url'           => $this->assets_url . 'fonts/icofont/icofont.css',
 				'enqueue'       => [ $this->assets_url . 'fonts/icofont/icofont.css' ],
 				'prefix'        => 'icofont-',

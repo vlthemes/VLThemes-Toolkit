@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('ABSPATH')) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -16,7 +16,7 @@ if (! defined('ABSPATH')) {
 		 * Theme License Activation Form
 		 * Hook for theme activation form
 		 */
-		do_action('vlt_toolkit_print_activation_form');
+		do_action( 'vlt_toolkit_print_activation_form' );
 ?>
 
 	</div>
@@ -25,14 +25,14 @@ if (! defined('ABSPATH')) {
 		<div class="vlt-widget">
 
 			<div class="vlt-widget__title">
-				<mark class="elements"><?php echo esc_html_e('Envato Elements Customer?', 'toolkit'); ?></mark>
+				<mark class="elements"><?php echo esc_html_e( 'Envato Elements Customer?', 'toolkit' ); ?></mark>
 			</div>
 
 			<div class="vlt-widget__content">
 				<p>
 					<?php
 			echo wp_kses(
-				__('The theme activation is possible only for items purchased from <strong>Themeforest</strong> when you have the purchase code.', 'toolkit'),
+				__( 'The theme activation is possible only for items purchased from <strong>Themeforest</strong> when you have the purchase code.', 'toolkit' ),
 				[
 					'strong' => [],
 				],
@@ -43,7 +43,7 @@ if (! defined('ABSPATH')) {
 				<p class="mt-sm">
 					<?php
 echo wp_kses(
-	__('You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation.', 'toolkit'),
+	__( 'You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation.', 'toolkit' ),
 	[
 		'strong' => [],
 	],
@@ -52,7 +52,7 @@ echo wp_kses(
 				</p>
 				<div class="notice notice-info inline mt-sm">
 					<p>
-						<?php echo esc_html_e('Please be aware that item support is not provided for products obtained through Envato Elements.', 'toolkit'); ?>
+						<?php echo esc_html_e( 'Please be aware that item support is not provided for products obtained through Envato Elements.', 'toolkit' ); ?>
 					</p>
 				</div>
 

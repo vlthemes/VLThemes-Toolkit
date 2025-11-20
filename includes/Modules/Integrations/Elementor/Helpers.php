@@ -2,7 +2,7 @@
 
 namespace VLT\Toolkit\Modules\Integrations\Elementor;
 
-if (! defined('ABSPATH')) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -11,8 +11,7 @@ if (! defined('ABSPATH')) {
  *
  * Static helper methods for Elementor widgets
  */
-class Helpers
-{
+class Helpers {
 	/**
 	 * Populate post names by post type for dropdowns
 	 *
@@ -23,8 +22,7 @@ class Helpers
 	 *
 	 * @return array Array of posts in format [ID => post_title]. Empty array if no posts found.
 	 */
-	public static function populate_post_name($post_type = 'post')
-	{
+	public static function populate_post_name( $post_type = 'post' ) {
 		$options = [];
 
 		$all_post = [
@@ -32,10 +30,10 @@ class Helpers
 			'post_type'      => $post_type,
 		];
 
-		$post_terms = get_posts($all_post);
+		$post_terms = get_posts( $all_post );
 
-		if (! empty($post_terms) && ! is_wp_error($post_terms)) {
-			foreach ($post_terms as $term) {
+		if ( !empty( $post_terms ) && !is_wp_error( $post_terms ) ) {
+			foreach ( $post_terms as $term ) {
 				$options[ $term->ID ] = $term->post_title;
 			}
 		}
@@ -54,20 +52,19 @@ class Helpers
 	 *
 	 * @return array Array of post types in format [post_type => label]. Empty array if none found.
 	 */
-	public static function populate_post_types($args = [])
-	{
+	public static function populate_post_types( $args = [] ) {
 		$post_type_args = [
 			'show_in_nav_menus' => true,
 		];
 
-		if (! empty($args['post_type'])) {
+		if ( !empty( $args['post_type'] ) ) {
 			$post_type_args['name'] = $args['post_type'];
 		}
 
-		$_post_types = get_post_types($post_type_args, 'objects');
+		$_post_types = get_post_types( $post_type_args, 'objects' );
 
 		$post_types = [];
-		foreach ($_post_types as $post_type => $object) {
+		foreach ( $_post_types as $post_type => $object ) {
 			$post_types[ $post_type ] = $object->label;
 		}
 
@@ -83,18 +80,17 @@ class Helpers
 	 * @return array Array of sidebars in format [sidebar_id => name].
 	 *               Includes default option at index ''.
 	 */
-	public static function populate_all_sidebars()
-	{
+	public static function populate_all_sidebars() {
 		global $wp_registered_sidebars;
 
 		$options = [];
 
-		if (! $wp_registered_sidebars) {
-			$options[''] = esc_html__('No sidebars were found', 'toolkit');
+		if ( !$wp_registered_sidebars ) {
+			$options[''] = esc_html__( 'No sidebars were found', 'toolkit' );
 		} else {
-			$options[''] = esc_html__('Choose Sidebar', 'toolkit');
+			$options[''] = esc_html__( 'Choose Sidebar', 'toolkit' );
 
-			foreach ($wp_registered_sidebars as $sidebar_id => $sidebar) {
+			foreach ( $wp_registered_sidebars as $sidebar_id => $sidebar ) {
 				$options[ $sidebar_id ] = $sidebar['name'];
 			}
 		}
@@ -110,8 +106,7 @@ class Helpers
 	 *
 	 * @return array Array of posts in format [ID => post_title]. Empty array if no posts found.
 	 */
-	public static function populate_all_types_post()
-	{
+	public static function populate_all_types_post() {
 		$posts = get_posts(
 			[
 				'post_type'      => 'any',
@@ -121,8 +116,8 @@ class Helpers
 			],
 		);
 
-		if (! empty($posts)) {
-			return wp_list_pluck($posts, 'post_title', 'ID');
+		if ( !empty( $posts ) ) {
+			return wp_list_pluck( $posts, 'post_title', 'ID' );
 		}
 
 		return [];
@@ -139,8 +134,7 @@ class Helpers
 	 *
 	 * @return array Array of categories in format [$type => name]. Empty array if none found.
 	 */
-	public static function populate_post_type_categories($type = 'term_id')
-	{
+	public static function populate_post_type_categories( $type = 'term_id' ) {
 		$options = [];
 
 		$terms = get_terms(
@@ -150,8 +144,8 @@ class Helpers
 			],
 		);
 
-		if (! empty($terms) && ! is_wp_error($terms)) {
-			foreach ($terms as $term) {
+		if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
 				$options[ $term->{$type} ] = $term->name;
 			}
 		}
@@ -170,8 +164,7 @@ class Helpers
 	 *
 	 * @return array Array of terms in format [slug => name]. Empty array if none found.
 	 */
-	public static function populate_taxonomies($taxonomy = 'category')
-	{
+	public static function populate_taxonomies( $taxonomy = 'category' ) {
 		$options = [];
 
 		$terms = get_terms(
@@ -181,8 +174,8 @@ class Helpers
 			],
 		);
 
-		if (! empty($terms) && ! is_wp_error($terms)) {
-			foreach ($terms as $term) {
+		if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
 				$options[ $term->slug ] = $term->name;
 			}
 		}
@@ -198,12 +191,11 @@ class Helpers
 	 *
 	 * @return array Array of menus in format [slug => name]. Empty array if no menus registered.
 	 */
-	public static function populate_available_menus()
-	{
+	public static function populate_available_menus() {
 		$options = [];
 		$menus   = wp_get_nav_menus();
 
-		foreach ($menus as $menu) {
+		foreach ( $menus as $menu ) {
 			$options[ $menu->slug ] = $menu->name;
 		}
 
@@ -222,14 +214,13 @@ class Helpers
 	 *
 	 * @return array Array of templates in format [ID => post_title]. Includes default option at index 0.
 	 */
-	public static function populate_elementor_templates($type = null)
-	{
+	public static function populate_elementor_templates( $type = null ) {
 		$args = [
 			'post_type'      => 'elementor_library',
 			'posts_per_page' => -1,
 		];
 
-		if ($type) {
+		if ( $type ) {
 			$args['tax_query'] = [
 				[
 					'taxonomy' => 'elementor_library_type',
@@ -239,12 +230,12 @@ class Helpers
 			];
 		}
 
-		$page_templates = get_posts($args);
+		$page_templates = get_posts( $args );
 
 		$options = [];
 
-		if (! empty($page_templates) && ! is_wp_error($page_templates)) {
-			foreach ($page_templates as $post) {
+		if ( !empty( $page_templates ) && !is_wp_error( $page_templates ) ) {
+			foreach ( $page_templates as $post ) {
 				$options[ $post->ID ] = $post->post_title;
 			}
 		}

@@ -4,7 +4,7 @@ namespace VLT\Toolkit\Modules\Integrations;
 
 use VLT\Toolkit\Modules\BaseModule;
 
-if (! defined('ABSPATH')) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -14,8 +14,7 @@ if (! defined('ABSPATH')) {
  * Provides integration with Contact Form 7 plugin
  * Handles form modifications and helper functions
  */
-class ContactForm7 extends BaseModule
-{
+class ContactForm7 extends BaseModule {
 	/**
 	 * Module name
 	 *
@@ -31,25 +30,14 @@ class ContactForm7 extends BaseModule
 	protected $version = '1.0.0';
 
 	/**
-	 * Check if module should load
-	 *
-	 * @return bool
-	 */
-	protected function can_register()
-	{
-		return function_exists('wpcf7_add_form_tag');
-	}
-
-	/**
 	 * Register module
 	 */
-	public function register(): void
-	{
+	public function register() {
 		// Disable automatic paragraph formatting
-		add_filter('wpcf7_autop_or_not', '__return_false');
+		add_filter( 'wpcf7_autop_or_not', '__return_false' );
 
 		// Allow themes to add custom CF7 modifications
-		do_action('vlt_toolkit_cf7_init');
+		do_action( 'vlt_toolkit_cf7_init' );
 	}
 
 	/**
@@ -57,13 +45,12 @@ class ContactForm7 extends BaseModule
 	 *
 	 * Returns array of available Contact Form 7 forms
 	 *
-	 * @return array Array of form IDs and titles.
+	 * @return array array of form IDs and titles
 	 */
-	public static function get_forms()
-	{
+	public static function get_forms() {
 		$options = [];
 
-		if (! class_exists('WPCF7_ContactForm')) {
+		if ( !class_exists( 'WPCF7_ContactForm' ) ) {
 			return $options;
 		}
 
@@ -74,8 +61,8 @@ class ContactForm7 extends BaseModule
 			],
 		);
 
-		if (! empty($wpcf7_form_list) && ! is_wp_error($wpcf7_form_list)) {
-			foreach ($wpcf7_form_list as $post) {
+		if ( !empty( $wpcf7_form_list ) && !is_wp_error( $wpcf7_form_list ) ) {
+			foreach ( $wpcf7_form_list as $post ) {
 				$options[ $post->ID ] = $post->post_title;
 			}
 		}
@@ -86,14 +73,13 @@ class ContactForm7 extends BaseModule
 	/**
 	 * Render Contact Form 7 by ID
 	 *
-	 * @param int   $form_id Form ID.
-	 * @param array $args    Additional arguments.
+	 * @param int   $form_id form ID
+	 * @param array $args    additional arguments
 	 *
-	 * @return string Form HTML.
+	 * @return string form HTML
 	 */
-	public static function render_form($form_id, $args = [])
-	{
-		if (! function_exists('wpcf7_contact_form') || ! $form_id) {
+	public static function render_form( $form_id, $args = [] ) {
+		if ( !function_exists( 'wpcf7_contact_form' ) || !$form_id ) {
 			return '';
 		}
 
@@ -101,8 +87,17 @@ class ContactForm7 extends BaseModule
 			'ajax' => true,
 		];
 
-		$args = wp_parse_args($args, $defaults);
+		$args = wp_parse_args( $args, $defaults );
 
-		return do_shortcode('[contact-form-7 id="' . absint($form_id) . '"]');
+		return do_shortcode( '[contact-form-7 id="' . absint( $form_id ) . '"]' );
+	}
+
+	/**
+	 * Check if module should load
+	 *
+	 * @return bool
+	 */
+	protected function can_register() {
+		return function_exists( 'wpcf7_add_form_tag' );
 	}
 }

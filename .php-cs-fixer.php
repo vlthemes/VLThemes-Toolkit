@@ -1,86 +1,136 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
-	->in(__DIR__)
-	->exclude([
+declare(strict_types=1);
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
+use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
+
+$finder = Finder::create()
+	->in( __DIR__ )
+	->exclude( [
 		'vendor',
 		'node_modules',
 		'inc/demo',
-	])
-	->name('*.php')
-	->notName('*.blade.php')
-	->ignoreDotFiles(true)
-	->ignoreVCS(true);
+	] )
+	->name( '*.php' )
+	->notName( '*.blade.php' )
+	->ignoreDotFiles( true )
+	->ignoreVCS( true )
+;
 
-return (new PhpCsFixer\Config())
-	->setRiskyAllowed(true)
-	->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
-	->setRules([
-		// Основной современный стандарт
-		'@PSR12' => true,
-
-		// Короткий синтаксис массивов — это must-have в 2025 (кроме старого WordPress)
-		'array_syntax' => ['syntax' => 'short'],
-
-		// Идеальное выравнивание => и = в массивах и присваиваниях
-		'binary_operator_spaces' => [
+return ( new Config() )
+	->setRiskyAllowed( true )
+	->setParallelConfig( ParallelConfigFactory::detect() )
+	->setRules( [
+		'phpdoc_align'                  => true,
+		'phpdoc_annotation_without_dot' => true,
+		'phpdoc_indent'                 => true,
+		'no_blank_lines_after_phpdoc'   => true,
+		'ordered_class_elements'        => true,
+		'blank_line_before_statement'   => [
+			'statements' => [
+				'break',
+				'case',
+				'continue',
+				'declare',
+				'default',
+				'exit',
+				'goto',
+				'include',
+				'include_once',
+				'phpdoc',
+				'require',
+				'require_once',
+				'return',
+				'switch',
+				'throw',
+				'try',
+				'yield',
+				'yield_from',
+			],
+		],
+		'no_extra_blank_lines' => [
+			'tokens' => [
+				'attribute',
+				'break',
+				'case',
+				'continue',
+				'curly_brace_block',
+				'default',
+				'extra',
+				'parenthesis_brace_block',
+				'return',
+				'square_brace_block',
+				'switch',
+				'throw',
+				'use',
+			],
+		],
+		'control_structure_braces'                => true,
+		'control_structure_continuation_position' => ['position' => 'same_line'],
+		'declare_parentheses'                     => true,
+		'no_multiple_statements_per_line'         => true,
+		'braces_position'                         => [
+			'classes_opening_brace'                     => 'same_line',
+			'functions_opening_brace'                   => 'same_line',
+			'anonymous_functions_opening_brace'         => 'same_line',
+			'control_structures_opening_brace'          => 'same_line',
+			'anonymous_classes_opening_brace'           => 'same_line',
+			'allow_single_line_empty_anonymous_classes' => true,
+			'allow_single_line_anonymous_functions'     => true,
+		],
+		'statement_indentation'           => true,
+		'unary_operator_spaces'           => true,
+		'whitespace_after_comma_in_array' => true,
+		'yoda_style'                      => true,
+		'array_syntax'                    => ['syntax' => 'short'],
+		'binary_operator_spaces'          => [
+			'default'   => 'single_space',
 			'operators' => [
 				'=>' => 'align_single_space_minimal',
 				'='  => 'align_single_space_minimal',
 			],
 		],
-
-		// Запятая в конце многострочных массивов (очень важно!)
-		'trailing_comma_in_multiline' => ['elements' => ['arrays', 'arguments', 'parameters']],
-
-		// Отступы внутри массивов
-		'array_indentation' => true,
-
-		// Один пробел после concat .
-		'concat_space' => ['spacing' => 'one'],
-
-		// Умная работа с пустыми строками
-		'no_extra_blank_lines' => [
-			'tokens' => ['extra', 'throw', 'use', 'break', 'continue', 'return'],
+		'blank_line_after_namespace' => true,
+		'ternary_operator_spaces'    => true,
+		'spaces_inside_parentheses'  => [
+			'space' => 'single'
 		],
-		'blank_line_before_statement' => [
-			'statements' => ['return', 'throw', 'try', 'if', 'switch'],
+		'single_space_around_construct' => [
+			'constructs_followed_by_a_single_space' => [
+				'abstract',
+				'as',
+				'case',
+				'catch',
+				'class',
+				'do',
+				'else',
+				'elseif',
+				'final',
+				'for',
+				'foreach',
+				'function',
+				'if',
+				'interface',
+				'namespace',
+				'private',
+				'protected',
+				'public',
+				'static',
+				'switch',
+				'trait',
+				'try',
+				'use_lambda',
+				'while',
+			],
+			'constructs_preceded_by_a_single_space' => [
+				'as',
+				'else',
+				'elseif',
+				'use_lambda',
+			],
 		],
-
-		// PHPDoc — красиво и строго
-		'phpdoc_align'      => ['align' => 'vertical'],
-		'phpdoc_separation' => ['groups' => [
-			['var', 'property', 'property-read', 'property-write'],
-			['param'],
-			['return'],
-			['throws'],
-		]],
-		'phpdoc_order'      => true,
-		'phpdoc_to_comment' => false, // оставляем нормальные докблоки
-
-		// Импорты
-		'ordered_imports'   => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
-		'no_unused_imports' => true,
-
-		// Полезные современные правила
-		'single_quote'               => true,
-		'no_superfluous_phpdoc_tags' => ['remove_inheritdoc' => true],
-		// 'global_namespace_import'                          => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
-		'fully_qualified_strict_types'                     => true,
-		'heredoc_indentation'                              => true,
-		'heredoc_to_nowdoc'                                => true,
-		'nullable_type_declaration_for_default_null_value' => true,
-		'void_return'                                      => true,
-		// 'native_function_invocation'                       => ['include' => ['@all']], // Отключено для WordPress
-		'no_useless_else'      => true,
-		'no_useless_return'    => true,
-		'simplified_if_return' => true,
-		'yoda_style'           => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
-
-		// Отключаем только то, что реально мешает
-		'blank_line_after_opening_tag' => false,
-		'single_blank_line_at_eof'     => true,
-	])
-	->setIndent('	')
-	->setLineEnding("\n")
-	->setFinder($finder);
+	] )
+	->setIndent( '	' )
+	->setLineEnding( "\n" )
+	->setFinder( $finder );

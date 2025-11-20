@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Theme Activation Initialization
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

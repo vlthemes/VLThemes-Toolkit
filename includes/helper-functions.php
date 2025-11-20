@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Global Helper Functions
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

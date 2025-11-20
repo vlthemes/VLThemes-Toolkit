@@ -2,9 +2,6 @@
 
 /**
  * Dashboard Activate Theme Template
- *
- * @author VLThemes
- * @version 1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

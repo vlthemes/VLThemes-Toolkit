@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Trending Posts Widget
- */
-
 namespace VLT\Toolkit\Widgets;
 
 if ( ! defined( 'ABSPATH' ) ) {

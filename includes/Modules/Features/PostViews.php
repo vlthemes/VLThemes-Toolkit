@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Post Views Module
- */
-
 namespace VLT\Toolkit\Modules\Features;
 
 use VLT\Toolkit\Modules\BaseModule;

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * VLT Theme Activation Handler
- */
-
 namespace VLT\Toolkit\ThemeActivation;
 
 if ( ! defined( 'ABSPATH' ) ) {

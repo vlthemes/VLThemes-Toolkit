@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Template Parts Module
- */
-
 namespace VLT\Toolkit\Modules\Features;
 
 use VLT\Toolkit\Modules\BaseModule;

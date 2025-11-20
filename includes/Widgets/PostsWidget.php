@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Posts Widget Base Class
- */
-
 namespace VLT\Toolkit\Widgets;
 
 if ( ! defined( 'ABSPATH' ) ) {

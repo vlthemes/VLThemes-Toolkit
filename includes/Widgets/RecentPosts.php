@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Recent Posts Widget
- */
-
 namespace VLT\Toolkit\Widgets;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,7 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Recent Posts Widget
  */
 class RecentPosts extends PostsWidget {
-
 
 
 	/**

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * VLT Toolkit Dashboard
- */
-
 namespace VLT\Toolkit\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -2,9 +2,6 @@
 
 /**
  * Dashboard Help Center Template
- *
- * @author VLThemes
- * @version 1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

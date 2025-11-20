@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Base Module Class
- */
-
 namespace VLT\Toolkit\Modules;
 
 if ( ! defined( 'ABSPATH' ) ) {

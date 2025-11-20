@@ -3,16 +3,15 @@
 namespace VLT\Toolkit\Modules\Integrations;
 
 use VLT\Toolkit\Modules\BaseModule;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\LayoutExtensions;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\JarallaxExtension;
 use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\AosExtension;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\ElementParallaxExtension;
 use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\CustomAttributesExtension;
 use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\CustomCssExtension;
+use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\ElementParallaxExtension;
+use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\JarallaxExtension;
+use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\LayoutExtensions;
 use VLT\Toolkit\Modules\Integrations\Elementor\IconSets;
-use VLT\Toolkit\Modules\Integrations\Elementor\Helpers;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -32,9 +31,8 @@ require_once __DIR__ . '/Elementor/Helpers.php';
  *
  * Handles Elementor widgets registration and integration
  */
-class Elementor extends BaseModule {
-
-
+class Elementor extends BaseModule
+{
 	/**
 	 * Module name
 	 *
@@ -61,7 +59,7 @@ class Elementor extends BaseModule {
 	 *
 	 * @var array
 	 */
-	private $extensions = array();
+	private $extensions = [];
 
 	/**
 	 * Icon Sets manager
@@ -75,14 +73,16 @@ class Elementor extends BaseModule {
 	 *
 	 * @return bool
 	 */
-	protected function can_register() {
-		return defined( 'ELEMENTOR_VERSION' );
+	protected function can_register()
+	{
+		return defined('ELEMENTOR_VERSION');
 	}
 
 	/**
 	 * Initialize module
 	 */
-	protected function init() {
+	protected function init(): void
+	{
 		$this->assets_url = VLT_TOOLKIT_URL . 'includes/Modules/Integrations/Elementor/';
 
 		// Initialize extensions and icon sets
@@ -93,41 +93,45 @@ class Elementor extends BaseModule {
 	/**
 	 * Initialize extensions
 	 */
-	private function init_extensions() {
-		$this->extensions = array(
+	private function init_extensions(): void
+	{
+		$this->extensions = [
 			'jarallax'         => new JarallaxExtension(),
 			'aos'              => new AosExtension(),
 			'element_parallax' => new ElementParallaxExtension(),
 			'layout'           => new LayoutExtensions(),
 			'custom_attrs'     => new CustomAttributesExtension(),
 			'custom_css'       => new CustomCssExtension(),
-		);
+		];
 	}
 
 	/**
 	 * Initialize Icon Sets manager
 	 */
-	private function init_icon_sets() {
+	private function init_icon_sets(): void
+	{
 		$this->icon_sets = new IconSets();
 	}
 
 	/**
 	 * Register module
 	 */
-	public function register() {
-		add_action( 'elementor/init', array( $this, 'init_elementor' ) );
+	public function register(): void
+	{
+		add_action('elementor/init', [ $this, 'init_elementor' ]);
 	}
 
 	/**
 	 * Enqueue editor styles
 	 */
-	public function editor_styles() {
+	public function editor_styles(): void
+	{
 		// Enqueue main editor CSS
 		wp_enqueue_style(
 			'vlt-editor-styles',
 			$this->assets_url . 'css/editor-styles.css',
-			array(),
-			VLT_TOOLKIT_VERSION
+			[],
+			VLT_TOOLKIT_VERSION,
 		);
 
 		// Add inline CSS for badge customization
@@ -137,17 +141,18 @@ class Elementor extends BaseModule {
 	/**
 	 * Add badge styles to editor
 	 */
-	private function add_badge_styles() {
+	private function add_badge_styles(): void
+	{
 		$dashboard = \VLT\Toolkit\Admin\Dashboard::instance();
 
 		$badge_config = apply_filters(
 			'vlt_toolkit_elementor_badge',
-			array(
+			[
 				'text' => $dashboard->theme_name,
-			)
+			],
 		);
 
-		if ( empty( $badge_config['text'] ) ) {
+		if (empty($badge_config['text'])) {
 			return;
 		}
 
@@ -156,28 +161,29 @@ class Elementor extends BaseModule {
 			#elementor-panel-elements-wrapper .elementor-element .icon .vlt-badge::after {
 				content: "%s";
 			}',
-			esc_attr( $badge_config['text'] )
+			esc_attr($badge_config['text']),
 		);
 
-		wp_add_inline_style( 'vlt-editor-styles', $custom_css );
+		wp_add_inline_style('vlt-editor-styles', $custom_css);
 	}
 
 	/**
 	 * Initialize Elementor integration
 	 */
-	public function init_elementor() {
+	public function init_elementor(): void
+	{
 		// Register widgets - support both old and new Elementor versions
-		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_widgets' ) );
+		add_action('elementor/widgets/register', [ $this, 'register_widgets' ]);
+		add_action('elementor/widgets/widgets_registered', [ $this, 'register_widgets' ]);
 
 		// Register other hooks
-		add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'editor_styles' ) );
-		add_action( 'elementor/elements/categories_registered', array( $this, 'register_categories' ) );
-		add_action( 'elementor/theme/register_locations', array( $this, 'register_locations' ) );
-		add_filter( 'elementor/icons_manager/additional_tabs', array( $this, 'add_icon_tabs' ) );
+		add_action('elementor/editor/after_enqueue_styles', [ $this, 'editor_styles' ]);
+		add_action('elementor/elements/categories_registered', [ $this, 'register_categories' ]);
+		add_action('elementor/theme/register_locations', [ $this, 'register_locations' ]);
+		add_filter('elementor/icons_manager/additional_tabs', [ $this, 'add_icon_tabs' ]);
 
 		// Hide promo widgets
-		add_filter( 'elementor/editor/localize_settings', array( $this, 'hide_promo_widgets' ), 20 );
+		add_filter('elementor/editor/localize_settings', [ $this, 'hide_promo_widgets' ], 20);
 	}
 
 	/**
@@ -186,9 +192,10 @@ class Elementor extends BaseModule {
 	 * Widget files should be loaded from theme using the action hook.
 	 * Theme manages all widget file paths and loading.
 	 */
-	private function include_widget_files() {
+	private function include_widget_files(): void
+	{
 		// Fire action to allow theme to load widget files from theme directory
-		do_action( 'vlt_toolkit_elementor_register_widgets' );
+		do_action('vlt_toolkit_elementor_register_widgets');
 	}
 
 	/**
@@ -196,11 +203,12 @@ class Elementor extends BaseModule {
 	 *
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager.
 	 */
-	public function register_widgets( $widgets_manager = null ) {
+	public function register_widgets($widgets_manager = null): void
+	{
 		$this->include_widget_files();
 
 		// Get widget manager
-		if ( ! $widgets_manager ) {
+		if (! $widgets_manager) {
 			$widgets_manager = \Elementor\Plugin::instance()->widgets_manager;
 		}
 
@@ -208,13 +216,13 @@ class Elementor extends BaseModule {
 		$widgets = $this->get_widget_classes();
 
 		// Register each widget
-		foreach ( $widgets as $widget_class ) {
-			if ( class_exists( $widget_class ) ) {
-				$widgets_manager->register( new $widget_class() );
+		foreach ($widgets as $widget_class) {
+			if (class_exists($widget_class)) {
+				$widgets_manager->register(new $widget_class());
 			}
 		}
 
-		do_action( 'vlt_toolkit_elementor_widgets_registered' );
+		do_action('vlt_toolkit_elementor_widgets_registered');
 	}
 
 	/**
@@ -225,7 +233,8 @@ class Elementor extends BaseModule {
 	 *
 	 * @return array
 	 */
-	private function get_widget_classes() {
+	private function get_widget_classes()
+	{
 		/**
 		 * Filter Elementor widget classes
 		 *
@@ -233,7 +242,7 @@ class Elementor extends BaseModule {
 		 *
 		 * @param array $widget_classes Array of widget class names.
 		 */
-		return apply_filters( 'vlt_toolkit_elementor_widget_classes', array() );
+		return apply_filters('vlt_toolkit_elementor_widget_classes', []);
 	}
 
 	/**
@@ -241,22 +250,23 @@ class Elementor extends BaseModule {
 	 *
 	 * @param object $elements_manager Elementor elements manager.
 	 */
-	public function register_categories( $elements_manager ) {
+	public function register_categories($elements_manager): void
+	{
 		// Default categories
-		$categories = array(
-			'vlthemes-elements' => array(
-				'title' => esc_html__( 'VLThemes Elements', 'vlthemes-toolkit' ),
+		$categories = [
+			'vlthemes-elements' => [
+				'title' => esc_html__('VLThemes Elements', 'toolkit'),
 				'icon'  => 'fa fa-plug',
-			),
-			'vlthemes-showcase' => array(
-				'title' => esc_html__( 'VLThemes Showcase', 'vlthemes-toolkit' ),
+			],
+			'vlthemes-showcase' => [
+				'title' => esc_html__('VLThemes Showcase', 'toolkit'),
 				'icon'  => 'fa fa-image',
-			),
-			'vlthemes-woo'      => array(
-				'title' => esc_html__( 'VLThemes WooCommerce', 'vlthemes-toolkit' ),
+			],
+			'vlthemes-woo' => [
+				'title' => esc_html__('VLThemes WooCommerce', 'toolkit'),
 				'icon'  => 'fa fa-shopping-cart',
-			),
-		);
+			],
+		];
 
 		/**
 		 * Filter Elementor widget categories
@@ -265,11 +275,11 @@ class Elementor extends BaseModule {
 		 *
 		 * @param array $categories Array of categories with slug as key and args as value.
 		 */
-		$categories = apply_filters( 'vlt_toolkit_elementor_categories', $categories );
+		$categories = apply_filters('vlt_toolkit_elementor_categories', $categories);
 
 		// Register all categories
-		foreach ( $categories as $slug => $args ) {
-			$elements_manager->add_category( $slug, $args );
+		foreach ($categories as $slug => $args) {
+			$elements_manager->add_category($slug, $args);
 		}
 	}
 
@@ -278,9 +288,10 @@ class Elementor extends BaseModule {
 	 *
 	 * @param object $elementor_theme_manager Elementor theme manager.
 	 */
-	public function register_locations( $elementor_theme_manager ) {
+	public function register_locations($elementor_theme_manager): void
+	{
 		// Default locations
-		$locations = array();
+		$locations = [];
 
 		/**
 		 * Filter Elementor theme locations
@@ -289,11 +300,11 @@ class Elementor extends BaseModule {
 		 *
 		 * @param array $locations Array of location names.
 		 */
-		$locations = apply_filters( 'vlt_toolkit_elementor_locations', $locations );
+		$locations = apply_filters('vlt_toolkit_elementor_locations', $locations);
 
 		// Register all locations
-		foreach ( $locations as $location ) {
-			$elementor_theme_manager->register_location( $location );
+		foreach ($locations as $location) {
+			$elementor_theme_manager->register_location($location);
 		}
 	}
 
@@ -303,12 +314,15 @@ class Elementor extends BaseModule {
 	 * Removes promotion widgets when Elementor Pro is not installed
 	 *
 	 * @param array $settings Elementor settings.
+	 *
 	 * @return array Modified settings.
 	 */
-	public function hide_promo_widgets( $settings ) {
-		if ( ! class_exists( 'ElementorPro\Plugin' ) && ! empty( $settings['promotionWidgets'] ) ) {
-			$settings['promotionWidgets'] = array();
+	public function hide_promo_widgets($settings)
+	{
+		if (! class_exists('ElementorPro\Plugin') && ! empty($settings['promotionWidgets'])) {
+			$settings['promotionWidgets'] = [];
 		}
+
 		return $settings;
 	}
 
@@ -316,10 +330,12 @@ class Elementor extends BaseModule {
 	 * Add custom icon tabs
 	 *
 	 * @param array $settings Icon settings.
+	 *
 	 * @return array
 	 */
-	public function add_icon_tabs( $settings ) {
-		return $this->icon_sets->add_icon_tabs( $settings );
+	public function add_icon_tabs($settings)
+	{
+		return $this->icon_sets->add_icon_tabs($settings);
 	}
 
 	/**
@@ -331,135 +347,59 @@ class Elementor extends BaseModule {
 	 * @since 1.0.0
 	 *
 	 * @global WP_Post $post Current post object.
+	 *
 	 * @return bool True if post is built with Elementor and Elementor is active, false otherwise.
 	 */
-	public static function is_built_with_elementor() {
+	public static function is_built_with_elementor()
+	{
 		global $post;
 
-		if ( ! $post || ! class_exists( '\Elementor\Plugin' ) ) {
+		if (! $post || ! class_exists('\Elementor\Plugin')) {
 			return false;
 		}
 
-		$document = \Elementor\Plugin::$instance->documents->get( $post->ID );
+		$document = \Elementor\Plugin::$instance->documents->get($post->ID);
 
 		return $document && $document->is_built_with_elementor();
-	}
-
-	/**
-	 * Static helper methods - delegated to Helpers class
-	 */
-
-	/**
-	 * Get post names by post type
-	 *
-	 * @param string $post_type Post type.
-	 * @return array Posts list.
-	 */
-	public static function get_post_name( $post_type = 'post' ) {
-		return Helpers::get_post_name( $post_type );
-	}
-
-	/**
-	 * Get post types
-	 *
-	 * @param array $args Arguments.
-	 * @return array Post types list.
-	 */
-	public static function get_post_types( $args = array() ) {
-		return Helpers::get_post_types( $args );
-	}
-
-	/**
-	 * Get all sidebars
-	 *
-	 * @return array Sidebars list.
-	 */
-	public static function get_all_sidebars() {
-		return Helpers::get_all_sidebars();
-	}
-
-	/**
-	 * Get all types of posts
-	 *
-	 * @return array Posts list.
-	 */
-	public static function get_all_types_post() {
-		return Helpers::get_all_types_post();
-	}
-
-	/**
-	 * Get post type categories
-	 *
-	 * @param string $type Type of value to return (term_id, slug, etc).
-	 * @return array Categories list.
-	 */
-	public static function get_post_type_categories( $type = 'term_id' ) {
-		return Helpers::get_post_type_categories( $type );
-	}
-
-	/**
-	 * Get taxonomies
-	 *
-	 * @param string $taxonomy Taxonomy name.
-	 * @return array Taxonomies list.
-	 */
-	public static function get_taxonomies( $taxonomy = 'category' ) {
-		return Helpers::get_taxonomies( $taxonomy );
-	}
-
-	/**
-	 * Get available menus
-	 *
-	 * @return array Menus list.
-	 */
-	public static function get_available_menus() {
-		return Helpers::get_available_menus();
-	}
-
-	/**
-	 * Get Elementor templates
-	 *
-	 * @param string|null $type Template type.
-	 * @return array Templates list.
-	 */
-	public static function get_elementor_templates( $type = null ) {
-		return Helpers::get_elementor_templates( $type );
 	}
 
 	/**
 	 * Render Elementor template
 	 *
 	 * @param int $template_id Template ID to render.
+	 *
 	 * @return string Rendered template HTML.
 	 */
-	public static function render_template( $template_id ) {
-		if ( ! $template_id ) {
+	public static function render_template($template_id)
+	{
+		if (! $template_id) {
 			return '';
 		}
 
 		// Only render published templates
-		if ( 'publish' !== get_post_status( $template_id ) ) {
+		if (get_post_status($template_id) !== 'publish') {
 			return '';
 		}
 
 		// Check if Elementor is available and if this post was built with Elementor
-		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->documents->get( $template_id )->is_built_with_elementor() ) {
+		if (class_exists('\Elementor\Plugin') && \Elementor\Plugin::$instance->documents->get($template_id)->is_built_with_elementor()) {
 			// Get rendered Elementor content
-			$content = \Elementor\Plugin::$instance->frontend->get_builder_content( $template_id, true );
+			$content = \Elementor\Plugin::$instance->frontend->get_builder_content($template_id, true);
 
 			// Force enqueue Elementor styles for proper rendering
 			\Elementor\Plugin::$instance->frontend->enqueue_styles();
 
 			// If the post is a custom post type, enqueue its scripts
-			if ( method_exists( \Elementor\Plugin::$instance->frontend, 'enqueue_scripts' ) ) {
+			if (method_exists(\Elementor\Plugin::$instance->frontend, 'enqueue_scripts')) {
 				\Elementor\Plugin::$instance->frontend->enqueue_scripts();
 			}
 		} else {
 			// For non-Elementor content, get the regular post content
-			$post = get_post( $template_id );
-			if ( $post ) {
+			$post = get_post($template_id);
+
+			if ($post) {
 				// Apply content filters to process shortcodes, embeds, etc.
-				$content = apply_filters( 'the_content', $post->post_content );
+				$content = apply_filters('the_content', $post->post_content);
 			} else {
 				$content = '';
 			}

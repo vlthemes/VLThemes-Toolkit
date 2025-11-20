@@ -4,11 +4,11 @@
  * Dashboard Theme Options Template
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
 // Redirect to Customizer
-wp_safe_redirect( admin_url( 'customize.php' ) );
+wp_safe_redirect(admin_url('customize.php'));
 
 exit;

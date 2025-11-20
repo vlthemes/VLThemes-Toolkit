@@ -2,7 +2,7 @@
 
 namespace VLT\Toolkit\Modules\Integrations\Elementor;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -11,8 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Provides common functionality for all Elementor element extensions
  */
-abstract class BaseExtension {
-
+abstract class BaseExtension
+{
 	/**
 	 * Extension name
 	 *
@@ -30,11 +30,14 @@ abstract class BaseExtension {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->assets_url = VLT_TOOLKIT_URL . 'assets/';
 		$this->init();
 		$this->register_hooks();
-		$this->register_scripts();
+
+		// Register scripts on proper WordPress hook.
+		add_action('wp_enqueue_scripts', [ $this, 'register_scripts' ], 10);
 	}
 
 	/**
@@ -42,7 +45,8 @@ abstract class BaseExtension {
 	 *
 	 * Override this method in child classes to register extension-specific scripts
 	 */
-	protected function register_scripts() {
+	public function register_scripts(): void
+	{
 		// Can be overridden in child classes
 	}
 
@@ -62,26 +66,27 @@ abstract class BaseExtension {
 	 * @param object $element Elementor element instance.
 	 * @param array  $args    Element arguments.
 	 */
-	abstract public function register_controls( $element, $args );
+	abstract public function register_controls($element, $args);
 
 	/**
 	 * Render extension attributes
 	 *
 	 * @param object $element Elementor element instance.
 	 */
-	abstract public function render_attributes( $element );
+	abstract public function render_attributes($element);
 
 	/**
 	 * Get Elementor breakpoints
 	 *
 	 * @return array Available breakpoints.
 	 */
-	protected function get_elementor_breakpoints() {
+	protected function get_elementor_breakpoints()
+	{
 		$breakpoints_manager = \Elementor\Plugin::$instance->breakpoints;
 		$breakpoints         = $breakpoints_manager->get_active_breakpoints();
 
-		$options = array();
-		foreach ( $breakpoints as $breakpoint_key => $breakpoint ) {
+		$options = [];
+		foreach ($breakpoints as $breakpoint_key => $breakpoint) {
 			$options[ $breakpoint_key ] = $breakpoint->get_label();
 		}
 
@@ -93,11 +98,13 @@ abstract class BaseExtension {
 	 *
 	 * @return array
 	 */
-	protected function get_default_reset_devices() {
+	protected function get_default_reset_devices()
+	{
 		$breakpoints = $this->get_elementor_breakpoints();
 
-		$default_reset_devices = array( 'mobile' );
-		if ( isset( $breakpoints['mobile_extra'] ) ) {
+		$default_reset_devices = [ 'mobile' ];
+
+		if (isset($breakpoints['mobile_extra'])) {
 			$default_reset_devices[] = 'mobile_extra';
 		}
 

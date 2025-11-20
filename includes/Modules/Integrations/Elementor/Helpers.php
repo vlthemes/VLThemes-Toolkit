@@ -2,7 +2,7 @@
 
 namespace VLT\Toolkit\Modules\Integrations\Elementor;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -11,27 +11,31 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Static helper methods for Elementor widgets
  */
-class Helpers {
-
-
+class Helpers
+{
 	/**
-	 * Get post names by post type
+	 * Populate post names by post type for dropdowns
 	 *
-	 * @param string $post_type Post type.
-	 * @return array Posts list.
+	 * Returns an array of posts suitable for populating select fields in Elementor widgets,
+	 * ACF fields, or theme options. Each post is returned as ID => Title.
+	 *
+	 * @param string $post_type Post type slug. Default 'post'.
+	 *
+	 * @return array Array of posts in format [ID => post_title]. Empty array if no posts found.
 	 */
-	public static function get_post_name( $post_type = 'post' ) {
-		$options = array();
+	public static function populate_post_name($post_type = 'post')
+	{
+		$options = [];
 
-		$all_post = array(
+		$all_post = [
 			'posts_per_page' => -1,
 			'post_type'      => $post_type,
-		);
+		];
 
-		$post_terms = get_posts( $all_post );
+		$post_terms = get_posts($all_post);
 
-		if ( ! empty( $post_terms ) && ! is_wp_error( $post_terms ) ) {
-			foreach ( $post_terms as $term ) {
+		if (! empty($post_terms) && ! is_wp_error($post_terms)) {
+			foreach ($post_terms as $term) {
 				$options[ $term->ID ] = $term->post_title;
 			}
 		}
@@ -40,24 +44,30 @@ class Helpers {
 	}
 
 	/**
-	 * Get post types
+	 * Populate post types for dropdowns
 	 *
-	 * @param array $args Arguments.
-	 * @return array Post types list.
+	 * Returns an array of available post types suitable for populating select fields.
+	 * Only includes post types that are shown in navigation menus.
+	 *
+	 * @param array $args Optional. Arguments for filtering post types. Default empty array.
+	 *                    - 'post_type' (string) Filter by specific post type name.
+	 *
+	 * @return array Array of post types in format [post_type => label]. Empty array if none found.
 	 */
-	public static function get_post_types( $args = array() ) {
-		$post_type_args = array(
+	public static function populate_post_types($args = [])
+	{
+		$post_type_args = [
 			'show_in_nav_menus' => true,
-		);
+		];
 
-		if ( ! empty( $args['post_type'] ) ) {
+		if (! empty($args['post_type'])) {
 			$post_type_args['name'] = $args['post_type'];
 		}
 
-		$_post_types = get_post_types( $post_type_args, 'objects' );
+		$_post_types = get_post_types($post_type_args, 'objects');
 
-		$post_types = array();
-		foreach ( $_post_types as $post_type => $object ) {
+		$post_types = [];
+		foreach ($_post_types as $post_type => $object) {
 			$post_types[ $post_type ] = $object->label;
 		}
 
@@ -65,21 +75,26 @@ class Helpers {
 	}
 
 	/**
-	 * Get all sidebars
+	 * Populate all registered sidebars for dropdowns
 	 *
-	 * @return array Sidebars list.
+	 * Returns an array of all registered WordPress sidebars suitable for populating
+	 * select fields. Includes a default "Choose Sidebar" or "No sidebars" option.
+	 *
+	 * @return array Array of sidebars in format [sidebar_id => name].
+	 *               Includes default option at index ''.
 	 */
-	public static function get_all_sidebars() {
+	public static function populate_all_sidebars()
+	{
 		global $wp_registered_sidebars;
 
-		$options = array();
+		$options = [];
 
-		if ( ! $wp_registered_sidebars ) {
-			$options[''] = esc_html__( 'No sidebars were found', 'vlthemes-toolkit' );
+		if (! $wp_registered_sidebars) {
+			$options[''] = esc_html__('No sidebars were found', 'toolkit');
 		} else {
-			$options[''] = esc_html__( 'Choose Sidebar', 'vlthemes-toolkit' );
+			$options[''] = esc_html__('Choose Sidebar', 'toolkit');
 
-			foreach ( $wp_registered_sidebars as $sidebar_id => $sidebar ) {
+			foreach ($wp_registered_sidebars as $sidebar_id => $sidebar) {
 				$options[ $sidebar_id ] = $sidebar['name'];
 			}
 		}
@@ -88,45 +103,55 @@ class Helpers {
 	}
 
 	/**
-	 * Get all types of posts
+	 * Populate all published posts from any post type for dropdowns
 	 *
-	 * @return array Posts list.
+	 * Returns an array of all published posts regardless of post type,
+	 * suitable for populating select fields when you need cross-post-type selection.
+	 *
+	 * @return array Array of posts in format [ID => post_title]. Empty array if no posts found.
 	 */
-	public static function get_all_types_post() {
+	public static function populate_all_types_post()
+	{
 		$posts = get_posts(
-			array(
+			[
 				'post_type'      => 'any',
 				'post_style'     => 'all_types',
 				'post_status'    => 'publish',
 				'posts_per_page' => '-1',
-			)
+			],
 		);
 
-		if ( ! empty( $posts ) ) {
-			return wp_list_pluck( $posts, 'post_title', 'ID' );
+		if (! empty($posts)) {
+			return wp_list_pluck($posts, 'post_title', 'ID');
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
-	 * Get post type categories
+	 * Populate post categories for dropdowns
 	 *
-	 * @param string $type Type of value to return (term_id, slug, etc).
-	 * @return array Categories list.
+	 * Returns an array of category terms from the 'category' taxonomy suitable for
+	 * populating select fields. Only includes non-empty categories.
+	 *
+	 * @param string $type Type of value to use as array key. Default 'term_id'.
+	 *                     Accepts 'term_id', 'slug', 'name', or any term object property.
+	 *
+	 * @return array Array of categories in format [$type => name]. Empty array if none found.
 	 */
-	public static function get_post_type_categories( $type = 'term_id' ) {
-		$options = array();
+	public static function populate_post_type_categories($type = 'term_id')
+	{
+		$options = [];
 
 		$terms = get_terms(
-			array(
+			[
 				'taxonomy'   => 'category',
 				'hide_empty' => true,
-			)
+			],
 		);
 
-		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-			foreach ( $terms as $term ) {
+		if (! empty($terms) && ! is_wp_error($terms)) {
+			foreach ($terms as $term) {
 				$options[ $term->{$type} ] = $term->name;
 			}
 		}
@@ -135,23 +160,29 @@ class Helpers {
 	}
 
 	/**
-	 * Get taxonomies
+	 * Populate taxonomy terms for dropdowns
 	 *
-	 * @param string $taxonomy Taxonomy name.
-	 * @return array Taxonomies list.
+	 * Returns an array of terms from a specified taxonomy suitable for populating
+	 * select fields. Only includes non-empty terms. Uses slug as array key.
+	 *
+	 * @param string $taxonomy Taxonomy slug. Default 'category'.
+	 *                         Accepts 'category', 'post_tag', or any registered taxonomy.
+	 *
+	 * @return array Array of terms in format [slug => name]. Empty array if none found.
 	 */
-	public static function get_taxonomies( $taxonomy = 'category' ) {
-		$options = array();
+	public static function populate_taxonomies($taxonomy = 'category')
+	{
+		$options = [];
 
 		$terms = get_terms(
-			array(
+			[
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => true,
-			)
+			],
 		);
 
-		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-			foreach ( $terms as $term ) {
+		if (! empty($terms) && ! is_wp_error($terms)) {
+			foreach ($terms as $term) {
 				$options[ $term->slug ] = $term->name;
 			}
 		}
@@ -160,15 +191,19 @@ class Helpers {
 	}
 
 	/**
-	 * Get available menus
+	 * Populate available navigation menus for dropdowns
 	 *
-	 * @return array Menus list.
+	 * Returns an array of all registered WordPress navigation menus suitable for
+	 * populating select fields.
+	 *
+	 * @return array Array of menus in format [slug => name]. Empty array if no menus registered.
 	 */
-	public static function get_available_menus() {
-		$options = array();
+	public static function populate_available_menus()
+	{
+		$options = [];
 		$menus   = wp_get_nav_menus();
 
-		foreach ( $menus as $menu ) {
+		foreach ($menus as $menu) {
 			$options[ $menu->slug ] = $menu->name;
 		}
 
@@ -176,37 +211,42 @@ class Helpers {
 	}
 
 	/**
-	 * Get Elementor templates
+	 * Populate Elementor templates for dropdowns
 	 *
-	 * @param string|null $type Template type.
-	 * @return array Templates list.
+	 * Returns an array of Elementor library templates suitable for populating select fields.
+	 * Can be filtered by template type. Includes default "Select a Template" or
+	 * "Create a Template First" option at index 0.
+	 *
+	 * @param string|null $type Optional. Template type to filter by. Default null (all types).
+	 *                          Accepts 'page', 'section', 'widget', 'container', etc.
+	 *
+	 * @return array Array of templates in format [ID => post_title]. Includes default option at index 0.
 	 */
-	public static function get_elementor_templates( $type = null ) {
-		$args = array(
+	public static function populate_elementor_templates($type = null)
+	{
+		$args = [
 			'post_type'      => 'elementor_library',
 			'posts_per_page' => -1,
-		);
+		];
 
-		if ( $type ) {
-			$args['tax_query'] = array(
-				array(
+		if ($type) {
+			$args['tax_query'] = [
+				[
 					'taxonomy' => 'elementor_library_type',
 					'field'    => 'slug',
 					'terms'    => $type,
-				),
-			);
+				],
+			];
 		}
 
-		$page_templates = get_posts( $args );
+		$page_templates = get_posts($args);
 
-		$options[0] = esc_html__( 'Select a Template', 'vlthemes-toolkit' );
+		$options = [];
 
-		if ( ! empty( $page_templates ) && ! is_wp_error( $page_templates ) ) {
-			foreach ( $page_templates as $post ) {
+		if (! empty($page_templates) && ! is_wp_error($page_templates)) {
+			foreach ($page_templates as $post) {
 				$options[ $post->ID ] = $post->post_title;
 			}
-		} else {
-			$options[0] = esc_html__( 'Create a Template First', 'vlthemes-toolkit' );
 		}
 
 		return $options;

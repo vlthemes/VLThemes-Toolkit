@@ -4,7 +4,7 @@ namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
 
 use VLT\Toolkit\Modules\Integrations\Elementor\BaseExtension;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -13,9 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Handles Sticky Column, Stretch, Padding to Container, and Equal Height
  */
-class LayoutExtensions extends BaseExtension {
-
-
+class LayoutExtensions extends BaseExtension
+{
 	/**
 	 * Extension name
 	 *
@@ -26,38 +25,41 @@ class LayoutExtensions extends BaseExtension {
 	/**
 	 * Initialize extension
 	 */
-	protected function init() {
+	protected function init(): void
+	{
 		// Extension initialization
 	}
 
 	/**
 	 * Register extension scripts
 	 */
-	protected function register_scripts() {
+	public function register_scripts(): void
+	{
 		wp_enqueue_script(
 			'vlt-layout-extension',
-			plugin_dir_url( __FILE__ ) . 'js/LayoutExtensions.js',
-			array( 'gsap' ),
+			plugin_dir_url(__FILE__) . 'js/LayoutExtensions.js',
+			[ 'gsap' ],
 			VLT_TOOLKIT_VERSION,
-			true
+			true,
 		);
 	}
 
 	/**
 	 * Register WordPress hooks
 	 */
-	protected function register_hooks() {
+	protected function register_hooks(): void
+	{
 		// Register controls for containers
-		add_action( 'elementor/element/container/section_layout/after_section_end', array( $this, 'register_controls' ), 10, 2 );
+		add_action('elementor/element/container/section_layout/after_section_end', [ $this, 'register_controls' ], 10, 2);
 
 		// Register controls for common widgets
-		add_action( 'elementor/element/common/_section_style/after_section_end', array( $this, 'register_controls' ), 10, 2 );
+		add_action('elementor/element/common/_section_style/after_section_end', [ $this, 'register_controls' ], 10, 2);
 
 		// Render for containers
-		add_action( 'elementor/frontend/container/before_render', array( $this, 'render_attributes' ) );
+		add_action('elementor/frontend/container/before_render', [ $this, 'render_attributes' ]);
 
 		// Render for common widgets
-		add_action( 'elementor/frontend/widget/before_render', array( $this, 'render_attributes' ) );
+		add_action('elementor/frontend/widget/before_render', [ $this, 'render_attributes' ]);
 	}
 
 	/**
@@ -69,79 +71,80 @@ class LayoutExtensions extends BaseExtension {
 	 * @param object $element Elementor element instance.
 	 * @param array  $args    Element arguments.
 	 */
-	public function register_controls( $element, $args ) {
+	public function register_controls($element, $args): void
+	{
 		$breakpoints           = $this->get_elementor_breakpoints();
 		$default_reset_devices = $this->get_default_reset_devices();
 
 		$element->start_controls_section(
 			'vlt_section_layout_extensions',
-			array(
-				'label' => esc_html__( 'VLT Layout Extensions', 'vlthemes-toolkit' ),
+			[
+				'label' => esc_html__('VLT Layout Extensions', 'toolkit'),
 				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
-			)
+			],
 		);
 
 		// Sticky Column
 		$element->add_control(
 			'vlt_sticky_column',
-			array(
-				'label'        => esc_html__( 'Sticky Column', 'vlthemes-toolkit' ),
+			[
+				'label'        => esc_html__('Sticky Column', 'toolkit'),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'has-sticky-column',
 				'prefix_class' => '',
-			)
+			],
 		);
 
 		// Stretch
 		$element->add_control(
 			'vlt_stretch_enabled',
-			array(
-				'label'        => esc_html__( 'Stretch', 'vlthemes-toolkit' ),
+			[
+				'label'        => esc_html__('Stretch', 'toolkit'),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'prefix_class' => '',
 				'separator'    => 'before',
-			)
+			],
 		);
 
 		$element->add_control(
 			'vlt_stretch_settings_popover',
-			array(
-				'label'     => esc_html__( 'Stretch Settings', 'vlthemes-toolkit' ),
+			[
+				'label'     => esc_html__('Stretch Settings', 'toolkit'),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'condition' => array( 'vlt_stretch_enabled' => 'yes' ),
-			)
+				'condition' => [ 'vlt_stretch_enabled' => 'yes' ],
+			],
 		);
 
 		$element->start_popover();
 
 		$element->add_control(
 			'vlt_stretch_side',
-			array(
-				'label'        => esc_html__( 'Side', 'vlthemes-toolkit' ),
-				'type'         => \Elementor\Controls_Manager::SELECT,
-				'default'      => 'to-left',
-				'options'      => array(
-					'to-left'      => esc_html__( 'Left', 'vlthemes-toolkit' ),
-					'to-right'     => esc_html__( 'Right', 'vlthemes-toolkit' ),
-					'to-container' => esc_html__( 'Container', 'vlthemes-toolkit' ),
-				),
+			[
+				'label'   => esc_html__('Side', 'toolkit'),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'default' => 'to-left',
+				'options' => [
+					'to-left'      => esc_html__('Left', 'toolkit'),
+					'to-right'     => esc_html__('Right', 'toolkit'),
+					'to-container' => esc_html__('Container', 'toolkit'),
+				],
 				'prefix_class' => 'has-stretch-block-',
-				'condition'    => array( 'vlt_stretch_enabled' => 'yes' ),
-			)
+				'condition'    => [ 'vlt_stretch_enabled' => 'yes' ],
+			],
 		);
 
 		$element->add_control(
 			'vlt_stretch_reset_on_devices',
-			array(
-				'label'       => esc_html__( 'Reset On Device', 'vlthemes-toolkit' ),
+			[
+				'label'       => esc_html__('Reset On Device', 'toolkit'),
 				'type'        => \Elementor\Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'label_block' => true,
 				'default'     => $default_reset_devices,
 				'options'     => $breakpoints,
-				'condition'   => array( 'vlt_stretch_enabled' => 'yes' ),
-			)
+				'condition'   => [ 'vlt_stretch_enabled' => 'yes' ],
+			],
 		);
 
 		$element->end_popover();
@@ -149,52 +152,52 @@ class LayoutExtensions extends BaseExtension {
 		// Padding to Container
 		$element->add_control(
 			'vlt_padding_to_container',
-			array(
-				'label'        => esc_html__( 'Padding to Container', 'vlthemes-toolkit' ),
+			[
+				'label'        => esc_html__('Padding to Container', 'toolkit'),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'prefix_class' => '',
 				'separator'    => 'before',
-			)
+			],
 		);
 
 		$element->add_control(
 			'vlt_padding_settings_popover',
-			array(
-				'label'     => esc_html__( 'Padding Settings', 'vlthemes-toolkit' ),
+			[
+				'label'     => esc_html__('Padding Settings', 'toolkit'),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'condition' => array( 'vlt_padding_to_container' => 'yes' ),
-			)
+				'condition' => [ 'vlt_padding_to_container' => 'yes' ],
+			],
 		);
 
 		$element->start_popover();
 
 		$element->add_control(
 			'vlt_padding_to_container_side',
-			array(
-				'label'        => esc_html__( 'Side', 'vlthemes-toolkit' ),
-				'type'         => \Elementor\Controls_Manager::SELECT,
-				'default'      => 'to-left',
-				'options'      => array(
-					'to-left'  => esc_html__( 'Left', 'vlthemes-toolkit' ),
-					'to-right' => esc_html__( 'Right', 'vlthemes-toolkit' ),
-				),
+			[
+				'label'   => esc_html__('Side', 'toolkit'),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'default' => 'to-left',
+				'options' => [
+					'to-left'  => esc_html__('Left', 'toolkit'),
+					'to-right' => esc_html__('Right', 'toolkit'),
+				],
 				'prefix_class' => 'has-padding-block-',
-				'condition'    => array( 'vlt_padding_to_container' => 'yes' ),
-			)
+				'condition'    => [ 'vlt_padding_to_container' => 'yes' ],
+			],
 		);
 
 		$element->add_control(
 			'vlt_padding_to_container_reset_on_devices',
-			array(
-				'label'       => esc_html__( 'Reset On Device', 'vlthemes-toolkit' ),
+			[
+				'label'       => esc_html__('Reset On Device', 'toolkit'),
 				'type'        => \Elementor\Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'label_block' => true,
 				'default'     => $default_reset_devices,
 				'options'     => $breakpoints,
-				'condition'   => array( 'vlt_padding_to_container' => 'yes' ),
-			)
+				'condition'   => [ 'vlt_padding_to_container' => 'yes' ],
+			],
 		);
 
 		$element->end_popover();
@@ -202,37 +205,37 @@ class LayoutExtensions extends BaseExtension {
 		// Equal Height
 		$element->add_control(
 			'vlt_equal_height_widgets',
-			array(
-				'label'        => esc_html__( 'Equal Height', 'vlthemes-toolkit' ),
+			[
+				'label'        => esc_html__('Equal Height', 'toolkit'),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
 				'prefix_class' => 'has-equal-height-block-',
 				'separator'    => 'before',
-			)
+			],
 		);
 
 		$element->add_control(
 			'vlt_equal_height_popover',
-			array(
-				'label'     => esc_html__( 'Equal Height Settings', 'vlthemes-toolkit' ),
+			[
+				'label'     => esc_html__('Equal Height Settings', 'toolkit'),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'condition' => array( 'vlt_equal_height_widgets' => 'yes' ),
-			)
+				'condition' => [ 'vlt_equal_height_widgets' => 'yes' ],
+			],
 		);
 
 		$element->start_popover();
 
 		$element->add_control(
 			'vlt_equal_height_widgets_reset_on_devices',
-			array(
-				'label'       => esc_html__( 'Reset On Device', 'vlthemes-toolkit' ),
+			[
+				'label'       => esc_html__('Reset On Device', 'toolkit'),
 				'type'        => \Elementor\Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'label_block' => true,
 				'default'     => $default_reset_devices,
 				'options'     => $breakpoints,
-				'condition'   => array( 'vlt_equal_height_widgets' => 'yes' ),
-			)
+				'condition'   => [ 'vlt_equal_height_widgets' => 'yes' ],
+			],
 		);
 
 		$element->end_popover();
@@ -245,33 +248,34 @@ class LayoutExtensions extends BaseExtension {
 	 *
 	 * @param object $widget Elementor widget instance.
 	 */
-	public function render_attributes( $widget ) {
+	public function render_attributes($widget): void
+	{
 		$settings = $widget->get_settings_for_display();
 
 		// Stretch reset on devices
-		if ( isset( $settings['vlt_stretch_reset_on_devices'] ) ) {
+		if (isset($settings['vlt_stretch_reset_on_devices'])) {
 			$widget->add_render_attribute(
 				'_wrapper',
 				'data-reset-on-devices',
-				wp_json_encode( $settings['vlt_stretch_reset_on_devices'] )
+				wp_json_encode($settings['vlt_stretch_reset_on_devices']),
 			);
 		}
 
 		// Padding to container reset on devices
-		if ( isset( $settings['vlt_padding_to_container_reset_on_devices'] ) ) {
+		if (isset($settings['vlt_padding_to_container_reset_on_devices'])) {
 			$widget->add_render_attribute(
 				'_wrapper',
 				'data-reset-padding-to-container-on-devices',
-				wp_json_encode( $settings['vlt_padding_to_container_reset_on_devices'] )
+				wp_json_encode($settings['vlt_padding_to_container_reset_on_devices']),
 			);
 		}
 
 		// Equal height reset on devices
-		if ( isset( $settings['vlt_equal_height_widgets_reset_on_devices'] ) ) {
+		if (isset($settings['vlt_equal_height_widgets_reset_on_devices'])) {
 			$widget->add_render_attribute(
 				'_wrapper',
 				'data-reset-equal-height-on-devices',
-				wp_json_encode( $settings['vlt_equal_height_widgets_reset_on_devices'] )
+				wp_json_encode($settings['vlt_equal_height_widgets_reset_on_devices']),
 			);
 		}
 	}

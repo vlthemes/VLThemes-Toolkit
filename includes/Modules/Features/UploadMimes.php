@@ -4,7 +4,7 @@ namespace VLT\Toolkit\Modules\Features;
 
 use VLT\Toolkit\Modules\BaseModule;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -14,9 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Extends allowed upload MIME types for WordPress
  * Adds support for SVG and other file formats
  */
-class UploadMimes extends BaseModule {
-
-
+class UploadMimes extends BaseModule
+{
 	/**
 	 * Module name
 	 *
@@ -34,18 +33,21 @@ class UploadMimes extends BaseModule {
 	/**
 	 * Register module
 	 */
-	public function register() {
+	public function register(): void
+	{
 		// Extend allowed MIME types
-		add_filter( 'upload_mimes', array( $this, 'extend_mime_types' ) );
+		add_filter('upload_mimes', [ $this, 'extend_mime_types' ]);
 	}
 
 	/**
 	 * Extend allowed MIME types
 	 *
 	 * @param array $mimes Existing MIME types.
+	 *
 	 * @return array Modified MIME types.
 	 */
-	public function extend_mime_types( $mimes ) {
+	public function extend_mime_types($mimes)
+	{
 		// Add SVG support
 		$mimes['svg'] = 'image/svg+xml';
 
@@ -61,6 +63,6 @@ class UploadMimes extends BaseModule {
 		$mimes['woff']  = 'font/woff';
 		$mimes['woff2'] = 'font/woff2';
 
-		return apply_filters( 'vlt_toolkit_upload_mimes', $mimes );
+		return apply_filters('vlt_toolkit_upload_mimes', $mimes);
 	}
 }

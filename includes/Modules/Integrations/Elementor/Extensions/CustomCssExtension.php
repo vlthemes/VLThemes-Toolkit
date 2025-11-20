@@ -4,7 +4,7 @@ namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
 
 use VLT\Toolkit\Modules\Integrations\Elementor\BaseExtension;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -13,9 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Allows adding custom CSS to Elementor elements
  */
-class CustomCssExtension extends BaseExtension {
-
-
+class CustomCssExtension extends BaseExtension
+{
 	/**
 	 * Extension name
 	 *
@@ -28,46 +27,49 @@ class CustomCssExtension extends BaseExtension {
 	 *
 	 * @var array
 	 */
-	public static $hasRunCustomCSS = array();
+	public static $hasRunCustomCSS = [];
 
 	/**
 	 * Initialize extension
 	 */
-	protected function init() {
+	protected function init(): void
+	{
 		// Extension initialization
 	}
 
 	/**
 	 * Register WordPress hooks
 	 */
-	protected function register_hooks() {
+	protected function register_hooks(): void
+	{
 		// Register controls for containers
-		add_action( 'elementor/element/container/section_layout/after_section_end', array( $this, 'register_controls' ), 10, 2 );
+		add_action('elementor/element/container/section_layout/after_section_end', [ $this, 'register_controls' ], 10, 2);
 
 		// Register controls for common widgets
-		add_action( 'elementor/element/common/_section_style/after_section_end', array( $this, 'register_controls' ), 10, 2 );
+		add_action('elementor/element/common/_section_style/after_section_end', [ $this, 'register_controls' ], 10, 2);
 
 		// Register controls for page settings (all document types)
-		add_action( 'elementor/documents/register_controls', array( $this, 'register_page_settings_controls' ), 10, 1 );
+		add_action('elementor/documents/register_controls', [ $this, 'register_page_settings_controls' ], 10, 1);
 
 		// Register CSS hooks
-		add_action( 'elementor/element/parse_css', array( $this, 'add_post_css' ), 10, 2 );
-		add_action( 'elementor/css-file/post/parse', array( $this, 'add_page_settings_css' ) );
+		add_action('elementor/element/parse_css', [ $this, 'add_post_css' ], 10, 2);
+		add_action('elementor/css-file/post/parse', [ $this, 'add_page_settings_css' ]);
 
 		// Enqueue editor scripts
-		add_action( 'elementor/editor/after_enqueue_scripts', array( $this, 'enqueue_scripts_editor' ) );
+		add_action('elementor/editor/after_enqueue_scripts', [ $this, 'enqueue_scripts_editor' ]);
 	}
 
 	/**
 	 * Enqueue editor scripts for Custom CSS
 	 */
-	public function enqueue_scripts_editor() {
+	public function enqueue_scripts_editor(): void
+	{
 		wp_enqueue_script(
 			'vlt-custom-css',
-			plugin_dir_url( __FILE__ ) . 'js/CustomCssExtension.js',
-			array( 'elementor-editor' ),
+			plugin_dir_url(__FILE__) . 'js/CustomCssExtension.js',
+			[ 'elementor-editor' ],
 			VLT_TOOLKIT_VERSION,
-			true
+			true,
 		);
 	}
 
@@ -76,45 +78,46 @@ class CustomCssExtension extends BaseExtension {
 	 *
 	 * @param object $document Elementor document instance.
 	 */
-	public function register_page_settings_controls( $document ) {
+	public function register_page_settings_controls($document): void
+	{
 		// Only add to pages and posts (not templates, sections, etc.)
-		if ( ! $document instanceof \Elementor\Core\DocumentTypes\PageBase && ! $document instanceof \Elementor\Modules\Library\Documents\Page ) {
+		if (! $document instanceof \Elementor\Core\DocumentTypes\PageBase && ! $document instanceof \Elementor\Modules\Library\Documents\Page) {
 			return;
 		}
 
 		$document->start_controls_section(
 			'vlt_section_custom_css_page',
-			array(
-				'label' => esc_html__( 'VLT Custom CSS', 'vlthemes-toolkit' ),
+			[
+				'label' => esc_html__('VLT Custom CSS', 'toolkit'),
 				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
-			)
+			],
 		);
 
 		$document->add_control(
 			'vlt_custom_css_description',
-			array(
+			[
 				'type'            => \Elementor\Controls_Manager::RAW_HTML,
-				'raw'             => __( 'Add custom CSS for this entire page. Use "selector" to target the page wrapper, or use any custom CSS selectors.', 'vlthemes-toolkit' ),
+				'raw'             => __('Add custom CSS for this entire page. Use "selector" to target the page wrapper, or use any custom CSS selectors.', 'toolkit'),
 				'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
-			)
+			],
 		);
 
 		$document->add_control(
 			'vlt_custom_css',
-			array(
-				'label'       => esc_html__( 'Custom CSS', 'vlthemes-toolkit' ),
+			[
+				'label'       => esc_html__('Custom CSS', 'toolkit'),
 				'type'        => \Elementor\Controls_Manager::CODE,
 				'language'    => 'css',
 				'rows'        => 20,
 				'render_type' => 'ui',
 				'separator'   => 'none',
-			)
+			],
 		);
 
 		$document->end_controls_section();
 
 		// Allow themes to add custom controls
-		do_action( 'vlt_toolkit_elementor_custom_css_page_settings_controls', $document );
+		do_action('vlt_toolkit_elementor_custom_css_page_settings_controls', $document);
 	}
 
 	/**
@@ -123,40 +126,41 @@ class CustomCssExtension extends BaseExtension {
 	 * @param object $element Elementor element.
 	 * @param array  $args    Element arguments.
 	 */
-	public function register_controls( $element, $args ) {
+	public function register_controls($element, $args): void
+	{
 		$element->start_controls_section(
 			'vlt_section_custom_css',
-			array(
-				'label' => esc_html__( 'VLT Custom CSS', 'vlthemes-toolkit' ),
+			[
+				'label' => esc_html__('VLT Custom CSS', 'toolkit'),
 				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
-			)
+			],
 		);
 
 		$element->add_control(
 			'vlt_custom_css_description',
-			array(
+			[
 				'type'            => \Elementor\Controls_Manager::RAW_HTML,
-				'raw'             => __( 'Use "selector" to target wrapper element. Examples:<br>selector {color: red;} // For main element<br>selector .child-element {margin: 10px;} // For child element<br>.my-class {text-align: center;} // Or use any custom selector', 'vlthemes-toolkit' ),
+				'raw'             => __('Use "selector" to target wrapper element. Examples:<br>selector {color: red;} // For main element<br>selector .child-element {margin: 10px;} // For child element<br>.my-class {text-align: center;} // Or use any custom selector', 'toolkit'),
 				'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
-			)
+			],
 		);
 
 		$element->add_control(
 			'vlt_custom_css',
-			array(
-				'label'       => esc_html__( 'Custom CSS', 'vlthemes-toolkit' ),
+			[
+				'label'       => esc_html__('Custom CSS', 'toolkit'),
 				'type'        => \Elementor\Controls_Manager::CODE,
 				'language'    => 'css',
 				'rows'        => 20,
 				'render_type' => 'ui',
 				'separator'   => 'none',
-			)
+			],
 		);
 
 		$element->end_controls_section();
 
 		// Allow themes to add custom controls
-		do_action( 'vlt_toolkit_elementor_custom_css_controls', $element, $args );
+		do_action('vlt_toolkit_elementor_custom_css_controls', $element, $args);
 	}
 
 	/**
@@ -166,7 +170,8 @@ class CustomCssExtension extends BaseExtension {
 	 *
 	 * @param object $element Elementor element instance.
 	 */
-	public function render_attributes( $element ) {
+	public function render_attributes($element): void
+	{
 		// Custom CSS is rendered via CSS file, no attributes needed
 	}
 
@@ -174,18 +179,21 @@ class CustomCssExtension extends BaseExtension {
 	 * Check if custom CSS needs to be appended for widget
 	 *
 	 * @param string $uid Unique widget ID.
+	 *
 	 * @return bool
 	 */
-	private function needAppendCustomCSSforWidget( $uid ) {
+	private function needAppendCustomCSSforWidget($uid)
+	{
 		$need_append = false;
 		$tmp         = self::$hasRunCustomCSS;
 
-		if ( ! in_array( $uid, $tmp ) ) {
+		if (! in_array($uid, $tmp)) {
 			$need_append = true;
 			$tmp[]       = $uid;
 		}
 
 		self::$hasRunCustomCSS = $tmp;
+
 		return $need_append;
 	}
 
@@ -194,99 +202,106 @@ class CustomCssExtension extends BaseExtension {
 	 *
 	 * @param \Elementor\Core\Files\CSS\Post $post_css Post CSS instance.
 	 * @param \Elementor\Element_Base        $element  Element instance.
-	 * @return void
+	 *
 	 */
-	public function add_post_css( $post_css, $element ) {
-		if ( ! $post_css || ! $post_css instanceof \Elementor\Core\Files\CSS\Post ) {
+	public function add_post_css($post_css, $element): void
+	{
+		if (! $post_css || ! $post_css instanceof \Elementor\Core\Files\CSS\Post) {
 			return;
 		}
 
-		if ( ! $element || ! method_exists( $element, 'get_settings' ) ) {
+		if (! $element || ! method_exists($element, 'get_settings')) {
 			return;
 		}
 
 		$settings = $element->get_settings();
-		if ( empty( $settings['vlt_custom_css'] ) || ! is_string( $settings['vlt_custom_css'] ) ) {
+
+		if (empty($settings['vlt_custom_css']) || ! is_string($settings['vlt_custom_css'])) {
 			return;
 		}
 
-		$css = trim( $settings['vlt_custom_css'] );
-		if ( $css === '' ) {
+		$css = trim($settings['vlt_custom_css']);
+
+		if ($css === '') {
 			return;
 		}
 
 		$unique_uid = $element->get_name() . $element->get_id();
 
-		if ( ! $this->needAppendCustomCSSforWidget( $unique_uid ) ) {
+		if (! $this->needAppendCustomCSSforWidget($unique_uid)) {
 			return;
 		}
 
 		$selector = '';
-		if ( method_exists( $post_css, 'get_element_unique_selector' ) && $element ) {
-			$selector = $post_css->get_element_unique_selector( $element );
+
+		if (method_exists($post_css, 'get_element_unique_selector') && $element) {
+			$selector = $post_css->get_element_unique_selector($element);
 		}
 
-		if ( empty( $selector ) ) {
+		if (empty($selector)) {
 			return;
 		}
 
-		$css = str_replace( 'selector', $selector, $css );
+		$css = str_replace('selector', $selector, $css);
 
-		$css = preg_replace( '#<script(.*?)>(.*?)</script>#is', '', $css );
-		$css = strip_tags( $css );
+		$css = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $css);
+		$css = strip_tags($css);
 
-		if ( $css === '' ) {
+		if ($css === '') {
 			return;
 		}
 
 		$element_name = $element->get_name() ?? 'unknown';
 		$css          = "/* VLT Custom CSS for {$element_name} */\n" . $css . "\n/* End VLT Custom CSS */";
 
-		$css = \VLT\Toolkit\Toolkit::minify_css( $css );
+		$css = \VLT\Toolkit\Toolkit::minify_css($css);
 
 		$stylesheet = $post_css->get_stylesheet();
-		if ( ! $stylesheet || ! method_exists( $stylesheet, 'add_raw_css' ) ) {
+
+		if (! $stylesheet || ! method_exists($stylesheet, 'add_raw_css')) {
 			return;
 		}
 
-		$stylesheet->add_raw_css( $css );
+		$stylesheet->add_raw_css($css);
 	}
 
 	/**
 	 * Add page settings custom CSS
 	 *
 	 * @param \Elementor\Core\Files\CSS\Post $post_css Post CSS instance.
-	 * @return void
+	 *
 	 */
-	public function add_page_settings_css( $post_css ) {
-		if ( ! $post_css instanceof \Elementor\Core\Files\CSS\Post ) {
+	public function add_page_settings_css($post_css): void
+	{
+		if (! $post_css instanceof \Elementor\Core\Files\CSS\Post) {
 			return;
 		}
 
-		$document = \Elementor\Plugin::$instance->documents->get( $post_css->get_post_id() );
-		if ( ! $document ) {
+		$document = \Elementor\Plugin::$instance->documents->get($post_css->get_post_id());
+
+		if (! $document) {
 			return;
 		}
 
-		$css = $document->get_settings( 'vlt_custom_css' ) ?? '';
-		$css = trim( $css );
+		$css = $document->get_settings('vlt_custom_css') ?? '';
+		$css = trim($css);
 
-		if ( $css === '' ) {
+		if ($css === '') {
 			return;
 		}
 
-		$css = str_replace( 'selector', $document->get_css_wrapper_selector(), $css );
-		$css = strip_tags( $css );
-		$css = preg_replace( '#<script.*?>.*?</script>#is', '', $css );
+		$css = str_replace('selector', $document->get_css_wrapper_selector(), $css);
+		$css = strip_tags($css);
+		$css = preg_replace('#<script.*?>.*?</script>#is', '', $css);
 
-		if ( $css === '' ) {
+		if ($css === '') {
 			return;
 		}
 
 		$css = "/* VLT Document Custom CSS */\n" . $css . "\n/* End VLT Document CSS */";
 
-		$css = \VLT\Toolkit\Toolkit::minify_css( $css );
+		$css = \VLT\Toolkit\Toolkit::minify_css($css);
 
-		$post_css->get_stylesheet()->add_raw_css( $css );
+		$post_css->get_stylesheet()->add_raw_css($css);
 	}
 }

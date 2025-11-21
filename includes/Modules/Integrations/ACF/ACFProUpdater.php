@@ -1,8 +1,6 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Integrations;
-
-use VLT\Toolkit\Modules\BaseModule;
+namespace VLT\Toolkit\Modules\Integrations\ACF;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -13,21 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
  *
  * Handles ACF Pro plugin updates via TGM source
  */
-class ACFProUpdater extends BaseModule {
-	/**
-	 * Module name
-	 *
-	 * @var string
-	 */
-	protected $name = 'acf_pro_updater';
-
-	/**
-	 * Module version
-	 *
-	 * @var string
-	 */
-	protected $version = '1.0.0';
-
+class ACFProUpdater {
 	/**
 	 * Plugin name
 	 *
@@ -36,30 +20,10 @@ class ACFProUpdater extends BaseModule {
 	private $plugin_name = 'advanced-custom-fields-pro';
 
 	/**
-	 * Register module
+	 * Constructor
 	 */
-	public function register() {
-		// For active themes only.
-		if ( function_exists( 'vlt_is_theme_activated' ) && !vlt_is_theme_activated() ) {
-			return;
-		}
-
-		// Don't run on ACF Settings page to prevent conflicts
-		if ( isset( $_GET['post_type'] ) && 'acf-field-group' === $_GET['post_type'] ) {
-			return;
-		}
-
-		// Already active
-		if ( get_option( 'acf_pro_license' ) ) {
-			return;
-		}
-
-		// Return ACF pro fake license to prevent notices
-		add_filter( 'option_acf_pro_license', [ $this, 'acf_pro_license' ], 20, 1 );
-		add_filter( 'pre_option_acf_pro_license', [ $this, 'acf_pro_license' ], 20, 1 );
-
-		// Modify update information for plugin
-		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'modify_plugin_transient' ], 20, 1 );
+	public function __construct() {
+		$this->register();
 	}
 
 	/**
@@ -118,12 +82,30 @@ class ACFProUpdater extends BaseModule {
 	}
 
 	/**
-	 * Check if module should load
-	 *
-	 * @return bool
+	 * Register hooks
 	 */
-	protected function can_register() {
-		return class_exists( 'ACF' );
+	private function register() {
+		// For active themes only.
+		if ( function_exists( 'vlt_is_theme_activated' ) && !vlt_is_theme_activated() ) {
+			return;
+		}
+
+		// Don't run on ACF Settings page to prevent conflicts
+		if ( isset( $_GET['post_type'] ) && 'acf-field-group' === $_GET['post_type'] ) {
+			return;
+		}
+
+		// Already active
+		if ( get_option( 'acf_pro_license' ) ) {
+			return;
+		}
+
+		// Return ACF pro fake license to prevent notices
+		add_filter( 'option_acf_pro_license', [ $this, 'acf_pro_license' ], 20, 1 );
+		add_filter( 'pre_option_acf_pro_license', [ $this, 'acf_pro_license' ], 20, 1 );
+
+		// Modify update information for plugin
+		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'modify_plugin_transient' ], 20, 1 );
 	}
 
 	/**

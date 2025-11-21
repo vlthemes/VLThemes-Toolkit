@@ -3,6 +3,7 @@
 namespace VLT\Toolkit\Modules\Integrations;
 
 use VLT\Toolkit\Modules\BaseModule;
+use VLT\Toolkit\Modules\Integrations\ACF\ACFProUpdater;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -13,7 +14,6 @@ if ( !defined( 'ABSPATH' ) ) {
  *
  * Provides integration hooks for ACF plugin
  * Handles JSON save/load paths and admin visibility
- * Provides static helper methods for dynamic field population (used in themes)
  */
 class ACF extends BaseModule {
 	/**
@@ -31,9 +31,18 @@ class ACF extends BaseModule {
 	protected $version = '1.0.0';
 
 	/**
+	 * Submodules
+	 *
+	 * @var array
+	 */
+	private $submodules = [];
+
+	/**
 	 * Register module
 	 */
 	public function register() {
+		$this->init_submodules();
+
 		// Hide ACF in admin if needed
 		add_filter( 'acf/settings/show_admin', [ $this, 'show_admin' ] );
 
@@ -82,5 +91,16 @@ class ACF extends BaseModule {
 	 */
 	protected function can_register() {
 		return class_exists( 'ACF' );
+	}
+
+	/**
+	 * Initialize submodules
+	 */
+	private function init_submodules() {
+		require_once __DIR__ . '/ACF/ACFProUpdater.php';
+
+		$this->submodules = [
+			'acf_pro_updater' => new ACFProUpdater(),
+		];
 	}
 }

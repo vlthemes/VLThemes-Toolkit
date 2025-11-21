@@ -189,8 +189,7 @@ class Toolkit {
 			'Integrations\\ContactForm7',
 			'Integrations\\VisualPortfolio',
 			'Integrations\\WooCommerce',
-			'Integrations\\ACF',
-			'Integrations\\ACFProUpdater',
+			'Integrations\\ACF'
 		];
 
 		foreach ( $modules as $module ) {

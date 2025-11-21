@@ -242,4 +242,30 @@ class Helpers {
 
 		return $options;
 	}
+
+	/**
+	 * Populate Elementor template types for dropdowns
+	 *
+	 * Returns an array of Elementor library template types suitable for populating select fields.
+	 *
+	 * @return array Array of template types in format [slug => name]. Empty array if none found.
+	 */
+	public static function populate_elementor_template_types() {
+		$terms = get_terms(
+			[
+				'taxonomy'   => 'elementor_library_type',
+				'hide_empty' => false,
+			],
+		);
+
+		$options = [];
+
+		if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$options[ $term->slug ] = ucfirst( $term->name );
+			}
+		}
+
+		return $options;
+	}
 }

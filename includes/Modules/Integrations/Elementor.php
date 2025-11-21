@@ -148,18 +148,21 @@ class Elementor extends BaseModule {
 	 * @param object $elements_manager elementor elements manager
 	 */
 	public function register_categories( $elements_manager ) {
+		$dashboard  = \VLT\Toolkit\Admin\Dashboard::instance();
+		$theme_name = $dashboard->theme_name ?: 'VLThemes';
+
 		// Default categories
 		$categories = [
-			'vlthemes-elements' => [
-				'title' => esc_html__( 'VLThemes Elements', 'toolkit' ),
+			'vlt-elements' => [
+				'title' => sprintf( esc_html__( '%s Elements', 'toolkit' ), $theme_name ),
 				'icon'  => 'fa fa-plug',
 			],
-			'vlthemes-showcase' => [
-				'title' => esc_html__( 'VLThemes Showcase', 'toolkit' ),
+			'vlt-showcase' => [
+				'title' => sprintf( esc_html__( '%s Showcase', 'toolkit' ), $theme_name ),
 				'icon'  => 'fa fa-image',
 			],
-			'vlthemes-woo' => [
-				'title' => esc_html__( 'VLThemes WooCommerce', 'toolkit' ),
+			'vlt-woocommerce' => [
+				'title' => sprintf( esc_html__( '%s WooCommerce', 'toolkit' ), $theme_name ),
 				'icon'  => 'fa fa-shopping-cart',
 			],
 		];
@@ -370,11 +373,15 @@ class Elementor extends BaseModule {
 
 	/**
 	 * Include widget files
-	 *
-	 * Widget files should be loaded from theme using the action hook.
-	 * Theme manages all widget file paths and loading.
 	 */
 	private function include_widget_files() {
+		// Toolkit widgets
+		require_once __DIR__ . '/Elementor/Widgets/TemplateWidget.php';
+		require_once __DIR__ . '/Elementor/Widgets/ContactForm7Widget.php';
+		require_once __DIR__ . '/Elementor/Widgets/CopyrightWidget.php';
+		require_once __DIR__ . '/Elementor/Widgets/SpacerWidget.php';
+		require_once __DIR__ . '/Elementor/Widgets/WoocommercePageWidget.php';
+
 		// Fire action to allow theme to load widget files from theme directory
 		do_action( 'vlt_toolkit_elementor_register_widgets' );
 	}
@@ -382,19 +389,27 @@ class Elementor extends BaseModule {
 	/**
 	 * Get widget classes
 	 *
-	 * Returns empty array by default. Use 'vlt_toolkit_elementor_widget_classes' filter
-	 * in theme to register widget classes.
-	 *
 	 * @return array
 	 */
 	private function get_widget_classes() {
+		// Toolkit widgets
+		$widgets = [
+			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\TemplateWidget::class,
+			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\ContactForm7Widget::class,
+			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\CopyrightWidget::class,
+			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\SpacerWidget::class,
+			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\WoocommercePageWidget::class,
+		];
+
 		/**
 		 * Filter Elementor widget classes
 		 *
-		 * Allows themes to specify which widget classes to register.
+		 * Allows themes to add widget classes.
 		 *
 		 * @param array $widget_classes array of widget class names
 		 */
-		return apply_filters( 'vlt_toolkit_elementor_widget_classes', [] );
+		$theme_widgets = apply_filters( 'vlt_toolkit_elementor_widget_classes', [] );
+
+		return array_merge( $widgets, $theme_widgets );
 	}
 }

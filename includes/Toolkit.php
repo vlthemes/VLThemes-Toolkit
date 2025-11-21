@@ -184,6 +184,7 @@ class Toolkit {
 			'Features\\PostViews',
 			'Features\\AOS',
 			'Features\\Breadcrumbs',
+			'Features\\DynamicContent',
 			// Integrations
 			'Integrations\\Elementor',
 			'Integrations\\ContactForm7',

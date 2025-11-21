@@ -236,11 +236,37 @@ if ( !function_exists( 'vlt_toolkit_populate_elementor_templates' ) ) {
 	}
 }
 
+if ( !function_exists( 'vlt_toolkit_populate_elementor_template_types' ) ) {
+	/**
+	 * Get list of Elementor template types
+	 */
+	function vlt_toolkit_populate_elementor_template_types() {
+		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_elementor_template_types();
+	}
+}
+
 if ( !function_exists( 'vlt_toolkit_populate_vp_portfolios' ) ) {
 	/**
 	 * Get list of Visual Portfolio layouts
 	 */
 	function vlt_toolkit_populate_vp_portfolios() {
 		return VLT\Toolkit\Modules\Integrations\VisualPortfolio::populate_portfolios();
+	}
+}
+
+// ========================================
+// Dynamic Content Functions
+// ========================================
+
+if ( !function_exists( 'vlt_toolkit_parse_dynamic_content' ) ) {
+	/**
+	 * Parse dynamic content variables in text
+	 *
+	 * @param string $text Text containing dynamic variables
+	 *
+	 * @return string Parsed text
+	 */
+	function vlt_toolkit_parse_dynamic_content( $text ) {
+		return VLT\Toolkit\Modules\Features\DynamicContent::parse( $text );
 	}
 }

@@ -157,6 +157,14 @@
 						inner.style.maxWidth = 'unset';
 					}
 				}
+
+				// Fix visual portfolio if inside
+				if ($.fn.vpf && $('.vp-portfolio').length) {
+					setTimeout(function () {
+						$('.vp-portfolio').vpf();
+					}, 150);
+				}
+
 			};
 
 			handler();

@@ -16,7 +16,7 @@
 				this.initAOS();
 			});
 
-			$(window).on('vlt.site-loaded', () => this.initAOS());
+			$(window).on('vlt:site:loaded', () => this.initAOS());
 		}
 
 		triggerResize() {

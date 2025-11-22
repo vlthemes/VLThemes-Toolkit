@@ -98,7 +98,7 @@ class TemplateWidget extends Widget_Base {
 			);
 		}
 
-		if ( function_exists( 'vlt_toolkit_populate_elementor_template_types' ) && function_exists( 'vlt_toolkit_populate_elementor_templates' ) ) {
+		if ( function_exists( 'vlt_toolkit_populate_elementor_templates' ) ) {
 			$template_types = [ '' => esc_html__( 'All', 'toolkit' ) ] + vlt_toolkit_populate_elementor_template_types();
 
 			$this->add_control(
@@ -113,7 +113,7 @@ class TemplateWidget extends Widget_Base {
 
 			// Control for all templates (when type is empty)
 			$this->add_control(
-				'template_all',
+				'template',
 				[
 					'label'       => esc_html__( 'Choose Template', 'toolkit' ),
 					'type'        => Controls_Manager::SELECT2,
@@ -154,13 +154,21 @@ class TemplateWidget extends Widget_Base {
 	protected function render() {
 		$settings      = $this->get_settings_for_display();
 		$template_type = $settings['template_type'];
-		$template_key  = empty( $template_type ) ? 'all' : $template_type;
-		$template_id   = $settings[ 'template_' . $template_key ] ?? 0;
+
+		if ( empty( $template_type ) ) {
+			$template_id = $settings[ 'template' ] ?? 0;
+		} else {
+			$template_id  = $settings[ 'template_' . $template_key ] ?? 0;
+		}
 
 		?>
 
 		<div class="vlt-elementor-template">
-			<?php echo Elementor::render_template( $template_id ); ?>
+			<?php
+				if ( function_exists( 'vlt_toolkit_render_elementor_template' ) ) {
+					echo vlt_toolkit_render_elementor_template( $template_id );
+				}
+			?>
 		</div>
 
 		<?php

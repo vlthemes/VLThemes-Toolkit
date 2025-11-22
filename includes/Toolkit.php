@@ -185,12 +185,15 @@ class Toolkit {
 			'Features\\AOS',
 			'Features\\Breadcrumbs',
 			'Features\\DynamicContent',
+			// Helper modules
+			'Helpers\\ImageHelper',
+			'Helpers\\ContentHelper',
 			// Integrations
 			'Integrations\\Elementor',
 			'Integrations\\ContactForm7',
 			'Integrations\\VisualPortfolio',
 			'Integrations\\WooCommerce',
-			'Integrations\\ACF'
+			'Integrations\\ACF',
 		];
 
 		foreach ( $modules as $module ) {

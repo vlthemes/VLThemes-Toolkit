@@ -270,3 +270,78 @@ if ( !function_exists( 'vlt_toolkit_parse_dynamic_content' ) ) {
 		return VLT\Toolkit\Modules\Features\DynamicContent::parse( $text );
 	}
 }
+
+// ========================================
+// Image Helper Functions
+// ========================================
+
+if ( !function_exists( 'vlt_toolkit_get_attachment_image' ) ) {
+	/**
+	 * Get attachment image HTML
+	 *
+	 * @param int   $image_id Attachment ID
+	 * @param array $args     Arguments for image output
+	 *
+	 * @return string|false Image HTML or false on failure
+	 */
+	function vlt_toolkit_get_attachment_image( $image_id, $args = [] ) {
+		return VLT\Toolkit\Modules\Helpers\ImageHelper::get_attachment_image( $image_id, $args );
+	}
+}
+
+if ( !function_exists( 'vlt_toolkit_get_attachment_image_src' ) ) {
+	/**
+	 * Get attachment image source URL
+	 *
+	 * @param int   $image_id Attachment ID
+	 * @param array $args     Arguments for image source
+	 *
+	 * @return string|false Image URL or false on failure
+	 */
+	function vlt_toolkit_get_attachment_image_src( $image_id, $args = [] ) {
+		return VLT\Toolkit\Modules\Helpers\ImageHelper::get_attachment_image_src( $image_id, $args );
+	}
+}
+
+if ( !function_exists( 'vlt_toolkit_get_placeholder_image' ) ) {
+	/**
+	 * Get placeholder image HTML
+	 *
+	 * @param string $class CSS class for the image
+	 * @param string $alt   Alt text for the image
+	 *
+	 * @return string Placeholder image HTML
+	 */
+	function vlt_toolkit_get_placeholder_image( $class = '', $alt = '' ) {
+		return VLT\Toolkit\Modules\Helpers\ImageHelper::get_placeholder_image( $class, $alt );
+	}
+}
+
+if ( !function_exists( 'vlt_toolkit_get_placeholder_image_src' ) ) {
+	/**
+	 * Get placeholder image source URL
+	 *
+	 * @return string Placeholder image URL
+	 */
+	function vlt_toolkit_get_placeholder_image_src() {
+		return VLT\Toolkit\Modules\Helpers\ImageHelper::get_placeholder_image_src();
+	}
+}
+
+// ========================================
+// Content Helper Functions
+// ========================================
+
+if ( !function_exists( 'vlt_toolkit_get_trimmed_content' ) ) {
+	/**
+	 * Get trimmed content from post excerpt
+	 *
+	 * @param int|null $post_id   Post ID (null for current post)
+	 * @param int      $max_words Maximum number of words
+	 *
+	 * @return string Trimmed content
+	 */
+	function vlt_toolkit_get_trimmed_content( $post_id = null, $max_words = 18 ) {
+		return VLT\Toolkit\Modules\Helpers\ContentHelper::get_trimmed_content( $post_id, $max_words );
+	}
+}

@@ -188,6 +188,7 @@ class Toolkit {
 			// Helper modules
 			'Helpers\\ImageHelper',
 			'Helpers\\ContentHelper',
+			'Helpers\\MediaHelper',
 			// Integrations
 			'Integrations\\Elementor',
 			'Integrations\\ContactForm7',

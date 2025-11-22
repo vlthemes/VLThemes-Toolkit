@@ -345,3 +345,20 @@ if ( !function_exists( 'vlt_toolkit_get_trimmed_content' ) ) {
 		return VLT\Toolkit\Modules\Helpers\ContentHelper::get_trimmed_content( $post_id, $max_words );
 	}
 }
+
+// ========================================
+// Media Helper Functions
+// ========================================
+
+if ( !function_exists( 'vlt_toolkit_parse_video_id' ) ) {
+	/**
+	 * Parse video ID from URL
+	 *
+	 * @param string $url Video URL
+	 *
+	 * @return array Array with vendor and video ID [vendor, id]
+	 */
+	function vlt_toolkit_parse_video_id( $url ) {
+		return VLT\Toolkit\Modules\Helpers\MediaHelper::parse_video_id( $url );
+	}
+}

@@ -35,7 +35,6 @@ class Toolkit {
 	 * Constructor
 	 */
 	private function __construct() {
-		$this->load_textdomain();
 		$this->load_base_module();
 		$this->init_modules();
 		$this->init_hooks();
@@ -143,6 +142,9 @@ class Toolkit {
 	private function init_hooks() {
 		$this->plugin_assets_dir = VLT_TOOLKIT_URL . 'assets/';
 
+		// Load text domain on init
+		add_action( 'init', [ $this, 'load_textdomain' ] );
+
 		// Enqueue admin scripts
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		add_action( 'customize_controls_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
@@ -154,11 +156,11 @@ class Toolkit {
 	/**
 	 * Load plugin text domain
 	 */
-	private function load_textdomain() {
+	public function load_textdomain() {
 		load_plugin_textdomain(
 			'toolkit',
 			false,
-			dirname( plugin_basename( VLT_TOOLKIT_FILE ) ) . '/languages/',
+			dirname( plugin_basename( VLT_TOOLKIT_FILE ) ) . '/languages/'
 		);
 	}
 

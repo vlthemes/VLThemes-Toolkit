@@ -36,6 +36,9 @@ abstract class BaseExtension {
 
 		// Register scripts on proper WordPress hook.
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ], 10 );
+
+		// Register scripts for Elementor editor.
+		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'register_scripts' ], 10 );
 	}
 
 	/**

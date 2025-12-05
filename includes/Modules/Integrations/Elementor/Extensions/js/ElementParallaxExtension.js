@@ -53,19 +53,13 @@
 		parseOpacity(el) {
 			const parts = (el.getAttribute('data-element-opacity') || '').trim().split(/\s+/);
 			const start = parts[0] ? parseFloat(parts[0]) : null;
-			return {
-				start,
-				end: parts[1] ? parseFloat(parts[1]) : start
-			};
+			return { start, end: parts[1] ? parseFloat(parts[1]) : start };
 		}
 
 		parseScale(el) {
 			const parts = (el.getAttribute('data-element-scale') || '').trim().split(/\s+/);
 			const start = parts[0] ? parseFloat(parts[0]) : null;
-			return {
-				start,
-				end: parts[1] ? parseFloat(parts[1]) : start
-			};
+			return { start, end: parts[1] ? parseFloat(parts[1]) : start };
 		}
 
 		parseThreshold(el) {
@@ -74,6 +68,11 @@
 				y: parts[0] ? parseFloat(parts[0]) : null,
 				x: parts[1] ? parseFloat(parts[1]) : null
 			};
+		}
+
+		getTargetElement(el) {
+			const inner = el.querySelector(':scope > .elementor-widget-container');
+			return inner || el;
 		}
 
 		initParallax(scope = document) {
@@ -92,9 +91,11 @@
 
 				if (!y && !x && opacityStart === null && scaleStart === null) return;
 
-				gsap.set(el, {
-					x: 0,
-					y: 0,
+				const target = this.getTargetElement(el);
+
+				gsap.set(target, {
+					x: "+=0",
+					y: "+=0",
 					opacity: opacityStart ?? 1,
 					scale: scaleStart ?? 1,
 					force3D: true,
@@ -107,14 +108,15 @@
 				if (parent) {
 					const start = el.getAttribute('data-element-start') || 'top top';
 					const end = el.getAttribute('data-element-end') || 'bottom top';
-					const tween = gsap.fromTo(el, {
-						x: 0,
-						y: 0,
+
+					const tween = gsap.fromTo(target, {
+						x: "+=0",
+						y: "+=0",
 						opacity: opacityStart ?? 1,
 						scale: scaleStart ?? 1
 					}, {
-						y,
-						x,
+						x: x,
+						y: y,
 						opacity: opacityEnd ?? undefined,
 						scale: scaleEnd ?? undefined,
 						immediateRender: false,
@@ -126,6 +128,7 @@
 							invalidateOnRefresh: true
 						}
 					});
+
 					this.triggers.push(tween.scrollTrigger);
 
 					if (!el._resizeBound) {
@@ -146,7 +149,12 @@
 						if (thresholdY !== null && Math.abs(ty) > thresholdY) ty = 0;
 						if (thresholdX !== null && Math.abs(tx) > thresholdX) tx = 0;
 
-						const props = { x: tx, y: ty, force3D: true };
+						const props = {
+							x: tx,
+							y: ty,
+							force3D: true
+						};
+
 						if (opacityStart !== null && opacityEnd !== null) {
 							props.opacity = gsap.utils.interpolate(opacityStart, opacityEnd, abs);
 						}
@@ -154,10 +162,11 @@
 							props.scale = gsap.utils.interpolate(scaleStart, scaleEnd, abs);
 						}
 
-						gsap.set(el, props);
+						gsap.set(target, props);
 					};
 
 					update();
+
 					const st = ScrollTrigger.create({
 						start: 'top bottom',
 						end: 'bottom top',
@@ -165,12 +174,13 @@
 						onUpdate: update,
 						onRefresh: update
 					});
+
 					this.triggers.push(st);
 					this.debounceResize(update);
 				}
 
 				el._parallaxInitialized = true;
-				el.style.willChange = 'transform, opacity';
+				target.style.willChange = 'transform, opacity';
 			});
 		}
 

@@ -172,6 +172,7 @@
 		}
 
 		setupHandlers() {
+			// For frontend and editor preview
 			$(window).on('elementor/frontend/init', () => {
 				if (window.elementorFrontend?.hooks) {
 					elementorFrontend.hooks.addAction('frontend/element_ready/global', scope => {
@@ -185,6 +186,23 @@
 					});
 				}
 			});
+
+			// For Elementor editor
+			if (window.elementor) {
+				elementor.on('preview:loaded', () => {
+					if (window.elementorFrontend?.hooks) {
+						elementorFrontend.hooks.addAction('frontend/element_ready/global', scope => {
+							const el = scope instanceof HTMLElement ? scope : scope[0];
+							if (el) {
+								this.stretchContainerInit(el);
+								this.paddingToContainerInit(el);
+								this.stickyContainerInit(el);
+								this.equalHeightContainerInit(el);
+							}
+						});
+					}
+				});
+			}
 		}
 	}
 

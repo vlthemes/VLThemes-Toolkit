@@ -378,7 +378,6 @@ class Elementor extends BaseModule {
 		// Toolkit widgets
 		require_once __DIR__ . '/Elementor/Widgets/TemplateWidget.php';
 		require_once __DIR__ . '/Elementor/Widgets/ContactForm7Widget.php';
-		require_once __DIR__ . '/Elementor/Widgets/CopyrightWidget.php';
 		require_once __DIR__ . '/Elementor/Widgets/SpacerWidget.php';
 		require_once __DIR__ . '/Elementor/Widgets/WoocommercePageWidget.php';
 
@@ -396,7 +395,6 @@ class Elementor extends BaseModule {
 		$widgets = [
 			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\TemplateWidget::class,
 			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\ContactForm7Widget::class,
-			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\CopyrightWidget::class,
 			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\SpacerWidget::class,
 			\VLT\Toolkit\Modules\Integrations\Elementor\Widgets\WoocommercePageWidget::class,
 		];

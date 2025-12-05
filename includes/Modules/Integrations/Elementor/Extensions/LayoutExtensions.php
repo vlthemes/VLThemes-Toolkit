@@ -28,7 +28,7 @@ class LayoutExtensions extends BaseExtension {
 		wp_enqueue_script(
 			'vlt-layout-extension',
 			plugin_dir_url( __FILE__ ) . 'js/LayoutExtensions.js',
-			[ 'gsap' ],
+			[],
 			VLT_TOOLKIT_VERSION,
 			true,
 		);

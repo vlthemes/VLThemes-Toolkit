@@ -61,17 +61,6 @@ class AosExtension extends BaseExtension {
 		);
 
 		$element->add_control(
-			'vlt_aos_settings_popover',
-			[
-				'label'     => esc_html__( 'Animation Settings', 'toolkit' ),
-				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'condition' => [ 'vlt_aos_animation!' => 'none' ],
-			],
-		);
-
-		$element->start_popover();
-
-		$element->add_control(
 			'vlt_aos_duration',
 			[
 				'label'       => esc_html__( 'Duration (seconds)', 'toolkit' ),
@@ -89,6 +78,7 @@ class AosExtension extends BaseExtension {
 					'unit' => 'px',
 					'size' => 1,
 				],
+				'condition' => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
 
@@ -110,6 +100,7 @@ class AosExtension extends BaseExtension {
 					'unit' => 'px',
 					'size' => 0,
 				],
+				'condition' => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
 
@@ -122,6 +113,7 @@ class AosExtension extends BaseExtension {
 				'min'         => -500,
 				'max'         => 500,
 				'step'        => 10,
+				'condition'   => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
 
@@ -132,10 +124,9 @@ class AosExtension extends BaseExtension {
 				'description' => esc_html__( 'Animate only once while scrolling down', 'toolkit' ),
 				'type'        => \Elementor\Controls_Manager::SWITCHER,
 				'default'     => 'yes',
+				'condition'   => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
-
-		$element->end_popover();
 
 		$element->end_controls_section();
 

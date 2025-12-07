@@ -1015,6 +1015,44 @@ class TemplateParts extends BaseModule {
 	}
 
 	/**
+	 * Get templates by type (public static method)
+	 *
+	 * @param string|null $type template type (header, footer, above_footer, 404, submenu, custom) or null for all
+	 *
+	 * @return array Array of template posts [ID => title]
+	 */
+	public static function get_templates_by_type( $type = null ) {
+		$options = [];
+
+		$args = [
+			'post_type'      => 'vlt_tp',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+		];
+
+		// Add meta query if type is specified
+		if ( $type ) {
+			$args['meta_query'] = [
+				[
+					'key'     => 'template_type',
+					'value'   => $type,
+					'compare' => '=',
+				],
+			];
+		}
+
+		$templates = get_posts( $args );
+
+		if ( !empty( $templates ) && !is_wp_error( $templates ) ) {
+			foreach ( $templates as $post ) {
+				$options[ $post->ID ] = $post->post_title;
+			}
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Get template by type
 	 *
 	 * @param string $type template type (header, footer, 404)

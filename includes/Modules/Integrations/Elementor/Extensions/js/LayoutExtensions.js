@@ -206,6 +206,7 @@
 		}
 	}
 
-	new LayoutExtensions();
+	// Create instance and expose globally
+	window.layoutExtensions = new LayoutExtensions();
 
 })(jQuery);

@@ -41,15 +41,13 @@
 				return;
 			}
 
-			if (this.isMobile()) {
-				console.info('Jarallax disabled on mobile');
-				return;
-			}
-
 			const els = document.querySelectorAll('.jarallax, .elementor-section.jarallax, .elementor-column.jarallax > .elementor-column-wrap, .elementor-container.jarallax');
 			if (!els.length) return;
 
-			jarallax(els, { speed: this.speed });
+			jarallax(els, {
+				speed: this.speed,
+				disableParallax: () => this.isMobile()
+			});
 			this.initialized = true;
 			console.info('Jarallax Extension initialized');
 		}
@@ -60,7 +58,10 @@
 			const els = document.querySelectorAll('.jarallax, .elementor-section.jarallax, .elementor-column.jarallax > .elementor-column-wrap, .elementor-container.jarallax');
 			if (els.length) {
 				jarallax(els, 'destroy');
-				jarallax(els, { speed: this.speed });
+				jarallax(els, {
+					speed: this.speed,
+					disableParallax: () => this.isMobile()
+				});
 			}
 		}
 
@@ -75,8 +76,30 @@
 				}
 			});
 		}
+
+		destroy() {
+			// Clear resize timer and callbacks
+			clearTimeout(this.resizeTimer);
+			this.resizeCallbacks = [];
+
+			// Remove event listeners
+			$(window).off('resize orientationchange load');
+			$(window).off('elementor/frontend/init');
+
+			// Destroy all jarallax instances
+			if (typeof jarallax !== 'undefined' && this.initialized) {
+				const els = document.querySelectorAll('.jarallax, .elementor-section.jarallax, .elementor-column.jarallax > .elementor-column-wrap, .elementor-container.jarallax');
+				if (els.length) {
+					jarallax(els, 'destroy');
+				}
+			}
+
+			this.initialized = false;
+			console.info('Jarallax Extension destroyed');
+		}
 	}
 
-	new JarallaxExtension();
+	// Create instance and expose globally
+	window.jarallaxExtension = new JarallaxExtension();
 
 })(jQuery);

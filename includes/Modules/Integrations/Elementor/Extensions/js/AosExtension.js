@@ -15,8 +15,6 @@
 				this.setupHandlers();
 				this.initAOS();
 			});
-
-			$(window).on('vlt:site:loaded', () => this.initAOS());
 		}
 
 		triggerResize() {
@@ -42,18 +40,13 @@
 				return;
 			}
 
-			if (this.isMobile()) {
-				console.info('AOS disabled on mobile');
-				return;
-			}
-
 			AOS.init({
-				offset: 150,
+				disable: () => this.isMobile(),
+				offset: 200,
 				duration: 1000,
 				easing: 'ease',
 				once: true,
-				mirror: false,
-				disable: () => window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+				startEvent: 'vlt:site:loaded'
 			});
 
 			this.initialized = true;
@@ -83,8 +76,32 @@
 				}
 			});
 		}
+
+		destroy() {
+			// Clear resize timer and callbacks
+			clearTimeout(this.resizeTimer);
+			this.resizeCallbacks = [];
+
+			// Remove event listeners
+			$(window).off('resize orientationchange load');
+			$(document).off('endLoadingNewItems.vpf');
+			$(window).off('elementor/frontend/init');
+
+			// Destroy AOS instance if available
+			if (typeof AOS !== 'undefined' && this.initialized) {
+				// Remove all AOS attributes from elements
+				document.querySelectorAll('[data-aos]').forEach(el => {
+					el.classList.remove('aos-init', 'aos-animate');
+					el.removeAttribute('data-aos');
+				});
+			}
+
+			this.initialized = false;
+			console.info('AOS Extension destroyed');
+		}
 	}
 
-	new AosExtension();
+	// Create instance and expose globally
+	window.aosExtension = new AosExtension();
 
 })(jQuery);

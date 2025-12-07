@@ -362,3 +362,20 @@ if ( !function_exists( 'vlt_toolkit_parse_video_id' ) ) {
 		return VLT\Toolkit\Modules\Helpers\MediaHelper::parse_video_id( $url );
 	}
 }
+
+// ========================================
+// Template Parts Functions
+// ========================================
+
+if ( !function_exists( 'vlt_toolkit_get_template_by_type' ) ) {
+	/**
+	 * Get template parts by type
+	 *
+	 * @param string|null $type Template type (header, footer, above_footer, 404, submenu, custom) or null for all
+	 *
+	 * @return array Array of template posts [ID => title]
+	 */
+	function vlt_toolkit_get_template_by_type( $type = null ) {
+		return VLT\Toolkit\Modules\Features\TemplateParts::get_templates_by_type( $type );
+	}
+}

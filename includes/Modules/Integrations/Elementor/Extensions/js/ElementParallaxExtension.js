@@ -195,8 +195,40 @@
 				}
 			});
 		}
+
+		destroy() {
+			// Kill all ScrollTriggers
+			this.triggers.forEach(trigger => {
+				if (trigger && typeof trigger.kill === 'function') {
+					trigger.kill();
+				}
+			});
+			this.triggers = [];
+
+			// Clear resize timer and callbacks
+			clearTimeout(this.resizeTimer);
+			this.resizeCallbacks = [];
+
+			// Remove event listeners
+			$(window).off('load resize orientationchange');
+			$(window).off('elementor/frontend/init');
+
+			// Reset all parallax elements
+			document.querySelectorAll('.vlt-element-parallax').forEach(el => {
+				const target = this.getTargetElement(el);
+				gsap.killTweensOf(target);
+				gsap.set(target, { clearProps: 'all' });
+				target.style.willChange = '';
+				el._parallaxInitialized = false;
+				el._resizeBound = false;
+			});
+
+			this.initialized = false;
+			console.info('Element Parallax Extension destroyed');
+		}
 	}
 
-	new ElementParallaxExtension();
+	// Create instance and expose globally
+	window.elementParallaxExtension = new ElementParallaxExtension();
 
 })(jQuery);

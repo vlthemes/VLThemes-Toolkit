@@ -26,6 +26,15 @@ class AosExtension extends BaseExtension {
 	 */
 	public function register_scripts() {
 		wp_enqueue_style( 'aos' );
+
+		// Enqueue animation-based CSS (instead of transition-based)
+		wp_enqueue_style(
+			'aos-animations',
+			VLT_TOOLKIT_URL . 'assets/vendors/css/aos-animations.css',
+			[ 'aos' ],
+			VLT_TOOLKIT_VERSION
+		);
+
 		wp_enqueue_script(
 			'vlt-aos-extension',
 			plugin_dir_url( __FILE__ ) . 'js/AosExtension.js',
@@ -61,6 +70,17 @@ class AosExtension extends BaseExtension {
 		);
 
 		$element->add_control(
+			'vlt_aos_settings_popover',
+			[
+				'label'     => esc_html__( 'Animation Settings', 'toolkit' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_aos_animation!' => 'none' ],
+			],
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
 			'vlt_aos_duration',
 			[
 				'label'       => esc_html__( 'Duration (seconds)', 'toolkit' ),
@@ -69,16 +89,15 @@ class AosExtension extends BaseExtension {
 				'size_units'  => [ 'px' ],
 				'range'       => [
 					'px' => [
-						'min'  => 0,
+						'min'  => 0.05,
 						'max'  => 3,
-						'step' => 0.1,
+						'step' => 0.05,
 					],
 				],
 				'default' => [
 					'unit' => 'px',
 					'size' => 1,
 				],
-				'condition' => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
 
@@ -93,14 +112,13 @@ class AosExtension extends BaseExtension {
 					'px' => [
 						'min'  => 0,
 						'max'  => 3,
-						'step' => 0.1,
+						'step' => 0.05,
 					],
 				],
 				'default' => [
 					'unit' => 'px',
 					'size' => 0,
 				],
-				'condition' => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
 
@@ -113,20 +131,10 @@ class AosExtension extends BaseExtension {
 				'min'         => -500,
 				'max'         => 500,
 				'step'        => 10,
-				'condition'   => [ 'vlt_aos_animation!' => 'none' ],
 			],
 		);
 
-		$element->add_control(
-			'vlt_aos_once',
-			[
-				'label'       => esc_html__( 'Animate Once', 'toolkit' ),
-				'description' => esc_html__( 'Animate only once while scrolling down', 'toolkit' ),
-				'type'        => \Elementor\Controls_Manager::SWITCHER,
-				'default'     => 'yes',
-				'condition'   => [ 'vlt_aos_animation!' => 'none' ],
-			],
-		);
+		$element->end_popover();
 
 		$element->end_controls_section();
 
@@ -166,11 +174,6 @@ class AosExtension extends BaseExtension {
 			$widget->add_render_attribute( '_wrapper', 'data-aos-offset', $settings['vlt_aos_offset'] );
 		}
 
-		// Add once
-		if ( !empty( $settings['vlt_aos_once'] ) ) {
-			$once_value = 'yes' === $settings['vlt_aos_once'] ? 'true' : 'false';
-			$widget->add_render_attribute( '_wrapper', 'data-aos-once', $once_value );
-		}
 	}
 
 	/**

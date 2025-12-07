@@ -1,0 +1,774 @@
+/* AOS Animation-based Effects (instead of transitions) */
+
+/* Initial states - set opacity to 0 before animation triggers */
+[data-aos^="fade"]:not(.aos-animate),
+[data-aos^="zoom"]:not(.aos-animate) {
+    opacity: 0;
+}
+
+/* Keyframes for Fade animations */
+@keyframes aos-fade-up {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 100px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-down {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-right {
+    from {
+        opacity: 0;
+        transform: translate3d(-100px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-left {
+    from {
+        opacity: 0;
+        transform: translate3d(100px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-up-right {
+    from {
+        opacity: 0;
+        transform: translate3d(-100px, 100px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-up-left {
+    from {
+        opacity: 0;
+        transform: translate3d(100px, 100px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-down-right {
+    from {
+        opacity: 0;
+        transform: translate3d(-100px, -100px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade-down-left {
+    from {
+        opacity: 0;
+        transform: translate3d(100px, -100px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Keyframes for Zoom animations */
+@keyframes aos-zoom-in {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes aos-zoom-in-up {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 100px, 0) scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-in-down {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100px, 0) scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-in-right {
+    from {
+        opacity: 0;
+        transform: translate3d(-100px, 0, 0) scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-in-left {
+    from {
+        opacity: 0;
+        transform: translate3d(100px, 0, 0) scale(0.6);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-out {
+    from {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes aos-zoom-out-up {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 100px, 0) scale(1.2);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-out-down {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100px, 0) scale(1.2);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-out-right {
+    from {
+        opacity: 0;
+        transform: translate3d(-100px, 0, 0) scale(1.2);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+@keyframes aos-zoom-out-left {
+    from {
+        opacity: 0;
+        transform: translate3d(100px, 0, 0) scale(1.2);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+}
+
+/* Keyframes for Slide animations */
+@keyframes aos-slide-up {
+    from {
+        transform: translate3d(0, 100%, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-slide-down {
+    from {
+        transform: translate3d(0, -100%, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-slide-right {
+    from {
+        transform: translate3d(-100%, 0, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes aos-slide-left {
+    from {
+        transform: translate3d(100%, 0, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* Keyframes for Flip animations */
+@keyframes aos-flip-left {
+    from {
+        transform: perspective(2500px) rotateY(-100deg);
+    }
+    to {
+        transform: perspective(2500px) rotateY(0);
+    }
+}
+
+@keyframes aos-flip-right {
+    from {
+        transform: perspective(2500px) rotateY(100deg);
+    }
+    to {
+        transform: perspective(2500px) rotateY(0);
+    }
+}
+
+@keyframes aos-flip-up {
+    from {
+        transform: perspective(2500px) rotateX(-100deg);
+    }
+    to {
+        transform: perspective(2500px) rotateX(0);
+    }
+}
+
+@keyframes aos-flip-down {
+    from {
+        transform: perspective(2500px) rotateX(100deg);
+    }
+    to {
+        transform: perspective(2500px) rotateX(0);
+    }
+}
+
+/* Apply animations to elements */
+[data-aos="fade-up"].aos-animate {
+    animation-name: aos-fade-up;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-down"].aos-animate {
+    animation-name: aos-fade-down;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-right"].aos-animate {
+    animation-name: aos-fade-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-left"].aos-animate {
+    animation-name: aos-fade-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-up-right"].aos-animate {
+    animation-name: aos-fade-up-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-up-left"].aos-animate {
+    animation-name: aos-fade-up-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-down-right"].aos-animate {
+    animation-name: aos-fade-down-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade-down-left"].aos-animate {
+    animation-name: aos-fade-down-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="fade"].aos-animate {
+    animation-name: aos-fade;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-in"].aos-animate {
+    animation-name: aos-zoom-in;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-in-up"].aos-animate {
+    animation-name: aos-zoom-in-up;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-in-down"].aos-animate {
+    animation-name: aos-zoom-in-down;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-in-right"].aos-animate {
+    animation-name: aos-zoom-in-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-in-left"].aos-animate {
+    animation-name: aos-zoom-in-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-out"].aos-animate {
+    animation-name: aos-zoom-out;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-out-up"].aos-animate {
+    animation-name: aos-zoom-out-up;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-out-down"].aos-animate {
+    animation-name: aos-zoom-out-down;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-out-right"].aos-animate {
+    animation-name: aos-zoom-out-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="zoom-out-left"].aos-animate {
+    animation-name: aos-zoom-out-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="slide-up"].aos-animate {
+    animation-name: aos-slide-up;
+    animation-fill-mode: both;
+}
+
+[data-aos="slide-down"].aos-animate {
+    animation-name: aos-slide-down;
+    animation-fill-mode: both;
+}
+
+[data-aos="slide-right"].aos-animate {
+    animation-name: aos-slide-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="slide-left"].aos-animate {
+    animation-name: aos-slide-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="flip-left"].aos-animate {
+    animation-name: aos-flip-left;
+    animation-fill-mode: both;
+}
+
+[data-aos="flip-right"].aos-animate {
+    animation-name: aos-flip-right;
+    animation-fill-mode: both;
+}
+
+[data-aos="flip-up"].aos-animate {
+    animation-name: aos-flip-up;
+    animation-fill-mode: both;
+}
+
+[data-aos="flip-down"].aos-animate {
+    animation-name: aos-flip-down;
+    animation-fill-mode: both;
+}
+
+/* Initial state for flip animations */
+[data-aos^="flip"] {
+    backface-visibility: hidden;
+}
+
+/* Duration control via data attributes */
+[data-aos][data-aos-duration="50"].aos-animate,
+[data-aos][data-aos-duration="50"] .aos-animate {
+    animation-duration: 50ms;
+}
+
+[data-aos][data-aos-duration="100"].aos-animate,
+[data-aos][data-aos-duration="100"] .aos-animate {
+    animation-duration: 100ms;
+}
+
+[data-aos][data-aos-duration="150"].aos-animate,
+[data-aos][data-aos-duration="150"] .aos-animate {
+    animation-duration: 150ms;
+}
+
+[data-aos][data-aos-duration="200"].aos-animate,
+[data-aos][data-aos-duration="200"] .aos-animate {
+    animation-duration: 200ms;
+}
+
+[data-aos][data-aos-duration="250"].aos-animate,
+[data-aos][data-aos-duration="250"] .aos-animate {
+    animation-duration: 250ms;
+}
+
+[data-aos][data-aos-duration="300"].aos-animate,
+[data-aos][data-aos-duration="300"] .aos-animate {
+    animation-duration: 300ms;
+}
+
+[data-aos][data-aos-duration="350"].aos-animate,
+[data-aos][data-aos-duration="350"] .aos-animate {
+    animation-duration: 350ms;
+}
+
+[data-aos][data-aos-duration="400"].aos-animate,
+[data-aos][data-aos-duration="400"] .aos-animate {
+    animation-duration: 400ms;
+}
+
+[data-aos][data-aos-duration="450"].aos-animate,
+[data-aos][data-aos-duration="450"] .aos-animate {
+    animation-duration: 450ms;
+}
+
+[data-aos][data-aos-duration="500"].aos-animate,
+[data-aos][data-aos-duration="500"] .aos-animate {
+    animation-duration: 500ms;
+}
+
+[data-aos][data-aos-duration="550"].aos-animate,
+[data-aos][data-aos-duration="550"] .aos-animate {
+    animation-duration: 550ms;
+}
+
+[data-aos][data-aos-duration="600"].aos-animate,
+[data-aos][data-aos-duration="600"] .aos-animate {
+    animation-duration: 600ms;
+}
+
+[data-aos][data-aos-duration="650"].aos-animate,
+[data-aos][data-aos-duration="650"] .aos-animate {
+    animation-duration: 650ms;
+}
+
+[data-aos][data-aos-duration="700"].aos-animate,
+[data-aos][data-aos-duration="700"] .aos-animate {
+    animation-duration: 700ms;
+}
+
+[data-aos][data-aos-duration="750"].aos-animate,
+[data-aos][data-aos-duration="750"] .aos-animate {
+    animation-duration: 750ms;
+}
+
+[data-aos][data-aos-duration="800"].aos-animate,
+[data-aos][data-aos-duration="800"] .aos-animate {
+    animation-duration: 800ms;
+}
+
+[data-aos][data-aos-duration="850"].aos-animate,
+[data-aos][data-aos-duration="850"] .aos-animate {
+    animation-duration: 850ms;
+}
+
+[data-aos][data-aos-duration="900"].aos-animate,
+[data-aos][data-aos-duration="900"] .aos-animate {
+    animation-duration: 900ms;
+}
+
+[data-aos][data-aos-duration="950"].aos-animate,
+[data-aos][data-aos-duration="950"] .aos-animate {
+    animation-duration: 950ms;
+}
+
+[data-aos][data-aos-duration="1000"].aos-animate,
+[data-aos][data-aos-duration="1000"] .aos-animate {
+    animation-duration: 1000ms;
+}
+
+[data-aos][data-aos-duration="1500"].aos-animate,
+[data-aos][data-aos-duration="1500"] .aos-animate {
+    animation-duration: 1500ms;
+}
+
+[data-aos][data-aos-duration="2000"].aos-animate,
+[data-aos][data-aos-duration="2000"] .aos-animate {
+    animation-duration: 2000ms;
+}
+
+[data-aos][data-aos-duration="2500"].aos-animate,
+[data-aos][data-aos-duration="2500"] .aos-animate {
+    animation-duration: 2500ms;
+}
+
+[data-aos][data-aos-duration="3000"].aos-animate,
+[data-aos][data-aos-duration="3000"] .aos-animate {
+    animation-duration: 3000ms;
+}
+
+/* Delay control via data attributes */
+[data-aos][data-aos-delay="50"].aos-animate,
+[data-aos][data-aos-delay="50"] .aos-animate {
+    animation-delay: 50ms;
+}
+
+[data-aos][data-aos-delay="100"].aos-animate,
+[data-aos][data-aos-delay="100"] .aos-animate {
+    animation-delay: 100ms;
+}
+
+[data-aos][data-aos-delay="150"].aos-animate,
+[data-aos][data-aos-delay="150"] .aos-animate {
+    animation-delay: 150ms;
+}
+
+[data-aos][data-aos-delay="200"].aos-animate,
+[data-aos][data-aos-delay="200"] .aos-animate {
+    animation-delay: 200ms;
+}
+
+[data-aos][data-aos-delay="250"].aos-animate,
+[data-aos][data-aos-delay="250"] .aos-animate {
+    animation-delay: 250ms;
+}
+
+[data-aos][data-aos-delay="300"].aos-animate,
+[data-aos][data-aos-delay="300"] .aos-animate {
+    animation-delay: 300ms;
+}
+
+[data-aos][data-aos-delay="350"].aos-animate,
+[data-aos][data-aos-delay="350"] .aos-animate {
+    animation-delay: 350ms;
+}
+
+[data-aos][data-aos-delay="400"].aos-animate,
+[data-aos][data-aos-delay="400"] .aos-animate {
+    animation-delay: 400ms;
+}
+
+[data-aos][data-aos-delay="450"].aos-animate,
+[data-aos][data-aos-delay="450"] .aos-animate {
+    animation-delay: 450ms;
+}
+
+[data-aos][data-aos-delay="500"].aos-animate,
+[data-aos][data-aos-delay="500"] .aos-animate {
+    animation-delay: 500ms;
+}
+
+[data-aos][data-aos-delay="550"].aos-animate,
+[data-aos][data-aos-delay="550"] .aos-animate {
+    animation-delay: 550ms;
+}
+
+[data-aos][data-aos-delay="600"].aos-animate,
+[data-aos][data-aos-delay="600"] .aos-animate {
+    animation-delay: 600ms;
+}
+
+[data-aos][data-aos-delay="650"].aos-animate,
+[data-aos][data-aos-delay="650"] .aos-animate {
+    animation-delay: 650ms;
+}
+
+[data-aos][data-aos-delay="700"].aos-animate,
+[data-aos][data-aos-delay="700"] .aos-animate {
+    animation-delay: 700ms;
+}
+
+[data-aos][data-aos-delay="750"].aos-animate,
+[data-aos][data-aos-delay="750"] .aos-animate {
+    animation-delay: 750ms;
+}
+
+[data-aos][data-aos-delay="800"].aos-animate,
+[data-aos][data-aos-delay="800"] .aos-animate {
+    animation-delay: 800ms;
+}
+
+[data-aos][data-aos-delay="850"].aos-animate,
+[data-aos][data-aos-delay="850"] .aos-animate {
+    animation-delay: 850ms;
+}
+
+[data-aos][data-aos-delay="900"].aos-animate,
+[data-aos][data-aos-delay="900"] .aos-animate {
+    animation-delay: 900ms;
+}
+
+[data-aos][data-aos-delay="950"].aos-animate,
+[data-aos][data-aos-delay="950"] .aos-animate {
+    animation-delay: 950ms;
+}
+
+[data-aos][data-aos-delay="1000"].aos-animate,
+[data-aos][data-aos-delay="1000"] .aos-animate {
+    animation-delay: 1000ms;
+}
+
+[data-aos][data-aos-delay="1500"].aos-animate,
+[data-aos][data-aos-delay="1500"] .aos-animate {
+    animation-delay: 1500ms;
+}
+
+[data-aos][data-aos-delay="2000"].aos-animate,
+[data-aos][data-aos-delay="2000"] .aos-animate {
+    animation-delay: 2000ms;
+}
+
+[data-aos][data-aos-delay="2500"].aos-animate,
+[data-aos][data-aos-delay="2500"] .aos-animate {
+    animation-delay: 2500ms;
+}
+
+[data-aos][data-aos-delay="3000"].aos-animate,
+[data-aos][data-aos-delay="3000"] .aos-animate {
+    animation-delay: 3000ms;
+}
+
+/* Easing control via data attributes */
+[data-aos][data-aos-easing="linear"].aos-animate,
+[data-aos-easing="linear"] [data-aos].aos-animate {
+    animation-timing-function: linear;
+}
+
+[data-aos][data-aos-easing="ease"].aos-animate,
+[data-aos-easing="ease"] [data-aos].aos-animate {
+    animation-timing-function: ease;
+}
+
+[data-aos][data-aos-easing="ease-in"].aos-animate,
+[data-aos-easing="ease-in"] [data-aos].aos-animate {
+    animation-timing-function: ease-in;
+}
+
+[data-aos][data-aos-easing="ease-out"].aos-animate,
+[data-aos-easing="ease-out"] [data-aos].aos-animate {
+    animation-timing-function: ease-out;
+}
+
+[data-aos][data-aos-easing="ease-in-out"].aos-animate,
+[data-aos-easing="ease-in-out"] [data-aos].aos-animate {
+    animation-timing-function: ease-in-out;
+}
+
+[data-aos][data-aos-easing="ease-in-back"].aos-animate,
+[data-aos-easing="ease-in-back"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+[data-aos][data-aos-easing="ease-out-back"].aos-animate,
+[data-aos-easing="ease-out-back"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+[data-aos][data-aos-easing="ease-in-out-back"].aos-animate,
+[data-aos-easing="ease-in-out-back"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+[data-aos][data-aos-easing="ease-in-sine"].aos-animate,
+[data-aos-easing="ease-in-sine"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+}
+
+[data-aos][data-aos-easing="ease-out-sine"].aos-animate,
+[data-aos-easing="ease-out-sine"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+[data-aos][data-aos-easing="ease-in-out-sine"].aos-animate,
+[data-aos-easing="ease-in-out-sine"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+[data-aos][data-aos-easing="ease-in-quad"].aos-animate,
+[data-aos-easing="ease-in-quad"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+[data-aos][data-aos-easing="ease-out-quad"].aos-animate,
+[data-aos-easing="ease-out-quad"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-aos][data-aos-easing="ease-in-out-quad"].aos-animate,
+[data-aos-easing="ease-in-out-quad"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+[data-aos][data-aos-easing="ease-in-cubic"].aos-animate,
+[data-aos-easing="ease-in-cubic"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+[data-aos][data-aos-easing="ease-out-cubic"].aos-animate,
+[data-aos-easing="ease-out-cubic"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-aos][data-aos-easing="ease-in-out-cubic"].aos-animate,
+[data-aos-easing="ease-in-out-cubic"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+[data-aos][data-aos-easing="ease-in-quart"].aos-animate,
+[data-aos-easing="ease-in-quart"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+[data-aos][data-aos-easing="ease-out-quart"].aos-animate,
+[data-aos-easing="ease-out-quart"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-aos][data-aos-easing="ease-in-out-quart"].aos-animate,
+[data-aos-easing="ease-in-out-quart"] [data-aos].aos-animate {
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}

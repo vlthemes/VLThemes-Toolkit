@@ -102,8 +102,8 @@ class DemoImport extends BaseModule {
 
 		// Update Elementor options before content import
 		$elementor_options = [
-			'elementor_unfiltered_files_upload'       => true,
-			'elementor_lazy_load_background_images'   => false,
+			'elementor_unfiltered_files_upload'       => true, // value from select
+			'elementor_lazy_load_background_images'   => 0, // value from select
 			'elementor_disable_color_schemes'         => 'yes',
 			'elementor_disable_typography_schemes'    => 'yes',
 		];

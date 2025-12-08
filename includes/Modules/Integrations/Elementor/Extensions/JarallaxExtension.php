@@ -65,9 +65,6 @@ class JarallaxExtension extends BaseExtension {
 			[
 				'label'     => esc_html__( 'Background Image', 'toolkit' ),
 				'type'      => \Elementor\Controls_Manager::MEDIA,
-				'default'   => [
-					'url' => \Elementor\Utils::get_placeholder_image_src(),
-				],
 				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
@@ -77,7 +74,10 @@ class JarallaxExtension extends BaseExtension {
 			[
 				'name'      => 'vlt_jarallax_image',
 				'default'   => 'full',
-				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
+				'condition' => [
+					'vlt_jarallax_enabled' => 'jarallax',
+					'vlt_jarallax_image[url]!' => ''
+				],
 			]
 		);
 

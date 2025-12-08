@@ -61,15 +61,25 @@ class JarallaxExtension extends BaseExtension {
 		);
 
 		$element->add_control(
-			'vlt_jarallax_settings_popover',
+			'vlt_jarallax_image',
 			[
-				'label'     => esc_html__( 'Jarallax Settings', 'toolkit' ),
-				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'label'     => esc_html__( 'Background Image', 'toolkit' ),
+				'type'      => \Elementor\Controls_Manager::MEDIA,
+				'default'   => [
+					'url' => \Elementor\Utils::get_placeholder_image_src(),
+				],
 				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
 
-		$element->start_popover();
+		$element->add_group_control(
+			\Elementor\Group_Control_Image_Size::get_type(),
+			[
+				'name'      => 'vlt_jarallax_image',
+				'default'   => 'full',
+				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
+			]
+		);
 
 		$element->add_control(
 			'vlt_jarallax_speed',
@@ -87,6 +97,7 @@ class JarallaxExtension extends BaseExtension {
 				'default' => [
 					'size' => 0.9,
 				],
+				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
 
@@ -102,6 +113,7 @@ class JarallaxExtension extends BaseExtension {
 					'scroll-opacity' => esc_html__( 'Scroll + Opacity', 'toolkit' ),
 					'scale-opacity'  => esc_html__( 'Scale + Opacity', 'toolkit' ),
 				],
+				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
 
@@ -116,6 +128,7 @@ class JarallaxExtension extends BaseExtension {
 					'cover'   => esc_html__( 'Cover', 'toolkit' ),
 					'contain' => esc_html__( 'Contain', 'toolkit' ),
 				],
+				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
 
@@ -137,6 +150,7 @@ class JarallaxExtension extends BaseExtension {
 					'bottom right'  => esc_html__( 'Bottom Right', 'toolkit' ),
 					'custom'        => esc_html__( 'Custom', 'toolkit' ),
 				],
+				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
 
@@ -147,6 +161,7 @@ class JarallaxExtension extends BaseExtension {
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'placeholder' => '50% 50%',
 				'condition'   => [
+					'vlt_jarallax_enabled'      => 'jarallax',
 					'vlt_jarallax_img_position' => 'custom',
 				],
 			],
@@ -159,10 +174,9 @@ class JarallaxExtension extends BaseExtension {
 				'description' => esc_html__( 'YouTube, Vimeo or local video. Use "mp4:" prefix for self-hosted.', 'toolkit' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'placeholder' => 'https://www.youtube.com/watch?v=...',
+				'condition'   => [ 'vlt_jarallax_enabled' => 'jarallax' ],
 			],
 		);
-
-		$element->end_popover();
 
 		$element->end_controls_section();
 
@@ -188,6 +202,45 @@ class JarallaxExtension extends BaseExtension {
 			$widget->add_render_attribute( '_wrapper', 'data-speed', $settings['vlt_jarallax_speed']['size'] );
 		}
 
+		// Build inline styles array
+		$styles = [];
+
+		// Add background image as CSS using Elementor's Group_Control_Image_Size helper
+		if ( !empty( $settings['vlt_jarallax_image']['id'] ) ) {
+			$image_url = \Elementor\Group_Control_Image_Size::get_attachment_image_src(
+				$settings['vlt_jarallax_image']['id'],
+				'vlt_jarallax_image',
+				$settings
+			);
+
+			if ( $image_url ) {
+				$styles[] = 'background-image: url(' . esc_url( $image_url ) . ');';
+			}
+		} elseif ( !empty( $settings['vlt_jarallax_image']['url'] ) ) {
+			// Fallback to direct URL if no ID is available
+			$styles[] = 'background-image: url(' . esc_url( $settings['vlt_jarallax_image']['url'] ) . ');';
+		}
+
+		// Add background size
+		$img_size = $settings['vlt_jarallax_img_size'] ?? 'cover';
+		if ( !empty( $img_size ) ) {
+			$styles[] = 'background-size: ' . esc_attr( $img_size ) . ';';
+		}
+
+		// Add background position
+		$position = $settings['vlt_jarallax_img_position'] ?? 'center center';
+		if ( 'custom' === $position ) {
+			$position = $settings['vlt_jarallax_img_position_custom'] ?? 'center center';
+		}
+		if ( !empty( $position ) ) {
+			$styles[] = 'background-position: ' . esc_attr( $position ) . ';';
+		}
+
+		// Apply inline styles
+		if ( !empty( $styles ) ) {
+			$widget->add_render_attribute( '_wrapper', 'style', implode( ' ', $styles ) );
+		}
+
 		// Add video URL
 		if ( !empty( $settings['vlt_jarallax_video_url'] ) ) {
 			$widget->add_render_attribute( '_wrapper', 'data-jarallax-video', $settings['vlt_jarallax_video_url'] );
@@ -196,22 +249,6 @@ class JarallaxExtension extends BaseExtension {
 		// Add type
 		if ( !empty( $settings['vlt_jarallax_type'] ) ) {
 			$widget->add_render_attribute( '_wrapper', 'data-type', $settings['vlt_jarallax_type'] );
-		}
-
-		// Add image size
-		if ( !empty( $settings['vlt_jarallax_img_size'] ) ) {
-			$widget->add_render_attribute( '_wrapper', 'data-img-size', $settings['vlt_jarallax_img_size'] );
-		}
-
-		// Add image position
-		$position = $settings['vlt_jarallax_img_position'] ?? '';
-
-		if ( 'custom' === $position ) {
-			$position = $settings['vlt_jarallax_img_position_custom'] ?? '';
-		}
-
-		if ( !empty( $position ) ) {
-			$widget->add_render_attribute( '_wrapper', 'data-img-position', $position );
 		}
 	}
 

@@ -76,6 +76,13 @@ class Elementor extends BaseModule {
 	private $icon_sets;
 
 	/**
+	 * Enable dev debug styles
+	 *
+	 * @var bool
+	 */
+	private $enable_dev_debug = false;
+
+	/**
 	 * Register module
 	 */
 	public function register() {
@@ -94,8 +101,33 @@ class Elementor extends BaseModule {
 			VLT_TOOLKIT_VERSION,
 		);
 
+		// Enqueue dev debug styles
+		if ( $this->enable_dev_debug ) {
+			wp_enqueue_style(
+				'vlt-dev-debug',
+				VLT_TOOLKIT_URL . 'assets/css/dev-debug.css',
+				[],
+				VLT_TOOLKIT_VERSION,
+			);
+		}
+
 		// Add inline CSS for badge customization
 		$this->add_badge_styles();
+	}
+
+	/**
+	 * Enqueue frontend styles
+	 */
+	public function frontend_styles() {
+		// Enqueue dev debug styles
+		if ( $this->enable_dev_debug ) {
+			wp_enqueue_style(
+				'vlt-dev-debug',
+				VLT_TOOLKIT_URL . 'assets/css/dev-debug.css',
+				[],
+				VLT_TOOLKIT_VERSION,
+			);
+		}
 	}
 
 	/**
@@ -108,6 +140,7 @@ class Elementor extends BaseModule {
 
 		// Register other hooks
 		add_action( 'elementor/editor/after_enqueue_styles', [ $this, 'editor_styles' ] );
+		add_action( 'elementor/frontend/after_enqueue_styles', [ $this, 'frontend_styles' ] );
 		add_action( 'elementor/elements/categories_registered', [ $this, 'register_categories' ] );
 		add_action( 'elementor/theme/register_locations', [ $this, 'register_locations' ] );
 		add_filter( 'elementor/icons_manager/additional_tabs', [ $this, 'add_icon_tabs' ] );

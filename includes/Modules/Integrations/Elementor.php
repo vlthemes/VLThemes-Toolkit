@@ -3,35 +3,12 @@
 namespace VLT\Toolkit\Modules\Integrations;
 
 use VLT\Toolkit\Modules\BaseModule;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\AosExtension;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\CustomAttributesExtension;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\CustomCssExtension;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\ElementParallaxExtension;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\JarallaxExtension;
-use VLT\Toolkit\Modules\Integrations\Elementor\Extensions\LayoutExtensions;
-use VLT\Toolkit\Modules\Integrations\Elementor\IconSets;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load required files
-require_once __DIR__ . '/Elementor/BaseExtension.php';
-
-require_once __DIR__ . '/Elementor/Extensions/LayoutExtensions.php';
-
-require_once __DIR__ . '/Elementor/Extensions/JarallaxExtension.php';
-
-require_once __DIR__ . '/Elementor/Extensions/AosExtension.php';
-
-require_once __DIR__ . '/Elementor/Extensions/ElementParallaxExtension.php';
-
-require_once __DIR__ . '/Elementor/Extensions/CustomAttributesExtension.php';
-
-require_once __DIR__ . '/Elementor/Extensions/CustomCssExtension.php';
-
-require_once __DIR__ . '/Elementor/IconSets.php';
-
+// Load base files only
 require_once __DIR__ . '/Elementor/Helpers.php';
 
 /**
@@ -67,6 +44,13 @@ class Elementor extends BaseModule {
 	 * @var array
 	 */
 	private $extensions = [];
+
+	/**
+	 * Module instances
+	 *
+	 * @var array
+	 */
+	private $modules = [];
 
 	/**
 	 * Icon Sets manager
@@ -131,6 +115,46 @@ class Elementor extends BaseModule {
 	}
 
 	/**
+	 * Register frontend scripts
+	 */
+	public function register_frontend_scripts() {
+		// Register GSAP and plugins
+		$plugin_assets_dir = VLT_TOOLKIT_URL . 'assets/';
+
+		// wp_register_script( 'gsap', $plugin_assets_dir . 'vendors/js/gsap.js', [], VLT_TOOLKIT_VERSION, true );
+		// wp_register_script( 'scrolltrigger', $plugin_assets_dir . 'vendors/js/gsap-scrolltrigger.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
+		// wp_register_script( 'scrolltoplugin', $plugin_assets_dir . 'vendors/js/gsap-scrolltoplugin.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
+		// wp_register_script( 'textplugin', $plugin_assets_dir . 'vendors/js/gsap-textplugin.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
+		// wp_register_script( 'observer', $plugin_assets_dir . 'vendors/js/gsap-observer.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
+		// wp_register_script( 'draggable', $plugin_assets_dir . 'vendors/js/gsap-draggable.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
+
+
+		// Register AOS
+		wp_register_style( 'aos', $plugin_assets_dir . 'vendors/css/aos.css', [], VLT_TOOLKIT_VERSION );
+
+		// Register Sharer
+		wp_register_script( 'sharer', $plugin_assets_dir . 'vendors/js/sharer.js', [], VLT_TOOLKIT_VERSION, true );
+
+		// Register Socicons
+		wp_register_style( 'socicons', $plugin_assets_dir . 'fonts/socicons/socicons.css', [], VLT_TOOLKIT_VERSION );
+
+		// Allow extensions to register their scripts
+		do_action( 'vlt_toolkit_elementor_register_frontend_scripts' );
+	}
+
+	/**
+	 * Enqueue frontend scripts
+	 */
+	public function enqueue_frontend_scripts() {
+
+		wp_enqueue_script('vlt-parallax-extension');
+
+		// Enqueue scripts needed for frontend
+		// Extensions can enqueue their scripts here
+		do_action( 'vlt_toolkit_elementor_enqueue_frontend_scripts' );
+	}
+
+	/**
 	 * Initialize Elementor integration
 	 */
 	public function init_elementor() {
@@ -141,12 +165,22 @@ class Elementor extends BaseModule {
 		// Register other hooks
 		add_action( 'elementor/editor/after_enqueue_styles', [ $this, 'editor_styles' ] );
 		add_action( 'elementor/frontend/after_enqueue_styles', [ $this, 'frontend_styles' ] );
+
+		add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_frontend_scripts' ] );
+		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
+
 		add_action( 'elementor/elements/categories_registered', [ $this, 'register_categories' ] );
 		add_action( 'elementor/theme/register_locations', [ $this, 'register_locations' ] );
 		add_filter( 'elementor/icons_manager/additional_tabs', [ $this, 'add_icon_tabs' ] );
 
 		// Hide promo widgets
 		add_filter( 'elementor/editor/localize_settings', [ $this, 'hide_promo_widgets' ], 20 );
+
+		// Add sticky position option
+		add_action( 'elementor/element/container/section_layout/before_section_end', [ $this, 'add_sticky_position' ] );
+
+		// Register Elementor modules
+		$this->register_elementor_modules();
 	}
 
 	/**
@@ -268,6 +302,85 @@ class Elementor extends BaseModule {
 	}
 
 	/**
+	 * Add sticky option to container position control
+	 *
+	 * @param \Elementor\Element_Base $element elementor element instance
+	 */
+	public function add_sticky_position( $element ) {
+		// Update position control to add sticky option
+		$element->update_control(
+			'position',
+			[
+				'options' => [
+					''         => esc_html__( 'Default', 'toolkit' ),
+					'absolute' => esc_html__( 'Absolute', 'toolkit' ),
+					'fixed'    => esc_html__( 'Fixed', 'toolkit' ),
+					'sticky'   => esc_html__( 'Sticky', 'toolkit' ),
+				],
+			]
+		);
+
+		// Add hidden control to add class when position is sticky
+		$element->add_control(
+			'_position_sticky_class',
+			[
+				'type'         => \Elementor\Controls_Manager::HIDDEN,
+				'default'      => 'yes',
+				'prefix_class' => 'elementor-sticky-',
+				'condition'    => [
+					'position' => 'sticky',
+				],
+			],
+			[
+				'position' => [
+					'of' => 'position',
+				],
+			]
+		);
+
+		// Add top position control for sticky
+		$element->add_responsive_control(
+			'position_sticky_top',
+			[
+				'label'      => esc_html__( 'Top', 'toolkit' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'em', 'rem', '%', 'vh', 'custom' ],
+				'default'    => [
+					'unit' => 'px',
+					'size' => 0,
+				],
+				'range'      => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 1000,
+						'step' => 5,
+					],
+					'vh' => [
+						'min' => 0,
+						'max' => 100,
+					],
+					'em' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'selectors'  => [
+					'{{WRAPPER}}.elementor-sticky-yes' => 'top: calc({{SIZE}}{{UNIT}} + var(--wp-admin--admin-bar--height, 0px)); --height: 100%;',
+					'body:not(.admin-bar) {{WRAPPER}}.elementor-sticky-yes' => 'top: {{SIZE}}{{UNIT}}; --height: 100%;',
+				],
+				'condition'  => [
+					'position' => 'sticky',
+				],
+			],
+			[
+				'position' => [
+					'of' => '_position_sticky_class',
+				],
+			]
+		);
+	}
+
+	/**
 	 * Check if current post/page is built with Elementor.
 	 *
 	 * Determines whether the current post was created using Elementor page builder.
@@ -359,21 +472,44 @@ class Elementor extends BaseModule {
 	 * Initialize extensions
 	 */
 	private function init_extensions() {
+		// Load extension files
+		require_once __DIR__ . '/Elementor/BaseExtension.php';
+		// require_once __DIR__ . '/Elementor/Extensions/LayoutExtensions.php';
+
+		// Initialize BaseExtension-based extensions only
 		$this->extensions = [
-			'jarallax'         => new JarallaxExtension(),
-			'aos'              => new AosExtension(),
-			'element_parallax' => new ElementParallaxExtension(),
-			'layout'           => new LayoutExtensions(),
-			'custom_attrs'     => new CustomAttributesExtension(),
-			'custom_css'       => new CustomCssExtension(),
+			// 'layout'  => new \VLT\Toolkit\Modules\Integrations\Elementor\Extensions\LayoutExtensions(),
 		];
+	}
+
+	/**
+	 * Register Elementor modules
+	 */
+	private function register_elementor_modules() {
+		// Load module files
+		require_once __DIR__ . '/Elementor/Extensions/CustomCssExtension.php';
+		require_once __DIR__ . '/Elementor/Extensions/CustomAttributesExtension.php';
+		require_once __DIR__ . '/Elementor/Extensions/ParallaxExtension.php';
+		// require_once __DIR__ . '/Elementor/Extensions/AosExtension.php';
+
+		// Only register modules if Elementor Pro is not active
+		// If Elementor Pro is active, it will handle these features
+		if ( ! defined( 'ELEMENTOR_PRO_VERSION' ) ) {
+			$this->modules['custom_css']        = new \VLT\Toolkit\Modules\Integrations\Elementor\Extensions\CustomCssExtension();
+			$this->modules['custom_attributes'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Extensions\CustomAttributesExtension();
+		}
+
+		// Always load these modules (no Pro dependency)
+		$this->modules['parallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Extensions\ParallaxExtension();
+		// $this->modules['aos']      = new \VLT\Toolkit\Modules\Integrations\Elementor\Extensions\AosExtension();
 	}
 
 	/**
 	 * Initialize Icon Sets manager
 	 */
 	private function init_icon_sets() {
-		$this->icon_sets = new IconSets();
+		require_once __DIR__ . '/Elementor/IconSets.php';
+		$this->icon_sets = new \VLT\Toolkit\Modules\Integrations\Elementor\IconSets();
 	}
 
 	/**

@@ -1,107 +1,104 @@
-(function ($) {
-	'use strict';
+/**
+ * VLT AOS Extension Handler
+ *
+ * Handles AOS (Animate On Scroll) initialization and refresh for Elementor elements
+ * The data-aos attributes are rendered by PHP, this initializes AOS and refreshes it
+ */
 
-	class AosExtension {
-		constructor() {
-			this.initialized = false;
-			this.resizeCallbacks = [];
-			this.resizeTimer = null;
-			this.init();
+// Initialize AOS globally when DOM is ready
+jQuery(document).ready(function () {
+	if (typeof AOS !== 'undefined') {
+		AOS.init({
+			disable: 'mobile',
+			offset: 200,
+			duration: 1000,
+			easing: 'ease',
+			once: true,
+			// startEvent: 'vlt:site:loaded' || 'DOMContentLoaded'
+		});
+	}
+});
+
+class VLTAosHandler extends elementorModules.frontend.handlers.Base {
+
+	onInit() {
+		super.onInit();
+
+		// Apply AOS attributes dynamically for editor
+		if (elementorFrontend.isEditMode()) {
+			this.applyAosAttributes();
 		}
 
-		init() {
-			$(window).on('resize orientationchange load', () => this.triggerResize());
-			$(() => {
-				this.setupHandlers();
-				this.initAOS();
-			});
-		}
-
-		triggerResize() {
-			clearTimeout(this.resizeTimer);
-			this.resizeTimer = setTimeout(() => {
-				this.resizeCallbacks.forEach(cb => cb());
-			}, 250);
-		}
-
-		debounceResize(cb) {
-			if (typeof cb === 'function' && !this.resizeCallbacks.includes(cb)) {
-				this.resizeCallbacks.push(cb);
-			}
-		}
-
-		isMobile() {
-			return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-		}
-
-		initAOS() {
-			if (typeof AOS === 'undefined') {
-				console.warn('AOS not loaded');
-				return;
-			}
-
-			AOS.init({
-				disable: () => this.isMobile(),
-				offset: 200,
-				duration: 1000,
-				easing: 'ease',
-				once: true,
-				startEvent: 'vlt:site:loaded'
-			});
-
-			this.initialized = true;
-			console.info('AOS Extension initialized');
-		}
-
-		refresh() {
-			if (this.initialized) {
-				AOS.refresh();
-			}
-		}
-
-		refreshHard() {
-			if (this.initialized) {
-				AOS.refreshHard();
-			}
-		}
-
-		setupHandlers() {
-			this.debounceResize(() => this.refresh());
-
-			$(document).on('endLoadingNewItems.vpf', () => this.refreshHard());
-
-			$(window).on('elementor/frontend/init', () => {
-				if (window.elementorFrontend?.hooks) {
-					elementorFrontend.hooks.addAction('frontend/element_ready/global', () => this.refresh());
-				}
-			});
-		}
-
-		destroy() {
-			// Clear resize timer and callbacks
-			clearTimeout(this.resizeTimer);
-			this.resizeCallbacks = [];
-
-			// Remove event listeners
-			$(window).off('resize orientationchange load');
-			$(document).off('endLoadingNewItems.vpf');
-			$(window).off('elementor/frontend/init');
-
-			// Destroy AOS instance if available
-			if (typeof AOS !== 'undefined' && this.initialized) {
-				// Remove all AOS attributes from elements
-				document.querySelectorAll('[data-aos]').forEach(el => {
-					el.classList.remove('aos-init', 'aos-animate');
-					el.removeAttribute('data-aos');
-				});
-			}
-
-			this.initialized = false;
-			console.info('AOS Extension destroyed');
+		// Refresh AOS to detect new elements
+		if (typeof AOS !== 'undefined') {
+			AOS.refresh();
 		}
 	}
 
-	// Create instance and expose globally
-	window.aosExtension = new AosExtension();
+	/**
+	 * Apply AOS attributes in editor (since PHP render doesn't work in editor)
+	 */
+	applyAosAttributes() {
+		const settings = this.getElementSettings();
 
-})(jQuery);
+		// Check if animation is enabled
+		if (!settings.vlt_aos_animation || settings.vlt_aos_animation === 'none') {
+			// Remove attributes if none
+			this.$element.removeAttr('data-aos data-aos-duration data-aos-delay data-aos-offset');
+			return;
+		}
+
+		// Apply animation
+		this.$element.attr('data-aos', settings.vlt_aos_animation);
+
+		// Apply duration (convert seconds to milliseconds)
+		if (settings.vlt_aos_duration?.size) {
+			const durationMs = settings.vlt_aos_duration.size * 1000;
+			this.$element.attr('data-aos-duration', durationMs);
+		} else {
+			this.$element.removeAttr('data-aos-duration');
+		}
+
+		// Apply delay (convert seconds to milliseconds)
+		if (settings.vlt_aos_delay?.size) {
+			const delayMs = settings.vlt_aos_delay.size * 1000;
+			this.$element.attr('data-aos-delay', delayMs);
+		} else {
+			this.$element.removeAttr('data-aos-delay');
+		}
+
+		// Apply offset
+		if (settings.vlt_aos_offset !== undefined && settings.vlt_aos_offset !== '') {
+			this.$element.attr('data-aos-offset', settings.vlt_aos_offset);
+		} else {
+			this.$element.removeAttr('data-aos-offset');
+		}
+	}
+
+	onElementChange(propertyName) {
+		if (propertyName.indexOf('vlt_aos') === 0) {
+			// Reapply attributes in editor
+			if (elementorFrontend.isEditMode()) {
+				this.applyAosAttributes();
+			}
+
+			// Refresh AOS when settings change
+			if (typeof AOS !== 'undefined') {
+				AOS.refresh();
+			}
+		}
+	}
+}
+
+// Register handlers when Elementor frontend is ready
+jQuery(window).on('elementor/frontend/init', () => {
+	// Handle containers
+	elementorFrontend.hooks.addAction('frontend/element_ready/container', ($element) => {
+		elementorFrontend.elementsHandler.addHandler(VLTAosHandler, { $element });
+	});
+
+	// Handle widgets
+	elementorFrontend.hooks.addAction('frontend/element_ready/widget', ($element) => {
+		elementorFrontend.elementsHandler.addHandler(VLTAosHandler, { $element });
+	});
+});

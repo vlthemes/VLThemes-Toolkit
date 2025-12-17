@@ -8,7 +8,11 @@
 		}
 
 		init() {
-			$(window).on('elementor:init', () => this.initCustomCss());
+			$(window).on('elementor:init', () => {
+				if (typeof ElementorProConfig === 'undefined') {
+					this.initCustomCss();
+				}
+			});
 		}
 
 		initCustomCss() {
@@ -16,7 +20,7 @@
 
 			elementor.hooks.addFilter('editor/style/styleText', (css, context) => this.addElementCss(css, context));
 
-			elementor.settings.page.model.on('change:vlt_custom_css', this.addPageCss.bind(this));
+			elementor.settings.page.model.on('change:custom_css', this.addPageCss.bind(this));
 			elementor.on('preview:loaded', this.addPageCss.bind(this));
 
 			this.initialized = true;
@@ -26,24 +30,24 @@
 		addPageCss() {
 			if (typeof elementor === 'undefined') return;
 
-			const css = elementor.settings.page.model.get('vlt_custom_css');
+			const css = elementor.settings.page.model.get('custom_css');
 			if (!css) return;
 
 			const selector = `.elementor-page-${elementor.config.document.id}`;
 			const processed = css.replace(/selector/g, selector);
 
-			const $style = elementor.$previewContents.find('#vlt-custom-css-page');
+			const $style = elementor.$previewContents.find('#elementor-custom-css-page');
 			if ($style.length) $style.remove();
 
 			elementor.$previewContents.find('head').append(
-				`<style id="vlt-custom-css-page">${processed}</style>`
+				`<style id="elementor-custom-css-page">${processed}</style>`
 			);
 		}
 
 		addElementCss(css, context) {
 			if (!context?.model) return css;
 
-			const custom = context.model.get('settings')?.get('vlt_custom_css');
+			const custom = context.model.get('settings')?.get('custom_css');
 			if (!custom) return css;
 
 			const selector = context.model.get('elType') === 'document'

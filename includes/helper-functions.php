@@ -363,6 +363,21 @@ if ( !function_exists( 'vlt_toolkit_parse_video_id' ) ) {
 	}
 }
 
+if ( !function_exists( 'vlt_toolkit_reading_time' ) ) {
+	/**
+	 * Get estimated reading time for post content
+	 *
+	 * @param int|null $post_id        Post ID (null for current post)
+	 * @param int      $words_per_minute Average reading speed (default: 200 words per minute)
+	 * @param string   $format         Output format: 'string' (e.g., "5 min read") or 'number' (just the number)
+	 *
+	 * @return string|int Reading time
+	 */
+	function vlt_toolkit_reading_time( $post_id = null, $words_per_minute = 200, $format = 'string' ) {
+		return VLT\Toolkit\Modules\Helpers\ContentHelper::get_reading_time( $post_id, $words_per_minute, $format );
+	}
+}
+
 // ========================================
 // Template Parts Functions
 // ========================================

@@ -73,28 +73,6 @@ class Toolkit {
 	 * Other modules can enqueue these as dependencies
 	 */
 	public function register_assets() {
-		// ===================================
-		// VENDORS
-		// ===================================
-		wp_register_script( 'gsap', $this->plugin_assets_dir . 'vendors/js/gsap.js', [], VLT_TOOLKIT_VERSION, true );
-		wp_register_script( 'scrolltrigger', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltrigger.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
-
-		wp_register_script( 'scrolltoplugin', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltoplugin.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
-		wp_register_script( 'textplugin', $this->plugin_assets_dir . 'vendors/js/gsap-textplugin.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
-		wp_register_script( 'observer', $this->plugin_assets_dir . 'vendors/js/gsap-observer.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
-		wp_register_script( 'draggable', $this->plugin_assets_dir . 'vendors/js/gsap-draggable.js', [ 'gsap' ], VLT_TOOLKIT_VERSION, true );
-
-		wp_register_script( 'jarallax', $this->plugin_assets_dir . 'vendors/js/jarallax.js', [], VLT_TOOLKIT_VERSION, true );
-		wp_register_script( 'jarallax-video', $this->plugin_assets_dir . 'vendors/js/jarallax-video.js', [], VLT_TOOLKIT_VERSION, true );
-		wp_register_style( 'jarallax', $this->plugin_assets_dir . 'vendors/css/jarallax.css', [], VLT_TOOLKIT_VERSION );
-
-		wp_register_script( 'aos', $this->plugin_assets_dir . 'vendors/js/aos.js', [], VLT_TOOLKIT_VERSION, true );
-		wp_register_style( 'aos', $this->plugin_assets_dir . 'vendors/css/aos.css', [], VLT_TOOLKIT_VERSION );
-
-		wp_register_script( 'sharer', $this->plugin_assets_dir . 'vendors/js/sharer.js', [], VLT_TOOLKIT_VERSION, true );
-
-		wp_register_style( 'socicons', $this->plugin_assets_dir . 'fonts/socicons/socicons.css', [], VLT_TOOLKIT_VERSION );
-
 		// Allow themes/plugins to register additional assets
 		do_action( 'vlt_toolkit/register_assets' );
 	}

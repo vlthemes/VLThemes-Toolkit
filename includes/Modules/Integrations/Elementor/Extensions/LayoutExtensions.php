@@ -219,7 +219,7 @@ class LayoutExtensions extends BaseExtension {
 	 *
 	 * @param object $widget elementor widget instance
 	 */
-	public function render_attributes( $widget ) {
+	public function render_attributes( Element_Base $widget ) {
 		$settings = $widget->get_settings_for_display();
 
 		// Stretch reset on devices

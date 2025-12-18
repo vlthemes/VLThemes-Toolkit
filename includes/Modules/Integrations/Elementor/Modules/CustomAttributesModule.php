@@ -1,6 +1,6 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
+namespace VLT\Toolkit\Modules\Integrations\Elementor\Module;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -19,7 +19,7 @@ use Elementor\Plugin;
  * Allows adding custom HTML attributes to Elementor elements
  * Compatible with Elementor Pro naming conventions
  */
-class CustomAttributesExtension extends Module {
+class CustomAttributesModule extends Module {
 
 	/**
 	 * Constructor

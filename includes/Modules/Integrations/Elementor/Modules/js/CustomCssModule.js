@@ -1,7 +1,7 @@
 (function ($) {
 	'use strict';
 
-	class CustomCssExtension {
+	class CustomCssModule {
 		constructor() {
 			this.initialized = false;
 			this.init();
@@ -58,6 +58,6 @@
 		}
 	}
 
-	new CustomCssExtension();
+	new CustomCssModule();
 
 })(jQuery);

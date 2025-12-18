@@ -1,6 +1,6 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
+namespace VLT\Toolkit\Modules\Integrations\Elementor\Module;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -16,7 +16,7 @@ use Elementor\Core\Base\Module as Module_Base;
  *
  * Handles AOS (Animate On Scroll) animations
  */
-class AosExtension extends Module_Base {
+class AosModule extends Module_Base {
 
 	/**
 	 * Constructor
@@ -35,7 +35,7 @@ class AosExtension extends Module_Base {
 	}
 
 	/**
-	 * Register extension scripts
+	 * Register module scripts
 	 */
 	public function register_scripts() {
 
@@ -50,7 +50,7 @@ class AosExtension extends Module_Base {
 
 		wp_enqueue_script(
 			'vlt-aos-extension',
-			plugin_dir_url( __FILE__ ) . 'js/AosExtension.js',
+			plugin_dir_url( __FILE__ ) . 'js/AosModule.js',
 			[ 'jquery', 'elementor-frontend', 'aos' ],
 			VLT_TOOLKIT_VERSION,
 			true
@@ -199,7 +199,7 @@ class AosExtension extends Module_Base {
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_attributes' ] );
 
 		// Enqueue scripts on frontend and editor
-		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ] );
+		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'register_scripts' ] );
 		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'register_scripts' ] );
 	}
 

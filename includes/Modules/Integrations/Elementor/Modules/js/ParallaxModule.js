@@ -43,8 +43,6 @@
 		}
 
 		initRellax() {
-			console.log('init');
-
 			// Destroy existing instance
 			if (this.rellaxInstance) {
 				this.rellaxInstance.destroy();
@@ -67,6 +65,9 @@
 			// Sync settings to data attributes (important for editor mode)
 			this.syncDataAttributes(el, settings);
 
+			// Remove transitions that conflict with Rellax
+			el.style.transition = 'none';
+
 			try {
 				// Initialize Rellax for this element
 				this.rellaxInstance = new Rellax(el, {
@@ -79,7 +80,6 @@
 			} catch (error) {
 				console.error('Rellax initialization error:', error);
 			}
-			console.log(el);
 		}
 
 		syncDataAttributes(el, settings) {
@@ -125,11 +125,9 @@
 		onElementChange(propertyName) {
 			// Refresh when parallax settings change
 			if (propertyName.indexOf('vlt_rellax') === 0) {
-				console.log('onElementChange:', propertyName);
 				// Debounce to avoid excessive reinitialization
 				clearTimeout(this.changeTimeout);
 				this.changeTimeout = setTimeout(() => {
-					console.log('Debounced init after 300ms');
 					this.initRellax();
 				}, 300);
 			}

@@ -1,6 +1,6 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
+namespace VLT\Toolkit\Modules\Integrations\Elementor\Module;
 
 use VLT\Toolkit\Modules\Integrations\Elementor\BaseExtension;
 

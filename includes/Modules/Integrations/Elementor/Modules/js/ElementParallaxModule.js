@@ -6,7 +6,7 @@
 		return;
 	}
 
-	class ElementParallaxExtension {
+	class ElementParallaxModule {
 		constructor() {
 			this.triggers = [];
 			this.initialized = false;
@@ -231,6 +231,6 @@
 	}
 
 	// Create instance and expose globally
-	window.elementParallaxExtension = new ElementParallaxExtension();
+	window.elementParallaxModule = new ElementParallaxModule();
 
 })(jQuery);

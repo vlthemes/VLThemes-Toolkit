@@ -1,6 +1,6 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
+namespace VLT\Toolkit\Modules\Integrations\Elementor\Module;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -16,7 +16,7 @@ use Elementor\Core\Base\Module as Module_Base;
  *
  * Adds parallax effects to Elementor elements using Rellax.js
  */
-class ParallaxExtension extends Module_Base {
+class ParallaxModule extends Module_Base {
 
 	/**
 	 * Constructor
@@ -35,16 +35,16 @@ class ParallaxExtension extends Module_Base {
 	}
 
 	/**
-	 * Register extension scripts
+	 * Register module scripts
 	 */
 	public function register_scripts() {
-		// Register Rellax
-		wp_enqueue_script( 'rellax', VLT_TOOLKIT_URL . 'assets/vendors/js/rellax.js', [ 'jquery' ], VLT_TOOLKIT_VERSION, true );
+		// Enqueue Rellax
+		wp_enqueue_script( 'rellax', VLT_TOOLKIT_URL . 'assets/vendors/js/rellax.js', [], VLT_TOOLKIT_VERSION, true );
 
-		// Register extension script
+		// Enqueue module script
 		wp_enqueue_script(
-			'vlt-parallax-extension',
-			plugin_dir_url( __FILE__ ) . 'js/ParallaxExtension.js',
+			'vlt-parallax-module',
+			plugin_dir_url( __FILE__ ) . 'js/ParallaxModule.js',
 			[ 'jquery', 'elementor-frontend', 'rellax' ],
 			VLT_TOOLKIT_VERSION,
 			true
@@ -231,7 +231,7 @@ class ParallaxExtension extends Module_Base {
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_attributes' ] );
 
 		// Enqueue scripts on frontend and editor
-		add_action( 'wp_enqueue_scripts', [ $this, 'register_scripts' ] );
+		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'register_scripts' ] );
 		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'register_scripts' ] );
 	}
 }

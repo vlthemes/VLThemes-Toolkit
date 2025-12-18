@@ -1,6 +1,6 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
+namespace VLT\Toolkit\Modules\Integrations\Elementor\Module;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -16,7 +16,7 @@ use Elementor\Core\DynamicTags\Dynamic_CSS;
  *
  * Allows adding custom CSS to Elementor elements
  */
-class CustomCssExtension extends Module {
+class CustomCssModule extends Module {
 	/**
 	 * Track which widgets have already had CSS appended
 	 *
@@ -46,7 +46,7 @@ class CustomCssExtension extends Module {
 	public function enqueue_scripts_editor() {
 		wp_enqueue_script(
 			'vlt-custom-css',
-			plugin_dir_url( __FILE__ ) . 'js/CustomCssExtension.js',
+			plugin_dir_url( __FILE__ ) . 'js/CustomCssModule.js',
 			[ 'elementor-editor' ],
 			VLT_TOOLKIT_VERSION,
 			true

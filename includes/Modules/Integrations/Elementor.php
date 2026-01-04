@@ -111,7 +111,6 @@ class Elementor extends BaseModule {
 	 * Register frontend scripts
 	 */
 	public function register_frontend_scripts() {
-		// Register GSAP and plugins
 		$plugin_assets_dir = VLT_TOOLKIT_URL . 'assets/';
 
 		// Register Sharer
@@ -465,8 +464,8 @@ class Elementor extends BaseModule {
 		}
 
 		// Always load these modules (no Pro dependency)
-		$this->modules['parallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
-		$this->modules['jarallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\JarallaxModule();
+		// $this->modules['parallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
+		// $this->modules['jarallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\JarallaxModule();
 		$this->modules['aos']      = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
 	}
 

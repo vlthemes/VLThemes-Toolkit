@@ -67,6 +67,9 @@ class TemplateParts extends BaseModule {
 
 		add_filter( 'single_template', [ $this, 'load_canvas_template' ] );
 		add_action( 'template_redirect', [ $this, 'block_template_frontend' ] );
+
+		// Admin bar
+		add_action( 'admin_bar_menu', [ $this, 'add_admin_bar_menu' ], 100 );
 	}
 
 	/**
@@ -1218,5 +1221,24 @@ class TemplateParts extends BaseModule {
 			$content,
 		);
 	}
+
+	/**
+	 * Add admin bar menu
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar WordPress admin bar instance
+	 */
+	public function add_admin_bar_menu( $wp_admin_bar ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node(
+			[
+				'parent' => 'new-content',
+				'id'     => 'new-vlt-template',
+				'title'  => esc_html__( 'Template Part', 'toolkit' ),
+				'href'   => admin_url( 'post-new.php?post_type=vlt_tp' ),
+			]
+		);
+	}
 }
-?>

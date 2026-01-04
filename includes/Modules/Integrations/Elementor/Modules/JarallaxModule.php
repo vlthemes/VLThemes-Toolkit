@@ -40,12 +40,7 @@ class JarallaxModule extends Module_Base {
 	public function register_scripts() {
 		wp_enqueue_script( 'jarallax', VLT_TOOLKIT_URL . 'assets/vendors/js/jarallax.js', [], VLT_TOOLKIT_VERSION, true );
 		wp_enqueue_script( 'jarallax-video', VLT_TOOLKIT_URL . 'assets/vendors/js/jarallax-video.js', [], VLT_TOOLKIT_VERSION, true );
-		wp_enqueue_style(
-			'jarallax',
-			VLT_TOOLKIT_URL . 'assets/vendors/css/jarallax.css',
-			[],
-			VLT_TOOLKIT_VERSION
-		);
+		wp_enqueue_style( 'jarallax', VLT_TOOLKIT_URL . 'assets/vendors/css/jarallax.css', [], VLT_TOOLKIT_VERSION );
 
 		wp_enqueue_script(
 			'vlt-jarallax-module',
@@ -54,6 +49,13 @@ class JarallaxModule extends Module_Base {
 			VLT_TOOLKIT_VERSION,
 			true,
 		);
+
+		wp_enqueue_style( 'vlt-jarallax-module',
+			plugin_dir_url( __FILE__ ) . 'css/JarallaxModule.css',
+			[],
+			VLT_TOOLKIT_VERSION
+		);
+
 
 	}
 
@@ -69,8 +71,10 @@ class JarallaxModule extends Module_Base {
 			[
 				'label' => esc_html__( 'Jarallax', 'toolkit' ),
 				'type' => Controls_Manager::SWITCHER,
-				'return_value' => 'jarallax',
-				'prefix_class' => '',
+				'label_off' => esc_html__( 'Off', 'toolkit' ),
+				'label_on' => esc_html__( 'On', 'toolkit' ),
+				'render_type' => 'ui',
+				'frontend_available' => true,
 				'separator' => 'before',
 				'conditions' => [
 					'relation' => 'or',
@@ -124,11 +128,11 @@ class JarallaxModule extends Module_Base {
 						'step' => 0.1,
 					],
 				],
+				'frontend_available' => true,
 				'default' => [
 					'size' => 0.9,
 				],
-				'frontend_available' => true,
-				'condition' => [ 'vlt_jarallax_enable' => 'jarallax' ],
+				'condition' => [ 'vlt_jarallax_enable' => 'yes' ],
 			],
 		);
 
@@ -145,7 +149,7 @@ class JarallaxModule extends Module_Base {
 					'scale-opacity'  => esc_html__( 'Scale + Opacity', 'toolkit' ),
 				],
 				'frontend_available' => true,
-				'condition' => [ 'vlt_jarallax_enable' => 'jarallax' ],
+				'condition' => [ 'vlt_jarallax_enable' => 'yes' ],
 			],
 		);
 
@@ -155,10 +159,23 @@ class JarallaxModule extends Module_Base {
 				'label'       => esc_html__( 'Video URL', 'toolkit' ),
 				'description' => esc_html__( 'YouTube, Vimeo or local video. Use "mp4:" prefix for self-hosted.', 'toolkit' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'https://www.youtube.com/watch?v=...',
-				'condition'   => [ 'vlt_jarallax_enable' => 'jarallax' ],
 				'frontend_available' => true,
+				'placeholder' => 'https://www.youtube.com/watch?v=...',
+				'condition'   => [ 'vlt_jarallax_enable' => 'yes' ],
 			],
+		);
+
+		$element->add_control(
+			'vlt_jarallax_update',
+			[
+				'label' => __( 'Apply Button', 'toolkit' ),
+				'show_label' => false,
+				'type'  => Controls_Manager::RAW_HTML,
+				'raw' => '<div class="elementor-update-preview" style="margin: 0 0 8px 0"><div class="elementor-update-preview-title">' . __( 'Update changes to the page', 'toolkit' ) . '</div><div class="elementor-update-preview-button-wrapper"><button class="elementor-update-preview-button elementor-button elementor-button-success" style="background-image: linear-gradient(90deg, #e2498a 0%, #562dd4 100%);">' . __( 'Apply', 'toolkit' ) . '</button></div></div>',
+				'condition' => [
+					'vlt_jarallax_enable' => 'yes',
+				],
+			]
 		);
 
 	}
@@ -171,12 +188,13 @@ class JarallaxModule extends Module_Base {
 	public function render_attributes( $widget ) {
 		$settings = $widget->get_settings_for_display();
 
-		if ( empty( $settings['vlt_jarallax_enable'] ) || 'jarallax' !== $settings['vlt_jarallax_enable'] ) {
+		if ( empty( $settings['vlt_jarallax_enable'] ) || 'yes' !== $settings['vlt_jarallax_enable'] ) {
 			return;
 		}
 
 		// Add jarallax class and speed
 		if ( !empty( $settings['vlt_jarallax_speed']['size'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-jarallax', '' );
 			$widget->add_render_attribute( '_wrapper', 'data-speed', $settings['vlt_jarallax_speed']['size'] );
 		}
 
@@ -189,7 +207,6 @@ class JarallaxModule extends Module_Base {
 		if ( !empty( $settings['vlt_jarallax_type'] ) ) {
 			$widget->add_render_attribute( '_wrapper', 'data-type', $settings['vlt_jarallax_type'] );
 		}
-
 	}
 
 	/**
@@ -200,7 +217,7 @@ class JarallaxModule extends Module_Base {
 		add_action( 'elementor/element/container/section_background/before_section_end', [ $this, 'register_controls' ] );
 
 		// Render for containers
-		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_attributes' ] );
+		// add_action( 'elementor/frontend/container/before_render', [ $this, 'render_attributes' ] );
 
 		// Enqueue scripts on frontend and editor
 		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'register_scripts' ] );

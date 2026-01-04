@@ -6,84 +6,95 @@
 		return;
 	}
 
-	function refreshAllJarallax() {
-		const elements = document.querySelectorAll('.jarallax');
-
-		if (elements.length === 0) {
-			return;
+	class JarallaxHandler extends elementorModules.frontend.handlers.Base {
+		getDefaultSettings() {
+			return {
+				classes: {
+					element: 'elementor-motion-parallax jarallax'
+				}
+			};
 		}
 
-		jQuery('.jarallax').jarallax('destroy').jarallax({
-			speed: .9
-		});
-	};
+		activate() {
+			const $element = this.$element;
+			const settings = this.getElementSettings();
 
-	document.addEventListener('DOMContentLoaded', refreshAllJarallax);
+			// Add the jarallax class directly to the container
+			$element.addClass(this.getSettings('classes.element'));
 
-	window.addEventListener('vlt:jarallax:refresh', () => {
-		refreshAllJarallax();
-	});
+			// Apply all Jarallax data attributes directly to the container element
+			this.syncDataAttributes($element[0], settings);
 
-	class JarallaxHandler extends elementorModules.frontend.handlers.Base {
+			// Initialize Jarallax directly on the container
+			$element.jarallax();
+		}
 
-			getDefaultElements() {
-				return {
-					$element: this.$element
-				};
+		syncDataAttributes(el, settings) {
+			// Speed
+			if (settings.vlt_jarallax_speed?.size !== undefined && settings.vlt_jarallax_speed.size !== '') {
+				el.setAttribute('data-speed', settings.vlt_jarallax_speed.size);
+			} else {
+				el.removeAttribute('data-speed');
 			}
 
-			onInit() {
-				super.onInit();
-				this.applySettings();
+			// Type (e.g., 'scroll', 'scale', etc.)
+			if (settings.vlt_jarallax_type && settings.vlt_jarallax_type !== '') {
+				el.setAttribute('data-type', settings.vlt_jarallax_type);
+			} else {
+				el.removeAttribute('data-type');
 			}
 
-			applySettings() {
-				const settings = this.getElementSettings();
-				const el = this.$element[0];
+			// Video URL
+			if (settings.vlt_jarallax_video_url && settings.vlt_jarallax_video_url !== '') {
+				el.setAttribute('data-jarallax-video', settings.vlt_jarallax_video_url);
+			} else {
+				el.removeAttribute('data-jarallax-video');
+			}
+		}
 
-				this.syncDataAttributes(el, settings);
+		deactivate() {
+			const $element = this.$element;
+
+			// Destroy Jarallax instance if it exists
+			if ($element.hasClass('jarallax')) {
+				jarallax($element[0], 'destroy');
 			}
 
-			syncDataAttributes(el, settings) {
-				const speed = settings.vlt_jarallax_speed?.size;
-				if (speed !== undefined && speed !== '') {
-					el.dataset.speed = speed;
-				} else {
-					delete el.dataset.speed;
-				}
+			// Remove class and data attributes
+			$element.removeClass(this.getSettings('classes.element'));
+			$element.removeAttr('data-speed data-type data-jarallax-video');
+		}
 
-				if (settings.vlt_jarallax_type) {
-					el.dataset.type = settings.vlt_jarallax_type;
-				} else {
-					delete el.dataset.type;
-				}
-
-				if (settings.vlt_jarallax_video_url) {
-					el.dataset.jarallaxVideo = settings.vlt_jarallax_video_url;
-				} else {
-					delete el.dataset.jarallaxVideo;
-				}
+		toggle() {
+			if (this.getElementSettings('vlt_jarallax_enable')) {
+				this.activate();
+			} else {
+				this.deactivate();
 			}
+		}
 
-			onElementChange(propertyName) {
-				if (propertyName.startsWith('vlt_jarallax')) {
-					clearTimeout(this.changeTimeout);
-					this.changeTimeout = setTimeout(() => {
-						this.applySettings();
-						window.dispatchEvent(new Event('vlt:jarallax:refresh'));
-					}, 300);
-				}
+		onInit() {
+			super.onInit();
+			this.toggle();
+		}
+
+		// Optional: Re-apply on element settings change (e.g., in editor)
+		onElementChange(propertyName) {
+			if (propertyName.startsWith('vlt_jarallax_')) {
+				this.deactivate();
+				this.toggle();
 			}
+		}
 	}
 
-	window.addEventListener('elementor/frontend/init', () => {
-		elementorFrontend.hooks.addAction('frontend/element_ready/container', ($scope) => {
-			elementorFrontend.elementsHandler.addHandler(JarallaxHandler, {
-				$element: $scope
-			});
-			refreshAllJarallax();
-
-		});
+	jQuery(window).on('elementor/frontend/init', () => {
+		elementorFrontend.hooks.addAction(
+			'frontend/element_ready/container',
+			($element) => {
+				elementorFrontend.elementsHandler.addHandler(JarallaxHandler, {
+					$element: $element
+				});
+			}
+		);
 	});
-
 })();

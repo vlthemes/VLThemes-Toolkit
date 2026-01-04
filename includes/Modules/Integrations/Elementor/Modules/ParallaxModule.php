@@ -97,7 +97,7 @@ class ParallaxModule extends Module_Base {
 					],
 				],
 				'default' => [
-					'size' => -3,
+					'size' => 2,
 				],
 				'frontend_available' => true,
 				'condition' => [

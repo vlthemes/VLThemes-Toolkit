@@ -66,18 +66,19 @@ class AosModule extends Module_Base {
 		$element->start_controls_section(
 			'vlt_section_aos_animation',
 			[
-				'label' => esc_html__( 'VLT Entrance Animation', 'toolkit' ),
+				'label' => esc_html__( 'Entrance Animation', 'toolkit' ),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			]
 		);
 
-		$element->add_control(
+		$element->add_responsive_control(
 			'vlt_aos_animation',
 			[
 				'label'              => esc_html__( 'Entrance Animation', 'toolkit' ),
 				'type'               => Controls_Manager::SELECT,
 				'options'            => $this->get_aos_animations(),
 				'default'            => 'none',
+				'frontend_available' => true
 			]
 		);
 
@@ -86,19 +87,12 @@ class AosModule extends Module_Base {
 			[
 				'label'              => esc_html__( 'Duration (seconds)', 'toolkit' ),
 				'description'        => esc_html__( 'Animation duration in seconds', 'toolkit' ),
-				'type'               => Controls_Manager::SLIDER,
-				'size_units'         => [ 'px' ],
-				'range'              => [
-					'px' => [
-						'min'  => 0.05,
-						'max'  => 3,
-						'step' => 0.05,
-					],
-				],
-				'default' => [
-					'unit' => 'px',
-					'size' => 1,
-				],
+				'type'               => Controls_Manager::NUMBER,
+				'min'                => 0,
+				'max'                => 3,
+				'step'               => 0.05,
+				'default'            => 1,
+				'frontend_available' => true,
 				'condition'          => [ 'vlt_aos_animation!' => 'none' ],
 			]
 		);
@@ -108,20 +102,51 @@ class AosModule extends Module_Base {
 			[
 				'label'       => esc_html__( 'Delay (seconds)', 'toolkit' ),
 				'description' => esc_html__( 'Delay before animation starts in seconds', 'toolkit' ),
-				'type'        => Controls_Manager::SLIDER,
-				'size_units'  => [ 'px' ],
-				'range'       => [
-					'px' => [
-						'min'  => 0,
-						'max'  => 3,
-						'step' => 0.05,
-					],
+				'type'        => Controls_Manager::NUMBER,
+				'min'         => 0,
+				'max'         => 3,
+				'step'        => 0.05,
+				'default'     => 0,
+				'render_type' => 'none',
+				'frontend_available' => true,
+				'condition'   => [ 'vlt_aos_animation!' => 'none' ],
+			]
+		);
+
+		$element->add_control(
+			'vlt_aos_easing',
+			[
+				'label'       => esc_html__( 'Easing', 'toolkit' ),
+				'description' => esc_html__( 'Animation easing function', 'toolkit' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => '',
+				'frontend_available' => true,
+				'options'     => [
+					''                  => esc_html__( 'Default', 'toolkit' ),
+					'linear'            => esc_html__( 'Linear', 'toolkit' ),
+					'ease'              => esc_html__( 'Ease (default)', 'toolkit' ),
+					'ease-in'           => esc_html__( 'Ease In', 'toolkit' ),
+					'ease-out'          => esc_html__( 'Ease Out', 'toolkit' ),
+					'ease-in-out'       => esc_html__( 'Ease In Out', 'toolkit' ),
+					'ease-in-back'      => esc_html__( 'Ease In Back', 'toolkit' ),
+					'ease-out-back'     => esc_html__( 'Ease Out Back', 'toolkit' ),
+					'ease-in-out-back'  => esc_html__( 'Ease In Out Back', 'toolkit' ),
+					'ease-in-sine'      => esc_html__( 'Ease In Sine', 'toolkit' ),
+					'ease-out-sine'     => esc_html__( 'Ease Out Sine', 'toolkit' ),
+					'ease-in-out-sine'  => esc_html__( 'Ease In Out Sine', 'toolkit' ),
+					'ease-in-quad'      => esc_html__( 'Ease In Quad', 'toolkit' ),
+					'ease-out-quad'     => esc_html__( 'Ease Out Quad', 'toolkit' ),
+					'ease-in-out-quad'  => esc_html__( 'Ease In Out Quad', 'toolkit' ),
+					'ease-in-cubic'     => esc_html__( 'Ease In Cubic', 'toolkit' ),
+					'ease-out-cubic'    => esc_html__( 'Ease Out Cubic', 'toolkit' ),
+					'ease-in-out-cubic' => esc_html__( 'Ease In Out Cubic', 'toolkit' ),
+					'ease-in-quart'     => esc_html__( 'Ease In Quart', 'toolkit' ),
+					'ease-out-quart'    => esc_html__( 'Ease Out Quart', 'toolkit' ),
+					'ease-in-out-quart' => esc_html__( 'Ease In Out Quart', 'toolkit' ),
 				],
-				'default' => [
-					'unit' => 'px',
-					'size' => 0,
+				'condition' => [
+					'vlt_aos_animation!' => 'none',
 				],
-				'condition' => [ 'vlt_aos_animation!' => 'none' ],
 			]
 		);
 
@@ -134,6 +159,7 @@ class AosModule extends Module_Base {
 				'min'         => -500,
 				'max'         => 500,
 				'step'        => 10,
+				'frontend_available' => true,
 				'condition'   => [ 'vlt_aos_animation!' => 'none' ],
 			]
 		);
@@ -147,32 +173,8 @@ class AosModule extends Module_Base {
 	 * @param object Element_Base $element Elementor element instance
 	 */
 	public function render_attributes( Element_Base $element ) {
-		$settings = $element->get_settings_for_display();
-
-		if ( empty( $settings['vlt_aos_animation'] ) || 'none' === $settings['vlt_aos_animation'] ) {
-			return;
-		}
-
-		// Add animation
-		$element->add_render_attribute( '_wrapper', 'data-aos', $settings['vlt_aos_animation'] );
-
-		// Add duration (convert seconds to milliseconds)
-		if ( !empty( $settings['vlt_aos_duration']['size'] ) ) {
-			$duration_ms = $settings['vlt_aos_duration']['size'] * 1000;
-			$element->add_render_attribute( '_wrapper', 'data-aos-duration', $duration_ms );
-		}
-
-		// Add delay (convert seconds to milliseconds)
-		if ( !empty( $settings['vlt_aos_delay']['size'] ) ) {
-			$delay_ms = $settings['vlt_aos_delay']['size'] * 1000;
-			$element->add_render_attribute( '_wrapper', 'data-aos-delay', $delay_ms );
-		}
-
-		// Add offset
-		if ( isset( $settings['vlt_aos_offset'] ) && '' !== $settings['vlt_aos_offset'] ) {
-			$element->add_render_attribute( '_wrapper', 'data-aos-offset', $settings['vlt_aos_offset'] );
-		}
-
+		// JavaScript will handle all data attribute rendering dynamically based on breakpoints
+		// No need to render attributes in PHP
 	}
 
 	/**

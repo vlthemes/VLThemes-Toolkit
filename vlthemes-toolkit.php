@@ -10,6 +10,7 @@
  * License: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: vlthemes-toolkit
  * Domain Path: /languages
+ * Requires Plugins: elementor
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;

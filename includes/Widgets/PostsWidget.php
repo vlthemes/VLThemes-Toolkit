@@ -18,6 +18,13 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param string $ratio   aspect ratio class
 	 */
 	protected function render_thumbnail( $post_id, $size = 'thumbnail', $ratio = '1x1' ) {
+		// Allow theme to override thumbnail rendering
+		$custom_output = apply_filters( 'vlt_toolkit_widget_render_thumbnail', null, $post_id, $size, $ratio, $this );
+		if ( $custom_output !== null ) {
+			echo $custom_output;
+			return;
+		}
+
 		if ( !has_post_thumbnail( $post_id ) ) {
 			return;
 		}
@@ -38,7 +45,14 @@ abstract class PostsWidget extends \WP_Widget {
 	 *
 	 * @param int $post_id post ID
 	 */
-	protected function render_title( $post_id ) { ?>
+	protected function render_title( $post_id ) {
+		// Allow theme to override title rendering
+		$custom_output = apply_filters( 'vlt_toolkit_widget_render_title', null, $post_id, $this );
+		if ( $custom_output !== null ) {
+			echo $custom_output;
+			return;
+		}
+		?>
 		<h6>
 			<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>">
 				<?php echo esc_html( get_the_title( $post_id ) ); ?>
@@ -54,6 +68,12 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param bool $show_comments show comments count
 	 */
 	protected function render_meta( $post_id, $show_date = true, $show_comments = false ) {
+		// Allow theme to override meta rendering
+		$custom_output = apply_filters( 'vlt_toolkit_widget_render_meta', null, $post_id, $show_date, $show_comments, $this );
+		if ( $custom_output !== null ) {
+			echo $custom_output;
+			return;
+		}
 		?>
 <div class="vlt-widget-post__meta">
 	<?php if ( $show_date ) : ?>
@@ -83,6 +103,13 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param int $length  excerpt length
 	 */
 	protected function render_excerpt( $post_id, $length = 20 ) {
+		// Allow theme to override excerpt rendering
+		$custom_output = apply_filters( 'vlt_toolkit_widget_render_excerpt', null, $post_id, $length, $this );
+		if ( $custom_output !== null ) {
+			echo $custom_output;
+			return;
+		}
+
 		$excerpt = get_the_excerpt( $post_id );
 
 		if ( empty( $excerpt ) ) {
@@ -103,11 +130,19 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param \WP_Post $post post object
 	 */
 	protected function render_list_item( $post ) {
+		// Allow theme to override list item rendering
+		$custom_output = apply_filters( 'vlt_toolkit_widget_render_list_item', null, $post, $this );
+		if ( $custom_output !== null ) {
+			echo $custom_output;
+			return;
+		}
 		?>
 <div class="vlt-widget-post">
 	<?php $this->render_thumbnail( $post->ID, 'thumbnail', '1x1' ); ?>
 	<div class="vlt-widget-post__content">
 		<?php $this->render_title( $post->ID ); ?>
+		<?php $this->render_meta( $post->ID ); ?>
+		<?php $this->render_excerpt( $post->ID ); ?>
 	</div>
 </div>
 <?php
@@ -119,12 +154,20 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param \WP_Post $post post object
 	 */
 	protected function render_slider_item( $post ) {
+		// Allow theme to override slider item rendering
+		$custom_output = apply_filters( 'vlt_toolkit_widget_render_slider_item', null, $post, $this );
+		if ( $custom_output !== null ) {
+			echo $custom_output;
+			return;
+		}
 		?>
 <div class="swiper-slide">
 	<article class="vlt-widget-post">
 		<?php $this->render_thumbnail( $post->ID, 'medium', '4x3' ); ?>
 		<div class="vlt-widget-post__content">
 			<?php $this->render_title( $post->ID ); ?>
+			<?php $this->render_meta( $post->ID ); ?>
+			<?php $this->render_excerpt( $post->ID ); ?>
 		</div>
 	</article>
 </div>

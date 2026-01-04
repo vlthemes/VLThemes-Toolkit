@@ -113,6 +113,7 @@ class AOS extends BaseModule {
 			'delay'    => '',
 			'offset'   => '',
 			'once'     => '',
+			'easing'   => '',
 		];
 
 		$args = wp_parse_args( $args, $defaults );
@@ -121,20 +122,24 @@ class AOS extends BaseModule {
 			'data-aos' => esc_attr( $animation ),
 		];
 
-		if ( !empty( $args['duration'] ) ) {
+		if ( isset( $args['duration'] ) && $args['duration'] !== '' ) {
 			$attrs['data-aos-duration'] = esc_attr( $args['duration'] * 1000 );
 		}
 
-		if ( !empty( $args['delay'] ) ) {
+		if ( isset( $args['delay'] ) && $args['delay'] !== '' ) {
 			$attrs['data-aos-delay'] = esc_attr( $args['delay'] * 1000 );
 		}
 
-		if ( !empty( $args['offset'] ) ) {
+		if ( isset( $args['offset'] ) && $args['offset'] !== '' ) {
 			$attrs['data-aos-offset'] = esc_attr( $args['offset'] );
 		}
 
-		if ( !empty( $args['once'] ) ) {
+		if ( isset( $args['once'] ) && $args['once'] !== '' ) {
 			$attrs['data-aos-once'] = esc_attr( $args['once'] );
+		}
+
+		if ( isset( $args['easing'] ) && $args['easing'] !== '' ) {
+			$attrs['data-aos-easing'] = esc_attr( $args['easing'] );
 		}
 
 		return $attrs;

@@ -455,6 +455,7 @@ class Elementor extends BaseModule {
 		require_once __DIR__ . '/Elementor/Modules/ParallaxModule.php';
 		require_once __DIR__ . '/Elementor/Modules/JarallaxModule.php';
 		require_once __DIR__ . '/Elementor/Modules/AosModule.php';
+		require_once __DIR__ . '/Elementor/Modules/MaskModule.php';
 
 		// Only register modules if Elementor Pro is not active
 		// If Elementor Pro is active, it will handle these features
@@ -466,7 +467,8 @@ class Elementor extends BaseModule {
 		// Always load these modules (no Pro dependency)
 		// $this->modules['parallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
 		// $this->modules['jarallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\JarallaxModule();
-		$this->modules['aos']      = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
+		$this->modules['aos']  = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
+		$this->modules['mask'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
 	}
 
 	/**

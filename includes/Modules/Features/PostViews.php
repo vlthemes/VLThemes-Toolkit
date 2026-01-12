@@ -66,10 +66,14 @@ class PostViews extends BaseModule {
 	/**
 	 * Set/increment post views
 	 *
-	 * @param int $post_id post ID
+	 * @param int|null $post_id post ID or null for current post
 	 *
 	 */
-	public static function set_views( $post_id ) {
+	public static function set_views( $post_id = null ) {
+		if ( $post_id === null ) {
+			$post_id = get_the_ID();
+		}
+
 		if ( !$post_id || !get_post( $post_id ) ) {
 			return;
 		}
@@ -92,11 +96,15 @@ class PostViews extends BaseModule {
 	/**
 	 * Get post views count
 	 *
-	 * @param int $post_id post ID
+	 * @param int|null $post_id post ID or null for current post
 	 *
 	 * @return string view count
 	 */
-	public static function get_views( $post_id ) {
+	public static function get_views( $post_id = null ) {
+		if ( $post_id === null ) {
+			$post_id = get_the_ID();
+		}
+
 		if ( !$post_id || !get_post( $post_id ) ) {
 			return '0';
 		}
@@ -117,10 +125,14 @@ class PostViews extends BaseModule {
 	/**
 	 * Reset post views
 	 *
-	 * @param int $post_id post ID
+	 * @param int|null $post_id post ID or null for current post
 	 *
 	 */
-	public static function reset_views( $post_id ) {
+	public static function reset_views( $post_id = null ) {
+		if ( $post_id === null ) {
+			$post_id = get_the_ID();
+		}
+
 		if ( !$post_id || !get_post( $post_id ) ) {
 			return;
 		}

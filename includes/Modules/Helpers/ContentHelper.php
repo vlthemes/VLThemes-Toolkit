@@ -77,12 +77,12 @@ class ContentHelper extends BaseModule {
 	 * Get estimated reading time for post content
 	 *
 	 * @param int|null $post_id        Post ID (null for current post)
-	 * @param int      $words_per_minute Average reading speed (default: 200 words per minute)
+	 * @param int      $words_per_minute Average reading speed (default: 189 words per minute)
 	 * @param string   $format         Output format: 'string' (e.g., "5 min read") or 'number' (just the number)
 	 *
 	 * @return string|int Reading time
 	 */
-	public static function get_reading_time( $post_id = null, $words_per_minute = 200, $format = 'string' ) {
+	public static function get_reading_time( $post_id = null, $words_per_minute = 189, $format = 'string' ) {
 		$post_id = $post_id ?: get_the_ID();
 
 		if ( !$post_id ) {

@@ -73,7 +73,7 @@ class CustomAttributesModule extends Module {
 		$element->start_controls_section(
 			'_section_attributes',
 			[
-				'label' => esc_html__( 'Attributes', 'toolkit' ),
+				'label' => esc_html__( 'Attributes', 'toolkit' ) . \VLT\Toolkit\Modules\Integrations\Elementor\Helpers::get_badge_svg(),
 				'tab'   => $tab,
 			]
 		);

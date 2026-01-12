@@ -71,7 +71,7 @@ class CustomCssModule extends Module {
 		$element->start_controls_section(
 			'section_custom_css',
 			[
-				'label' => esc_html__( 'Custom CSS', 'toolkit' ),
+				'label' => esc_html__( 'Custom CSS', 'toolkit' ) . \VLT\Toolkit\Modules\Integrations\Elementor\Helpers::get_badge_svg(),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			]
 		);

@@ -82,8 +82,10 @@ if ( !function_exists( 'vlt_toolkit_get_post_share_buttons' ) ) {
 if ( !function_exists( 'vlt_toolkit_set_post_views' ) ) {
 	/**
 	 * Set/increment post views
+	 *
+	 * @param int|null $post_id Post ID or null for current post
 	 */
-	function vlt_toolkit_set_post_views( $post_id ) {
+	function vlt_toolkit_set_post_views( $post_id = null ) {
 		VLT\Toolkit\Modules\Features\PostViews::set_views( $post_id );
 	}
 }
@@ -91,8 +93,11 @@ if ( !function_exists( 'vlt_toolkit_set_post_views' ) ) {
 if ( !function_exists( 'vlt_toolkit_get_post_views' ) ) {
 	/**
 	 * Get post views count
+	 *
+	 * @param int|null $post_id Post ID or null for current post
+	 * @return int Views count
 	 */
-	function vlt_toolkit_get_post_views( $post_id ) {
+	function vlt_toolkit_get_post_views( $post_id = null ) {
 		return VLT\Toolkit\Modules\Features\PostViews::get_views( $post_id );
 	}
 }
@@ -100,8 +105,10 @@ if ( !function_exists( 'vlt_toolkit_get_post_views' ) ) {
 if ( !function_exists( 'vlt_toolkit_reset_post_views' ) ) {
 	/**
 	 * Reset post views to zero
+	 *
+	 * @param int|null $post_id Post ID or null for current post
 	 */
-	function vlt_toolkit_reset_post_views( $post_id ) {
+	function vlt_toolkit_reset_post_views( $post_id = null ) {
 		VLT\Toolkit\Modules\Features\PostViews::reset_views( $post_id );
 	}
 }

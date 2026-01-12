@@ -66,7 +66,7 @@ class AosModule extends Module_Base {
 		$element->start_controls_section(
 			'vlt_section_aos_animation',
 			[
-				'label' => esc_html__( 'Entrance Animation', 'toolkit' ),
+				'label' => esc_html__( 'Entrance Animation', 'toolkit' ) . \VLT\Toolkit\Modules\Integrations\Elementor\Helpers::get_badge_svg(),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			]
 		);

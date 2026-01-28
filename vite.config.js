@@ -83,31 +83,6 @@ export default defineConfig({
 						from: resolve(__dirname, 'node_modules/jquery-match-height/dist/jquery.matchHeight-min.js'),
 						to: resolve(__dirname, './assets/vendors/js/jquery.matchHeight.js'),
 					},
-					// // Rellax
-					// {
-					// 	from: resolve(__dirname, 'node_modules/rellax/rellax.min.js'),
-					// 	to: resolve(__dirname, './assets/vendors/js/rellax.js'),
-					// },
-					// // Rellax
-					// {
-					// 	from: resolve(__dirname, 'node_modules/rellax/rellax.min.js'),
-					// 	to: resolve(__dirname, './assets/vendors/js/rellax.js'),
-					// },
-					// // Jarallax
-					// {
-					// 	from: resolve(__dirname, 'node_modules/jarallax/dist/jarallax.min.js'),
-					// 	to: resolve(__dirname, './assets/vendors/js/jarallax.js'),
-					// },
-					// // Jarallax Video
-					// {
-					// 	from: resolve(__dirname, 'node_modules/jarallax/dist/jarallax-video.min.js'),
-					// 	to: resolve(__dirname, './assets/vendors/js/jarallax-video.js'),
-					// },
-					// // Jarallax CSS
-					// {
-					// 	from: resolve(__dirname, 'node_modules/jarallax/dist/jarallax.css'),
-					// 	to: resolve(__dirname, './assets/vendors/css/jarallax.css'),
-					// },
 					// Sharer
 					{
 						from: resolve(__dirname, 'node_modules/sharer.js/sharer.min.js'),

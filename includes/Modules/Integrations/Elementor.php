@@ -488,12 +488,12 @@ class Elementor extends BaseModule {
 		}
 
 		// Always load these modules (no Pro dependency)
-		// $this->modules['parallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
 		// $this->modules['jarallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\JarallaxModule();
-		$this->modules['aos']              = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
-		$this->modules['mask']             = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
-		$this->modules['layout']           = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\LayoutModule();
-		$this->modules['equal_height']     = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\EqualHeightModule();
+		$this->modules['parallax']     = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
+		$this->modules['aos']          = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
+		$this->modules['mask']         = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
+		$this->modules['layout']       = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\LayoutModule();
+		$this->modules['equal_height'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\EqualHeightModule();
 	}
 
 	/**

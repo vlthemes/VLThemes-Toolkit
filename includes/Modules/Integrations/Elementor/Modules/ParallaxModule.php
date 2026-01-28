@@ -38,14 +38,15 @@ class ParallaxModule extends Module_Base {
 	 * Register module scripts
 	 */
 	public function register_scripts() {
-		// Enqueue Rellax
-		wp_enqueue_script( 'rellax', VLT_TOOLKIT_URL . 'assets/vendors/js/rellax.js', [], VLT_TOOLKIT_VERSION, true );
+		// Enqueue gsap
+		wp_enqueue_script( 'gsap', VLT_TOOLKIT_URL . 'assets/vendors/js/gsap.js', [], VLT_TOOLKIT_VERSION, true );
+		wp_enqueue_script( 'scrolltrigger', VLT_TOOLKIT_URL . 'assets/vendors/js/gsap-scrolltrigger.js', [], VLT_TOOLKIT_VERSION, true );
 
 		// Enqueue module script
 		wp_enqueue_script(
 			'vlt-parallax-module',
 			plugin_dir_url( __FILE__ ) . 'js/ParallaxModule.js',
-			[ 'jquery', 'elementor-frontend', 'rellax' ],
+			[ 'jquery', 'elementor-frontend', 'gsap', 'scrolltrigger' ],
 			VLT_TOOLKIT_VERSION,
 			true
 		);
@@ -57,22 +58,17 @@ class ParallaxModule extends Module_Base {
 	 * @param Element_Base $element Elementor element instance
 	 */
 	public function register_controls( Element_Base $element ) {
-		// Check if controls already registered to prevent duplicate registration
-		$controls = $element->get_controls();
-		if ( isset( $controls['vlt_section_parallax'] ) ) {
-			return;
-		}
 
 		$element->start_controls_section(
 			'vlt_section_parallax',
 			[
-				'label' => esc_html__( 'Parallax', 'toolkit' ),
+				'label' => esc_html__( 'Parallax', 'toolkit' ) . \VLT\Toolkit\Modules\Integrations\Elementor\Helpers::get_badge_svg(),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			]
 		);
 
 		$element->add_control(
-			'vlt_rellax_enable',
+			'vlt_parallax_enable',
 			[
 				'label'        => esc_html__( 'Parallax', 'toolkit' ),
 				'type'         => Controls_Manager::SWITCHER,
@@ -84,7 +80,7 @@ class ParallaxModule extends Module_Base {
 		);
 
 		$element->add_control(
-			'vlt_rellax_speed',
+			'vlt_parallax_speed',
 			[
 				'label'       => esc_html__( 'Speed', 'toolkit' ),
 				'description' => esc_html__( 'Negative = up, Positive = down', 'toolkit' ),
@@ -101,7 +97,7 @@ class ParallaxModule extends Module_Base {
 				],
 				'frontend_available' => true,
 				'condition' => [
-					'vlt_rellax_enable' => [ 'yes' ],
+					'vlt_parallax_enable' => [ 'yes' ],
 				],
 			]
 		);
@@ -109,10 +105,10 @@ class ParallaxModule extends Module_Base {
 		$element->add_control(
 			'vlt_advanced_options_popover',
 			[
-				'label'     => esc_html__( 'Advanced Options', 'toolkit' ),
+				'label'     => esc_html__( 'Settings', 'toolkit' ),
 				'type'      => Controls_Manager::POPOVER_TOGGLE,
 				'condition' => [
-					'vlt_rellax_enable' => 'yes',
+					'vlt_parallax_enable' => 'yes',
 				],
 			]
 		);
@@ -120,7 +116,7 @@ class ParallaxModule extends Module_Base {
 		$element->start_popover();
 
 		$element->add_control(
-			'vlt_rellax_percentage',
+			'vlt_parallax_percentage',
 			[
 				'label'       => esc_html__( 'Percentage', 'toolkit' ),
 				'type'        => Controls_Manager::SLIDER,
@@ -132,12 +128,15 @@ class ParallaxModule extends Module_Base {
 						'step' => 0.1,
 					],
 				],
+				'default' => [
+					'size' => 0.5,
+				],
 				'frontend_available' => true,
 			]
 		);
 
 		$element->add_control(
-			'vlt_rellax_zindex',
+			'vlt_parallax_zindex',
 			[
 				'label'              => esc_html__( 'Z-Index', 'toolkit' ),
 				'description'        => esc_html__( 'Z-index for parallax 3D effect', 'toolkit' ),
@@ -150,7 +149,7 @@ class ParallaxModule extends Module_Base {
 		);
 
 		$element->add_control(
-			'vlt_rellax_min',
+			'vlt_parallax_min',
 			[
 				'label'              => esc_html__( 'Min Offset', 'toolkit' ),
 				'description'        => esc_html__( 'Minimum offset in pixels (limits movement)', 'toolkit' ),
@@ -160,7 +159,7 @@ class ParallaxModule extends Module_Base {
 		);
 
 		$element->add_control(
-			'vlt_rellax_max',
+			'vlt_parallax_max',
 			[
 				'label'              => esc_html__( 'Max Offset', 'toolkit' ),
 				'description'        => esc_html__( 'Maximum offset in pixels (limits movement)', 'toolkit' ),
@@ -175,46 +174,6 @@ class ParallaxModule extends Module_Base {
 	}
 
 	/**
-	 * Render Parallax attributes
-	 *
-	 * @param Element_Base $element Elementor element instance
-	 */
-	public function render_attributes( Element_Base $element ) {
-		$settings = $element->get_settings_for_display();
-
-		if ( empty( $settings['vlt_rellax_enable'] ) || 'yes' !== $settings['vlt_rellax_enable'] ) {
-			return;
-		}
-
-		// Add rellax class
-		$element->add_render_attribute( '_wrapper', 'class', 'rellax' );
-
-		// Speed - always add, even if default value
-		$speed = isset( $settings['vlt_rellax_speed']['size'] ) ? $settings['vlt_rellax_speed']['size'] : -3;
-		$element->add_render_attribute( '_wrapper', 'data-rellax-speed', $speed );
-
-		// Percentage
-		if ( ! empty( $settings['vlt_rellax_percentage']['size'] ) ) {
-			$element->add_render_attribute( '_wrapper', 'data-rellax-percentage', $settings['vlt_rellax_percentage']['size'] );
-		}
-
-		// Z-index
-		if ( isset( $settings['vlt_rellax_zindex'] ) && is_numeric( $settings['vlt_rellax_zindex'] ) ) {
-			$element->add_render_attribute( '_wrapper', 'data-rellax-zindex', $settings['vlt_rellax_zindex'] );
-		}
-
-		// Min offset
-		if ( isset( $settings['vlt_rellax_min'] ) && is_numeric( $settings['vlt_rellax_min'] ) ) {
-			$element->add_render_attribute( '_wrapper', 'data-rellax-min', $settings['vlt_rellax_min'] );
-		}
-
-		// Max offset
-		if ( isset( $settings['vlt_rellax_max'] ) && is_numeric( $settings['vlt_rellax_max'] ) ) {
-			$element->add_render_attribute( '_wrapper', 'data-rellax-max', $settings['vlt_rellax_max'] );
-		}
-	}
-
-	/**
 	 * Register WordPress hooks
 	 */
 	protected function add_actions() {
@@ -223,12 +182,6 @@ class ParallaxModule extends Module_Base {
 
 		// Register controls for common widgets
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_controls' ] );
-
-		// Render for containers
-		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_attributes' ] );
-
-		// Render for common widgets
-		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_attributes' ] );
 
 		// Enqueue scripts on frontend and editor
 		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'register_scripts' ] );

@@ -61,7 +61,7 @@ class LayoutModule extends Module_Base {
 		$element->start_controls_section(
 			'vlt_section_layout_module',
 			[
-				'label' => esc_html__( 'Layout Module', 'toolkit' ) . \VLT\Toolkit\Modules\Integrations\Elementor\Helpers::get_badge_svg(),
+				'label' => esc_html__( 'Layout', 'toolkit' ) . \VLT\Toolkit\Modules\Integrations\Elementor\Helpers::get_badge_svg(),
 				'tab'   => Controls_Manager::TAB_ADVANCED,
 			],
 		);

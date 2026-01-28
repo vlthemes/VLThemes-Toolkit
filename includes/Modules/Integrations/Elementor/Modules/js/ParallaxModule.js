@@ -1,52 +1,47 @@
-(function () {
+(function ($) {
 	'use strict';
 
-	if (typeof Rellax === 'undefined') {
-		console.warn('Rellax.js not loaded — Parallax Extension disabled');
+	if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+		console.warn('GSAP or ScrollTrigger not loaded — Parallax Extension disabled');
 		return;
 	}
 
-	class ParallaxHandler extends elementorModules.frontend.handlers.Base {
-		getDefaultSettings() {
-			return {
-				selectors: {
-					element: '.rellax'
-				}
-			};
-		}
+	gsap.registerPlugin(ScrollTrigger);
 
-		getDefaultElements() {
-			return {
-				$element: this.$element
-			};
-		}
-
-		bindEvents() {
-			elementorFrontend.addListenerOnce(this.getUniqueHandlerID() + 'resize', 'resize', this.onResize.bind(this));
-		}
-
-		unbindEvents() {
-			elementorFrontend.removeListeners(this.getUniqueHandlerID() + 'resize', 'resize', this.onResize.bind(this));
-		}
+	class VLTParallaxHandler extends elementorModules.frontend.handlers.Base {
 
 		onInit() {
 			super.onInit();
 
-			const settings = this.getElementSettings();
+			this.scrollTrigger = null;
+			this.changeTimeout = null;
 
 			// Check if parallax is enabled
-			if (settings.vlt_rellax_enable !== 'yes') {
-				return;
+			if (this.getElementSettings('vlt_parallax_enable') === 'yes') {
+				this.initParallax();
 			}
-
-			this.initRellax();
 		}
 
-		initRellax() {
+		destroyParallax() {
+			// Kill ScrollTrigger instance
+			if (this.scrollTrigger) {
+				this.scrollTrigger.kill();
+				this.scrollTrigger = null;
+			}
+
+			// Reset element transform
+			gsap.set(this.$element[0], { clearProps: 'transform' });
+		}
+
+		initParallax() {
+			const parallaxEnabled = this.getElementSettings('vlt_parallax_enable');
+
 			// Destroy existing instance
-			if (this.rellaxInstance) {
-				this.rellaxInstance.destroy();
-				this.rellaxInstance = null;
+			this.destroyParallax();
+
+			// If disabled, return
+			if (parallaxEnabled !== 'yes') {
+				return;
 			}
 
 			const el = this.$element[0];
@@ -54,110 +49,99 @@
 				return;
 			}
 
-			// Get settings from Elementor
+			// Get settings
 			const settings = this.getElementSettings();
+			const speed = settings.vlt_parallax_speed?.size !== undefined ? settings.vlt_parallax_speed.size : 2;
+			const percentage = settings.vlt_parallax_percentage?.size !== undefined ? settings.vlt_parallax_percentage.size : 0.5;
+			const zIndex = settings.vlt_parallax_zindex;
+			const minOffset = settings.vlt_parallax_min;
+			const maxOffset = settings.vlt_parallax_max;
 
-			// Add rellax class if not present (in editor, render_attributes doesn't run)
-			if (!el.classList.contains('rellax')) {
-				el.classList.add('rellax');
+			// Set z-index if specified
+			if (zIndex !== undefined && zIndex !== '') {
+				gsap.set(el, { zIndex: zIndex });
 			}
 
-			// Sync settings to data attributes (important for editor mode)
-			this.syncDataAttributes(el, settings);
+			// Create parallax animation with ScrollTrigger (like Rellax)
+			// Speed works as multiplier - negative = up, positive = down
+			this.scrollTrigger = ScrollTrigger.create({
+				trigger: el,
+				start: 'top bottom',
+				end: 'max',
+				scrub: true,
+				onUpdate: (self) => {
+					// Calculate element center position relative to viewport
+					const rect = el.getBoundingClientRect();
+					const elementCenter = rect.top + rect.height / 2;
+					const viewportCenter = window.innerHeight / 2;
 
-			// Remove transitions that conflict with Rellax
-			el.style.transition = 'none';
+					// Distance from center (negative = above center, positive = below center)
+					const distanceFromCenter = elementCenter - viewportCenter;
 
-			try {
-				// Initialize Rellax for this element
-				this.rellaxInstance = new Rellax(el, {
-					center: false,
-					wrapper: null,
-					round: true,
-					vertical: true,
-					horizontal: false
-				});
-			} catch (error) {
-				console.error('Rellax initialization error:', error);
-			}
-		}
+					// Calculate offset based on percentage
+					// When percentage = 0.5 and element is in center, offset should be 0
+					const totalScroll = el.offsetHeight + window.innerHeight;
+					const centerOffset = totalScroll * (0.5 - percentage);
 
-		syncDataAttributes(el, settings) {
-			// Sync speed - always set, use default if not specified
-			const speed = settings.vlt_rellax_speed?.size !== undefined ? settings.vlt_rellax_speed.size : -3;
-			el.setAttribute('data-rellax-speed', speed);
+					// Calculate final Y position
+					let y = (distanceFromCenter + centerOffset) * speed * -0.1;
 
-			// Sync percentage
-			if (settings.vlt_rellax_percentage?.size !== undefined && settings.vlt_rellax_percentage?.size !== '') {
-				el.setAttribute('data-rellax-percentage', settings.vlt_rellax_percentage.size);
-			} else {
-				el.removeAttribute('data-rellax-percentage');
-			}
+					// Apply min/max constraints if specified (by absolute value)
+					if (minOffset !== undefined && minOffset !== '') {
+						if (Math.abs(y) < Math.abs(minOffset)) {
+							y = y < 0 ? -Math.abs(minOffset) : Math.abs(minOffset);
+						}
+					}
+					if (maxOffset !== undefined && maxOffset !== '') {
+						if (Math.abs(y) > Math.abs(maxOffset)) {
+							y = y < 0 ? -Math.abs(maxOffset) : Math.abs(maxOffset);
+						}
+					}
 
-			// Sync zindex
-			if (settings.vlt_rellax_zindex !== undefined && settings.vlt_rellax_zindex !== '') {
-				el.setAttribute('data-rellax-zindex', settings.vlt_rellax_zindex);
-			} else {
-				el.removeAttribute('data-rellax-zindex');
-			}
-
-			// Sync min
-			if (settings.vlt_rellax_min !== undefined && settings.vlt_rellax_min !== '') {
-				el.setAttribute('data-rellax-min', settings.vlt_rellax_min);
-			} else {
-				el.removeAttribute('data-rellax-min');
-			}
-
-			// Sync max
-			if (settings.vlt_rellax_max !== undefined && settings.vlt_rellax_max !== '') {
-				el.setAttribute('data-rellax-max', settings.vlt_rellax_max);
-			} else {
-				el.removeAttribute('data-rellax-max');
-			}
-		}
-
-		onResize() {
-			if (this.rellaxInstance) {
-				this.rellaxInstance.refresh();
-			}
+					// Apply transform
+					gsap.set(el, { y: y });
+				}
+			});
 		}
 
 		onElementChange(propertyName) {
 			// Refresh when parallax settings change
-			if (propertyName.indexOf('vlt_rellax') === 0) {
-				// Debounce to avoid excessive reinitialization
-				clearTimeout(this.changeTimeout);
-				this.changeTimeout = setTimeout(() => {
-					this.initRellax();
-				}, 300);
+			if (propertyName.indexOf('vlt_parallax') !== 0) {
+				return;
 			}
+
+			// Clear previous timeout (debounce)
+			if (this.changeTimeout) {
+				clearTimeout(this.changeTimeout);
+			}
+
+			// Debounce: wait for user to finish changing
+			this.changeTimeout = setTimeout(() => {
+				this.initParallax();
+			}, 300);
 		}
 
 		onDestroy() {
-			// Clear debounce timeout
-			clearTimeout(this.changeTimeout);
-
-			if (this.rellaxInstance) {
-				this.rellaxInstance.destroy();
-				this.rellaxInstance = null;
+			// Clear timeout
+			if (this.changeTimeout) {
+				clearTimeout(this.changeTimeout);
 			}
+
+			// Destroy parallax
+			this.destroyParallax();
+
+			super.onDestroy();
 		}
 	}
 
-	window.addEventListener('elementor/frontend/init', () => {
-		// Register handler for containers
-		elementorFrontend.hooks.addAction('frontend/element_ready/container', function ($scope) {
-			elementorFrontend.elementsHandler.addHandler(ParallaxHandler, {
-				$element: $scope
-			});
-		});
+	// Register handlers
+	$(window).on('elementor/frontend/init', () => {
+		const initHandler = ($element) => {
+			elementorFrontend.elementsHandler.addHandler(VLTParallaxHandler, { $element });
+		};
 
-		// Register handler for common widgets
-		elementorFrontend.hooks.addAction('frontend/element_ready/widget', function ($scope) {
-			elementorFrontend.elementsHandler.addHandler(ParallaxHandler, {
-				$element: $scope
-			});
-		});
+		elementorFrontend.hooks.addAction('frontend/element_ready/container', initHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/widget', initHandler);
 	});
 
-})();
+})(jQuery);

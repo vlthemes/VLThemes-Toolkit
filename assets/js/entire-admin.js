@@ -38,4 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
 		link4.target = '_blank';
 	}
 
+	// 5. Maybe other links
+	var links = document.querySelectorAll('a[href*="elementor.com/pro"], a[href*="go.elementor.com"]');
+	links.forEach(function (link) {
+		link.href = affiliateUrl;
+	});
+
 });

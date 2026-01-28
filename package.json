@@ -14,6 +14,7 @@
     "fdir": "^6.5.0",
     "gsap": "^3.13.0",
     "jarallax": "^2.2.1",
+    "jquery-match-height": "^0.7.2",
     "nanoid": "^3.3.11",
     "picocolors": "^1.1.1",
     "picomatch": "^4.0.3",

@@ -140,6 +140,9 @@ class Elementor extends BaseModule {
 		add_action( 'elementor/widgets/register', [ $this, 'register_widgets' ] );
 		add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets' ] );
 
+		// Register custom controls
+		add_action( 'elementor/controls/register', [ $this, 'register_controls' ] );
+
 		// Register other hooks
 		add_action( 'elementor/editor/after_enqueue_styles', [ $this, 'editor_styles' ] );
 		add_action( 'elementor/frontend/after_enqueue_styles', [ $this, 'frontend_styles' ] );
@@ -156,6 +159,7 @@ class Elementor extends BaseModule {
 
 		// Add sticky position option
 		add_action( 'elementor/element/container/section_layout/before_section_end', [ $this, 'add_sticky_position' ] );
+		add_action( 'elementor/element/common/_section_style/before_section_end', [ $this, 'add_sticky_position' ] );
 
 		// Register Elementor modules
 		$this->register_elementor_modules();
@@ -185,6 +189,19 @@ class Elementor extends BaseModule {
 		}
 
 		do_action( 'vlt_toolkit_elementor_widgets_registered' );
+	}
+
+	/**
+	 * Register custom controls
+	 *
+	 * @param \Elementor\Controls_Manager $controls_manager elementor controls manager
+	 */
+	public function register_controls( $controls_manager ) {
+		// Load custom control files
+		require_once __DIR__ . '/Elementor/Controls/WidgetList.php';
+
+		// Register custom controls
+		$controls_manager->register( new \VLT\Toolkit\Modules\Integrations\Elementor\Controls\WidgetList() );
 	}
 
 	/**
@@ -280,14 +297,18 @@ class Elementor extends BaseModule {
 	}
 
 	/**
-	 * Add sticky option to container position control
+	 * Add sticky option to position control
 	 *
 	 * @param \Elementor\Element_Base $element elementor element instance
 	 */
 	public function add_sticky_position( $element ) {
+		// Determine control name based on element type
+		// Containers use 'position', widgets use '_position'
+		$position_control = $element->get_name() === 'container' ? 'position' : '_position';
+
 		// Update position control to add sticky option
 		$element->update_control(
-			'position',
+			$position_control,
 			[
 				'options' => [
 					''         => esc_html__( 'Default', 'toolkit' ),
@@ -306,12 +327,12 @@ class Elementor extends BaseModule {
 				'default'      => 'yes',
 				'prefix_class' => 'elementor-sticky-',
 				'condition'    => [
-					'position' => 'sticky',
+					$position_control => 'sticky',
 				],
 			],
 			[
 				'position' => [
-					'of' => 'position',
+					'of' => $position_control,
 				],
 			]
 		);
@@ -347,7 +368,7 @@ class Elementor extends BaseModule {
 					'body:not(.admin-bar) {{WRAPPER}}.elementor-sticky-yes' => 'top: {{SIZE}}{{UNIT}}; --height: 100%;',
 				],
 				'condition'  => [
-					'position' => 'sticky',
+					$position_control => 'sticky',
 				],
 			],
 			[
@@ -456,6 +477,8 @@ class Elementor extends BaseModule {
 		require_once __DIR__ . '/Elementor/Modules/JarallaxModule.php';
 		require_once __DIR__ . '/Elementor/Modules/AosModule.php';
 		require_once __DIR__ . '/Elementor/Modules/MaskModule.php';
+		require_once __DIR__ . '/Elementor/Modules/LayoutModule.php';
+		require_once __DIR__ . '/Elementor/Modules/EqualHeightModule.php';
 
 		// Only register modules if Elementor Pro is not active
 		// If Elementor Pro is active, it will handle these features
@@ -467,8 +490,10 @@ class Elementor extends BaseModule {
 		// Always load these modules (no Pro dependency)
 		// $this->modules['parallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
 		// $this->modules['jarallax'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\JarallaxModule();
-		$this->modules['aos']  = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
-		$this->modules['mask'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
+		$this->modules['aos']              = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
+		$this->modules['mask']             = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
+		$this->modules['layout']           = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\LayoutModule();
+		$this->modules['equal_height']     = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\EqualHeightModule();
 	}
 
 	/**

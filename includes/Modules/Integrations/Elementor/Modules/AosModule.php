@@ -49,7 +49,7 @@ class AosModule extends Module_Base {
 		wp_enqueue_script( 'aos', VLT_TOOLKIT_URL . 'assets/vendors/js/aos.js', [], VLT_TOOLKIT_VERSION, true );
 
 		wp_enqueue_script(
-			'vlt-aos-extension',
+			'vlt-aos-module',
 			plugin_dir_url( __FILE__ ) . 'js/AosModule.js',
 			[ 'jquery', 'elementor-frontend', 'aos' ],
 			VLT_TOOLKIT_VERSION,

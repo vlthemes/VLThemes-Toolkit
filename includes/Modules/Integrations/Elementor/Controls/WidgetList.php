@@ -50,4 +50,17 @@ class WidgetList extends Control_Select2 {
 			]
 		);
 	}
+
+	/**
+	 * Enqueue control scripts
+	 */
+	public function enqueue() {
+		wp_enqueue_script(
+			'vlt-widget-list-control',
+			plugin_dir_url( __FILE__ ) . 'js/WidgetList.js',
+			[ 'jquery', 'elementor-editor' ],
+			VLT_TOOLKIT_VERSION,
+			true
+		);
+	}
 }

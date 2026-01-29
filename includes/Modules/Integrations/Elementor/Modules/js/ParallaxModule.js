@@ -2,11 +2,8 @@
 	'use strict';
 
 	if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-		console.warn('GSAP or ScrollTrigger not loaded — Parallax Extension disabled');
 		return;
 	}
-
-	gsap.registerPlugin(ScrollTrigger);
 
 	class VLTParallaxHandler extends elementorModules.frontend.handlers.Base {
 
@@ -61,6 +58,10 @@
 			if (zIndex !== undefined && zIndex !== '') {
 				gsap.set(el, { zIndex: zIndex });
 			}
+
+			// Remove CSS transitions from element
+			el.style.transition = 'none';
+			el.style.webkitTransition = 'none';
 
 			// Create parallax animation with ScrollTrigger (like Rellax)
 			// Speed works as multiplier - negative = up, positive = down

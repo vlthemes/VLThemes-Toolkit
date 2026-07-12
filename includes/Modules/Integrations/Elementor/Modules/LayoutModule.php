@@ -37,10 +37,13 @@ class LayoutModule extends Module_Base {
 	 * Register module scripts
 	 */
 	public function register_scripts() {
+		wp_enqueue_script( 'gsap', VLT_TOOLKIT_URL . 'assets/vendors/js/gsap.js', [], VLT_TOOLKIT_VERSION, true );
+		wp_enqueue_script( 'scrolltrigger', VLT_TOOLKIT_URL . 'assets/vendors/js/gsap-scrolltrigger.js', [], VLT_TOOLKIT_VERSION, true );
+
 		wp_enqueue_script(
 			'vlt-layout-module',
 			plugin_dir_url( __FILE__ ) . 'js/LayoutModule.js',
-			[ 'jquery', 'elementor-frontend' ],
+			[ 'jquery', 'elementor-frontend', 'gsap', 'scrolltrigger' ],
 			VLT_TOOLKIT_VERSION,
 			true,
 		);
@@ -173,6 +176,87 @@ class LayoutModule extends Module_Base {
 				'default'            => $default_reset_devices,
 				'options'            => $breakpoints,
 				'render_type'        => 'none',
+				'frontend_available' => true,
+			],
+		);
+
+		$element->end_popover();
+
+		// Scroll Reveal
+		$element->add_control(
+			'vlt_scroll_reveal_enabled',
+			[
+				'label'              => esc_html__( 'Scroll Reveal', 'toolkit' ),
+				'type'               => Controls_Manager::SWITCHER,
+				'return_value'       => 'yes',
+				'frontend_available' => true,
+				'separator'          => 'before',
+			],
+		);
+
+		$element->add_control(
+			'vlt_scroll_reveal_settings_popover',
+			[
+				'label'     => esc_html__( 'Settings', 'toolkit' ),
+				'type'      => Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_scroll_reveal_enabled' => 'yes' ],
+			],
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_scroll_reveal_y',
+			[
+				'label'              => esc_html__( 'Offset Y (px)', 'toolkit' ),
+				'type'               => Controls_Manager::NUMBER,
+				'default'            => -50,
+				'frontend_available' => true,
+			],
+		);
+
+		$element->add_control(
+			'vlt_scroll_reveal_scale',
+			[
+				'label'              => esc_html__( 'Scale', 'toolkit' ),
+				'type'               => Controls_Manager::NUMBER,
+				'default'            => 0.85,
+				'min'                => 0,
+				'max'                => 2,
+				'step'               => 0.01,
+				'frontend_available' => true,
+			],
+		);
+
+$element->add_control(
+			'vlt_scroll_reveal_trigger',
+			[
+				'label'              => esc_html__( 'Trigger', 'toolkit' ),
+				'type'               => Controls_Manager::TEXT,
+				'placeholder'        => esc_html__( '.my-class', 'toolkit' ),
+				'description'        => esc_html__( 'CSS selector to use as the ScrollTrigger trigger. Leave empty to use the element itself.', 'toolkit' ),
+				'frontend_available' => true,
+			],
+		);
+
+		$element->add_control(
+			'vlt_scroll_reveal_start',
+			[
+				'label'              => esc_html__( 'Trigger Start', 'toolkit' ),
+				'type'               => Controls_Manager::TEXT,
+				'default'            => 'top 85%',
+				'description'        => esc_html__( 'ScrollTrigger start value, e.g. "top 85%"', 'toolkit' ),
+				'frontend_available' => true,
+			],
+		);
+
+		$element->add_control(
+			'vlt_scroll_reveal_end',
+			[
+				'label'              => esc_html__( 'Trigger End', 'toolkit' ),
+				'type'               => Controls_Manager::TEXT,
+				'default'            => 'top 40%',
+				'description'        => esc_html__( 'ScrollTrigger end value, e.g. "top 40%"', 'toolkit' ),
 				'frontend_available' => true,
 			],
 		);

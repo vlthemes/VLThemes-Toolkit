@@ -16,6 +16,7 @@
 			// Initialize all features
 			this.initStretch();
 			this.initPaddingToContainer();
+			this.initScrollReveal();
 
 			// Bind resize event
 			this.bindResizeEvent();
@@ -41,6 +42,7 @@
 			// Re-run handlers that depend on resize
 			this.initStretch();
 			this.initPaddingToContainer();
+			this.initScrollReveal();
 		}
 
 		onElementChange(propertyName) {
@@ -51,6 +53,10 @@
 
 			if (propertyName.indexOf('vlt_padding_to_container') === 0) {
 				this.initPaddingToContainer();
+			}
+
+			if (propertyName.indexOf('vlt_scroll_reveal') === 0) {
+				this.initScrollReveal();
 			}
 		}
 
@@ -164,12 +170,70 @@
 			}
 		}
 
+		// === SCROLL REVEAL ===
+		initScrollReveal() {
+			if (this._scrollRevealTween) {
+				this._scrollRevealTween.scrollTrigger && this._scrollRevealTween.scrollTrigger.kill();
+				this._scrollRevealTween.kill();
+				this._scrollRevealTween = null;
+				gsap.set(this.$element[0], { clearProps: 'transform' });
+			}
+
+			const enabled = this.getElementSettings('vlt_scroll_reveal_enabled');
+			if (enabled !== 'yes') {
+				return;
+			}
+
+			if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+				console.warn('VLT Scroll Reveal: gsap or ScrollTrigger not found.');
+				return;
+			}
+
+			gsap.registerPlugin(ScrollTrigger);
+
+			const offsetY      = this.getElementSettings('vlt_scroll_reveal_y')       ?? -50;
+			const scale        = this.getElementSettings('vlt_scroll_reveal_scale')   ?? 0.85;
+			const triggerClass = this.getElementSettings('vlt_scroll_reveal_trigger') || '';
+			const start        = this.getElementSettings('vlt_scroll_reveal_start')   || 'top 85%';
+			const end          = this.getElementSettings('vlt_scroll_reveal_end')     || 'top 40%';
+
+			const triggerEl = triggerClass ? document.querySelector(triggerClass) : this.$element[0];
+
+			if (!triggerEl) {
+				console.warn('VLT Scroll Reveal: trigger "' + triggerClass + '" not found.');
+				return;
+			}
+
+			gsap.set(this.$element[0], {
+				y: offsetY,
+				scale: scale,
+			});
+
+			this._scrollRevealTween = gsap.to(this.$element[0], {
+				y: 0,
+				scale: 1,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: triggerEl,
+					start: start,
+					end: end,
+					scrub: true,
+				},
+			});
+		}
+
 		onDestroy() {
 			if (this.resizeTimeout) {
 				clearTimeout(this.resizeTimeout);
 			}
-			// Unbind resize event
 			$(window).off('resize.vlt-layout' + this.getID());
+
+			if (this._scrollRevealTween) {
+				this._scrollRevealTween.scrollTrigger && this._scrollRevealTween.scrollTrigger.kill();
+				this._scrollRevealTween.kill();
+				this._scrollRevealTween = null;
+			}
+
 			super.onDestroy();
 		}
 	}

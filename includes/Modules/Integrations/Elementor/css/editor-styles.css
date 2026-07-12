@@ -26,3 +26,9 @@
 	background-color: var(--e-a-bg-hover);
 	border-color: var(--e-a-border-color-accent);
 }
+
+[class*="elementor-control-vlt_"].elementor-control label.elementor-control-title {
+	padding: 4px 6px;
+	background: linear-gradient(90deg, var(--e-a-bg-secondary), transparent 90%);
+	border-radius: 4px;
+}

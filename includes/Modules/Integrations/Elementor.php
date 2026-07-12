@@ -150,7 +150,7 @@ class Elementor extends BaseModule {
 		add_action( 'elementor/frontend/after_register_scripts', [ $this, 'register_frontend_scripts' ] );
 		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
 
-		add_action( 'elementor/elements/categories_registered', [ $this, 'register_categories' ] );
+		add_action( 'elementor/elements/categories_registered', [ $this, 'register_categories' ], 999 );
 		add_action( 'elementor/theme/register_locations', [ $this, 'register_locations' ] );
 		add_filter( 'elementor/icons_manager/additional_tabs', [ $this, 'add_icon_tabs' ] );
 
@@ -241,6 +241,30 @@ class Elementor extends BaseModule {
 		// Register all categories
 		foreach ( $categories as $slug => $args ) {
 			$elements_manager->add_category( $slug, $args );
+		}
+
+		// Insert our categories after "basic" via reflection (private property)
+		try {
+			$ref = new \ReflectionProperty( $elements_manager, 'categories' );
+			$ref->setAccessible( true );
+			$all      = $ref->getValue( $elements_manager );
+			$our_keys = array_keys( $categories );
+			$our_cats = array_intersect_key( $all, array_flip( $our_keys ) );
+			$rest     = array_diff_key( $all, $our_cats );
+
+			$reordered = [];
+			foreach ( $rest as $slug => $args ) {
+				$reordered[ $slug ] = $args;
+				if ( $slug === 'basic' ) {
+					foreach ( $our_cats as $our_slug => $our_args ) {
+						$reordered[ $our_slug ] = $our_args;
+					}
+				}
+			}
+
+			$ref->setValue( $elements_manager, $reordered );
+		} catch ( \ReflectionException $e ) {
+			// Silently fail — order is cosmetic only
 		}
 	}
 
@@ -474,7 +498,6 @@ class Elementor extends BaseModule {
 		require_once __DIR__ . '/Elementor/Modules/CustomCssModule.php';
 		require_once __DIR__ . '/Elementor/Modules/CustomAttributesModule.php';
 		require_once __DIR__ . '/Elementor/Modules/ParallaxModule.php';
-		require_once __DIR__ . '/Elementor/Modules/JarallaxModule.php';
 		require_once __DIR__ . '/Elementor/Modules/AosModule.php';
 		require_once __DIR__ . '/Elementor/Modules/MaskModule.php';
 		require_once __DIR__ . '/Elementor/Modules/LayoutModule.php';
@@ -488,11 +511,11 @@ class Elementor extends BaseModule {
 		}
 
 		// Always load these modules (no Pro dependency)
-		$this->modules['parallax']     = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
 		$this->modules['aos']          = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\AosModule();
-		$this->modules['mask']         = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
 		$this->modules['layout']       = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\LayoutModule();
 		$this->modules['equal_height'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\EqualHeightModule();
+		$this->modules['parallax']     = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
+		$this->modules['mask']         = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
 	}
 
 	/**

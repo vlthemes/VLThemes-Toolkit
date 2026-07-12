@@ -33,6 +33,8 @@ class PopularPosts extends PostsWidget {
 	 * @param array $instance widget instance
 	 */
 	public function widget( $args, $instance ) {
+		$this->attrs = $instance;
+
 		if ( !isset( $args['widget_id'] ) ) {
 			$args['widget_id'] = $this->id;
 		}
@@ -79,22 +81,15 @@ class PopularPosts extends PostsWidget {
 				break;
 
 			case 'slider':
-				?>
-<div class="vlt-widget-post-slider swiper-container swiper"
-	data-tooltip="<?php esc_attr_e( 'Swipe', 'toolkit' ); ?>">
-	<div class="swiper-wrapper">
-		<?php
-						while ( $query->have_posts() ) {
-							$query->the_post();
-							$this->render_slider_item( $query->post );
-						}
-				?>
-	</div>
-	<div class="vlt-slider-controls">
-		<div class="vlt-swiper-pagination vlt-swiper-pagination--style-1"></div>
-	</div>
-</div>
-<?php
+				$this->render_before_slider();
+
+				while ( $query->have_posts() ) {
+					$query->the_post();
+					$this->render_slider_item( $query->post );
+				}
+
+				$this->render_after_slider();
+
 				break;
 		}
 

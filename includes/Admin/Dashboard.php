@@ -274,6 +274,16 @@ class Dashboard {
 			[ $this, 'render_theme_options_page' ],
 		);
 
+		// AI Options
+		add_submenu_page(
+			$this->dashboard_slug,
+			esc_html__( 'AI Options', 'toolkit' ),
+			esc_html__( 'AI Options', 'toolkit' ),
+			'manage_options',
+			$this->dashboard_slug . '-ai-options',
+			[ $this, 'render_ai_options_page' ],
+		);
+
 		// System Status
 		add_submenu_page(
 			$this->dashboard_slug,
@@ -408,6 +418,13 @@ class Dashboard {
 	 */
 	public function render_theme_options_page() {
 		$this->render_template( 'template-theme-options' );
+	}
+
+	/**
+	 * Render AI options page
+	 */
+	public function render_ai_options_page() {
+		$this->render_template( 'template-ai-options' );
 	}
 
 	/**

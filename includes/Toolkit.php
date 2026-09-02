@@ -182,6 +182,7 @@ class Toolkit {
 			'Features\\AOS',
 			'Features\\Breadcrumbs',
 			'Features\\DynamicContent',
+			'Features\\AI',
 			// Helper modules
 			'Helpers\\ImageHelper',
 			'Helpers\\ContentHelper',

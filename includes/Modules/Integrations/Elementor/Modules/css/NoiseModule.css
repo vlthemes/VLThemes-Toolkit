@@ -1,0 +1,36 @@
+.vlt-noise-yes {
+	position: relative;
+}
+
+.vlt-noise-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	background-image: url(../img/noise.png);
+	background-repeat: repeat;
+	background-size: 128px;
+	opacity: var(--vlt-noise-opacity, .05);
+	animation: vlt-noise-move 8s steps(6) infinite;
+	z-index: var(--vlt-noise-zindex, 1);
+	inset: 0;
+	mix-blend-mode: overlay;
+}
+
+@keyframes vlt-noise-move {
+	0%     { background-position: 0% 0%; }
+	16.6%  { background-position: -15% -10%; }
+	33.3%  { background-position: -25% 5%; }
+	50%    { background-position: -10% 15%; }
+	66.6%  { background-position: -20% -15%; }
+	83.3%  { background-position: -5% 10%; }
+	100%   { background-position: -30% -5%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.vlt-noise-overlay {
+		animation: none;
+	}
+
+}

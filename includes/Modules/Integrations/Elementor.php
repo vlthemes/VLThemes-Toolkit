@@ -500,6 +500,7 @@ class Elementor extends BaseModule {
 		require_once __DIR__ . '/Elementor/Modules/ParallaxModule.php';
 		require_once __DIR__ . '/Elementor/Modules/AosModule.php';
 		require_once __DIR__ . '/Elementor/Modules/MaskModule.php';
+		require_once __DIR__ . '/Elementor/Modules/NoiseModule.php';
 		require_once __DIR__ . '/Elementor/Modules/LayoutModule.php';
 		require_once __DIR__ . '/Elementor/Modules/EqualHeightModule.php';
 
@@ -516,6 +517,7 @@ class Elementor extends BaseModule {
 		$this->modules['equal_height'] = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\EqualHeightModule();
 		$this->modules['parallax']     = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\ParallaxModule();
 		$this->modules['mask']         = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\MaskModule();
+		$this->modules['noise']        = new \VLT\Toolkit\Modules\Integrations\Elementor\Module\NoiseModule();
 	}
 
 	/**

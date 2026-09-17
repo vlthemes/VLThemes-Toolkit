@@ -274,14 +274,14 @@ class Dashboard {
 			[ $this, 'render_theme_options_page' ],
 		);
 
-		// AI Options
+		// AI Assistant
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__( 'AI Options', 'toolkit' ),
-			esc_html__( 'AI Options', 'toolkit' ),
+			esc_html__( 'AI Assistant', 'toolkit' ),
+			esc_html__( 'AI Assistant', 'toolkit' ),
 			'manage_options',
-			$this->dashboard_slug . '-ai-options',
-			[ $this, 'render_ai_options_page' ],
+			$this->dashboard_slug . '-ai-assistant',
+			[ $this, 'render_ai_assistant_page' ],
 		);
 
 		// System Status
@@ -421,10 +421,10 @@ class Dashboard {
 	}
 
 	/**
-	 * Render AI options page
+	 * Render AI assistant page
 	 */
-	public function render_ai_options_page() {
-		$this->render_template( 'template-ai-options' );
+	public function render_ai_assistant_page() {
+		$this->render_template( 'template-ai-assistant' );
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Dashboard AI Options Template
+ * Dashboard AI Assistant Template
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -36,7 +36,7 @@ $settings = $ai_module->get_settings();
 
 ?>
 
-<div class="vlt-toolkit-ai-options">
+<div class="vlt-toolkit-ai-assistant-options">
 
 	<p><?php esc_html_e( 'Connect a Claude (Anthropic) API key to enable an AI writing assistant inside the Elementor editor.', 'toolkit' ); ?></p>
 

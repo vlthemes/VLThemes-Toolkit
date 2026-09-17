@@ -206,6 +206,16 @@ class LayoutModule extends Module_Base {
 		$element->start_popover();
 
 		$element->add_control(
+			'vlt_scroll_reveal_x',
+			[
+				'label'              => esc_html__( 'Offset X (px)', 'toolkit' ),
+				'type'               => Controls_Manager::NUMBER,
+				'default'            => 0,
+				'frontend_available' => true,
+			],
+		);
+
+		$element->add_control(
 			'vlt_scroll_reveal_y',
 			[
 				'label'              => esc_html__( 'Offset Y (px)', 'toolkit' ),
@@ -223,6 +233,19 @@ class LayoutModule extends Module_Base {
 				'default'            => 0.85,
 				'min'                => 0,
 				'max'                => 2,
+				'step'               => 0.01,
+				'frontend_available' => true,
+			],
+		);
+
+		$element->add_control(
+			'vlt_scroll_reveal_opacity',
+			[
+				'label'              => esc_html__( 'Opacity', 'toolkit' ),
+				'type'               => Controls_Manager::NUMBER,
+				'default'            => 0,
+				'min'                => 0,
+				'max'                => 1,
 				'step'               => 0.01,
 				'frontend_available' => true,
 			],

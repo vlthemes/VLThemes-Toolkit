@@ -176,7 +176,7 @@
 				this._scrollRevealTween.scrollTrigger && this._scrollRevealTween.scrollTrigger.kill();
 				this._scrollRevealTween.kill();
 				this._scrollRevealTween = null;
-				gsap.set(this.$element[0], { clearProps: 'transform' });
+				gsap.set(this.$element[0], { clearProps: 'transform,opacity' });
 			}
 
 			const enabled = this.getElementSettings('vlt_scroll_reveal_enabled');
@@ -191,8 +191,10 @@
 
 			gsap.registerPlugin(ScrollTrigger);
 
+			const offsetX      = this.getElementSettings('vlt_scroll_reveal_x')       ?? 0;
 			const offsetY      = this.getElementSettings('vlt_scroll_reveal_y')       ?? -50;
 			const scale        = this.getElementSettings('vlt_scroll_reveal_scale')   ?? 0.85;
+			const opacity      = this.getElementSettings('vlt_scroll_reveal_opacity') ?? 0;
 			const triggerClass = this.getElementSettings('vlt_scroll_reveal_trigger') || '';
 			const start        = this.getElementSettings('vlt_scroll_reveal_start')   || 'top 85%';
 			const end          = this.getElementSettings('vlt_scroll_reveal_end')     || 'top 40%';
@@ -205,13 +207,17 @@
 			}
 
 			gsap.set(this.$element[0], {
+				x: offsetX,
 				y: offsetY,
 				scale: scale,
+				opacity: opacity,
 			});
 
 			this._scrollRevealTween = gsap.to(this.$element[0], {
+				x: 0,
 				y: 0,
 				scale: 1,
+				opacity: 1,
 				ease: 'none',
 				scrollTrigger: {
 					trigger: triggerEl,

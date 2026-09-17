@@ -58,7 +58,7 @@ class AI extends BaseModule {
 		// Elementor editor assistant
 		add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'enqueue_elementor_assistant' ] );
 
-		// Dashboard "AI Options" page assets
+		// Dashboard "AI Assistant" page assets
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_dashboard_assets' ] );
 
 		// AJAX endpoint
@@ -66,12 +66,12 @@ class AI extends BaseModule {
 	}
 
 	/**
-	 * Enqueue assets on the "AI Options" dashboard page
+	 * Enqueue assets on the "AI Assistant" dashboard page
 	 *
 	 * @param string $hook current admin page hook suffix
 	 */
 	public function enqueue_dashboard_assets( $hook ) {
-		if ( false === strpos( $hook, 'vlt-dashboard-ai-options' ) ) {
+		if ( false === strpos( $hook, 'vlt-dashboard-ai-assistant' ) ) {
 			return;
 		}
 

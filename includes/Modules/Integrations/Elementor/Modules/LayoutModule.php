@@ -268,7 +268,7 @@ $element->add_control(
 				'label'              => esc_html__( 'Trigger Start', 'toolkit' ),
 				'type'               => Controls_Manager::TEXT,
 				'default'            => 'top 85%',
-				'description'        => esc_html__( 'ScrollTrigger start value, e.g. "top 85%"', 'toolkit' ),
+				'description'        => esc_html__( 'Format: "[element position] [viewport position]". "top 85%" means the animation starts when the top of the element reaches 85% down the viewport.', 'toolkit' ),
 				'frontend_available' => true,
 			],
 		);
@@ -279,7 +279,7 @@ $element->add_control(
 				'label'              => esc_html__( 'Trigger End', 'toolkit' ),
 				'type'               => Controls_Manager::TEXT,
 				'default'            => 'top 40%',
-				'description'        => esc_html__( 'ScrollTrigger end value, e.g. "top 40%"', 'toolkit' ),
+				'description'        => esc_html__( 'Format: "[element position] [viewport position]". "top 40%" means the animation finishes when the top of the element reaches 40% down the viewport.', 'toolkit' ),
 				'frontend_available' => true,
 			],
 		);

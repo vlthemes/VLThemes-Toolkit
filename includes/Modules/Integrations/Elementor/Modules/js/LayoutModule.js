@@ -176,7 +176,7 @@
 				this._scrollRevealTween.scrollTrigger && this._scrollRevealTween.scrollTrigger.kill();
 				this._scrollRevealTween.kill();
 				this._scrollRevealTween = null;
-				gsap.set(this.$element[0], { clearProps: 'transform,opacity' });
+				gsap.set(this.$element[0], { clearProps: 'transform,opacity,transition' });
 			}
 
 			const enabled = this.getElementSettings('vlt_scroll_reveal_enabled');
@@ -211,6 +211,7 @@
 				y: offsetY,
 				scale: scale,
 				opacity: opacity,
+				transition: 'none',
 			});
 
 			this._scrollRevealTween = gsap.to(this.$element[0], {
@@ -224,6 +225,7 @@
 					start: start,
 					end: end,
 					scrub: true,
+					invalidateOnRefresh: true,
 				},
 			});
 		}

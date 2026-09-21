@@ -3,6 +3,7 @@
 namespace VLT\Toolkit\Modules\Features;
 
 use VLT\Toolkit\Modules\BaseModule;
+use VLT\Framework\Modules\Core\Customizer;
 use WP_Error;
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -30,13 +31,6 @@ class AI extends BaseModule {
 	protected $version = '1.0.0';
 
 	/**
-	 * Settings option name
-	 *
-	 * @var string
-	 */
-	const OPTION_NAME = 'vlt_toolkit_ai_settings';
-
-	/**
 	 * Claude model used for content generation
 	 *
 	 * @var string
@@ -53,43 +47,70 @@ class AI extends BaseModule {
 
 	/**
 	 * Register module
+	 *
+	 * The theme's Customizer framework (VLT\Framework) is loaded on
+	 * 'after_setup_theme', which runs after plugins are loaded — so its
+	 * class can't be checked yet here. Callbacks that use it check
+	 * class_exists() themselves once WordPress has actually reached that hook.
 	 */
 	public function register() {
 		// Elementor editor assistant
 		add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'enqueue_elementor_assistant' ] );
 
-		// Dashboard "AI Assistant" page assets
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_dashboard_assets' ] );
+		// Customizer settings
+		add_action( 'vlt_fw_customizer_register', [ $this, 'customize_register' ] );
 
 		// AJAX endpoint
 		add_action( 'wp_ajax_vlt_toolkit_ai_generate_content', [ $this, 'ajax_generate_content' ] );
 	}
 
 	/**
-	 * Enqueue assets on the "AI Assistant" dashboard page
-	 *
-	 * @param string $hook current admin page hook suffix
+	 * Register Customizer section and fields
 	 */
-	public function enqueue_dashboard_assets( $hook ) {
-		if ( false === strpos( $hook, 'vlt-dashboard-ai-assistant' ) ) {
-			return;
-		}
+	public function customize_register() {
+		Customizer::add_section(
+			'vlt_toolkit_ai',
+			[
+				'title'       => esc_html__( 'AI Assistant', 'toolkit' ),
+				'description' => esc_html__( 'Connect a Claude (Anthropic) API key to enable an AI writing assistant inside the Elementor editor.', 'toolkit' ),
+				'priority'    => 161,
+				'icon'        => 'dashicons-admin-comments',
+			]
+		);
 
-		wp_enqueue_style( 'vlt-toolkit-ai', VLT_TOOLKIT_URL . 'assets/css/ai.css', [], VLT_TOOLKIT_VERSION );
-	}
+		Customizer::add_field(
+			[
+				'type'        => 'text',
+				'settings'    => 'vlt_toolkit_ai_api_key',
+				'section'     => 'vlt_toolkit_ai',
+				'label'       => esc_html__( 'Claude API Key', 'toolkit' ),
+				'description' => esc_html__( 'For testing without a real key or cost, enter "test" — the assistant will return sample text instead of calling Claude.', 'toolkit' ),
+				'priority'    => 10,
+				'default'     => '',
+			]
+		);
 
-	/**
-	 * Get settings
-	 *
-	 * @return array
-	 */
-	public function get_settings() {
-		$defaults = [
-			'api_key'           => '',
-			'assistant_enabled' => false,
-		];
-
-		return wp_parse_args( get_option( self::OPTION_NAME, [] ), $defaults );
+		Customizer::add_field(
+			[
+				'type'            => 'select',
+				'settings'        => 'vlt_toolkit_ai_assistant_enabled',
+				'section'         => 'vlt_toolkit_ai',
+				'label'           => esc_html__( 'AI Content Assistant', 'toolkit' ),
+				'priority'        => 20,
+				'choices'         => [
+					'no'  => esc_html__( 'Disabled', 'toolkit' ),
+					'yes' => esc_html__( 'Enabled', 'toolkit' ),
+				],
+				'default'         => 'no',
+				'active_callback' => [
+					[
+						'setting'  => 'vlt_toolkit_ai_api_key',
+						'operator' => '!=',
+						'value'    => '',
+					],
+				],
+			]
+		);
 	}
 
 	/**
@@ -98,9 +119,11 @@ class AI extends BaseModule {
 	 * @return string
 	 */
 	public function get_api_key() {
-		$settings = $this->get_settings();
+		if ( !class_exists( Customizer::class ) ) {
+			return '';
+		}
 
-		return trim( $settings[ 'api_key' ] );
+		return trim( (string) Customizer::get_option( 'vlt_toolkit_ai_api_key', '' ) );
 	}
 
 	/**
@@ -118,9 +141,7 @@ class AI extends BaseModule {
 	 * @return bool
 	 */
 	public function is_assistant_enabled() {
-		$settings = $this->get_settings();
-
-		return $this->is_configured() && !empty( $settings[ 'assistant_enabled' ] );
+		return $this->is_configured() && 'yes' === Customizer::get_option( 'vlt_toolkit_ai_assistant_enabled', 'no' );
 	}
 
 	/**

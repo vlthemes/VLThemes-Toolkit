@@ -264,8 +264,8 @@ class Dashboard {
 			[ $this, 'render_demo_import_page' ],
 		);
 
-		// Theme Options
-		add_submenu_page(
+		// Theme Options (redirects to the Customizer before any output is sent)
+		$theme_options_hook = add_submenu_page(
 			$this->dashboard_slug,
 			esc_html__( 'Theme Options', 'toolkit' ),
 			esc_html__( 'Theme Options', 'toolkit' ),
@@ -273,16 +273,7 @@ class Dashboard {
 			$this->dashboard_slug . '-theme-options',
 			[ $this, 'render_theme_options_page' ],
 		);
-
-		// AI Assistant
-		add_submenu_page(
-			$this->dashboard_slug,
-			esc_html__( 'AI Assistant', 'toolkit' ),
-			esc_html__( 'AI Assistant', 'toolkit' ),
-			'manage_options',
-			$this->dashboard_slug . '-ai-assistant',
-			[ $this, 'render_ai_assistant_page' ],
-		);
+		add_action( 'load-' . $theme_options_hook, [ $this, 'redirect_theme_options_page' ] );
 
 		// System Status
 		add_submenu_page(
@@ -415,16 +406,21 @@ class Dashboard {
 
 	/**
 	 * Render theme options page
+	 *
+	 * Unreachable in practice: redirect_theme_options_page() sends the
+	 * user to the Customizer on 'load-{hook}', before this ever runs.
 	 */
-	public function render_theme_options_page() {
-		$this->render_template( 'template-theme-options' );
-	}
+	public function render_theme_options_page() {}
 
 	/**
-	 * Render AI assistant page
+	 * Redirect the "Theme Options" submenu straight to the Customizer
+	 *
+	 * Runs on the page's 'load-{hook}' action, before any admin HTML
+	 * has been output, so the redirect headers can still be sent.
 	 */
-	public function render_ai_assistant_page() {
-		$this->render_template( 'template-ai-assistant' );
+	public function redirect_theme_options_page() {
+		wp_safe_redirect( admin_url( 'customize.php' ) );
+		exit;
 	}
 
 	/**

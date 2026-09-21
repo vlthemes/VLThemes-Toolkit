@@ -183,6 +183,7 @@ class Toolkit {
 			'Features\\Breadcrumbs',
 			'Features\\DynamicContent',
 			'Features\\AI',
+			'Features\\Noise',
 			// Helper modules
 			'Helpers\\ImageHelper',
 			'Helpers\\ContentHelper',

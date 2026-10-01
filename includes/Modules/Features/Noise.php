@@ -171,7 +171,7 @@ class Noise extends BaseModule {
 
 		wp_enqueue_style(
 			'vlt-noise-module',
-			VLT_TOOLKIT_URL . 'assets/css/noise.css',
+			VLT_TOOLKIT_URL . 'assets/css/feature-noise.css',
 			[],
 			VLT_TOOLKIT_VERSION
 		);

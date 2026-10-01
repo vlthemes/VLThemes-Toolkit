@@ -1,3 +1,7 @@
+@use "abstracts/variables" as *;
+
+/* Elementor editor panel */
+
 /* ========================================
  * Custom Widget Badges
  * ======================================== */
@@ -29,6 +33,5 @@
 
 [class*="elementor-control-vlt_"].elementor-control label.elementor-control-title {
 	padding: 4px 6px;
-	background: linear-gradient(90deg, var(--e-a-bg-secondary), transparent 90%);
-	border-radius: 4px;
+	background: linear-gradient(90deg, rgba($brand, .22), transparent 90%);
 }

@@ -1,0 +1,847 @@
+@charset "UTF-8";
+/* Generated from scss/admin-dashboard.scss — edit the source, not this file */
+/* Admin dashboard */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap");
+/* ========================================
+ CSS Variables — store tokens, light theme
+ ======================================== */
+:root {
+  --font: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-accent: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --chip-h: 28px;
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-pill: 999px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --muted-bg: #f4f4f5;
+  --text: #18181b;
+  --text-2: #3f3f46;
+  --muted: #71717a;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --ring: #a1a1aa;
+  --accent: #2563eb;
+  --brand: #87e64b;
+  --brand-hover: #9cee69;
+  --on-brand: #0b1a04;
+  --brand-text: #3b7a12;
+  --mark: rgba(135, 230, 75, 0.55);
+  --danger: #e11d48;
+  --warning: #ea580c;
+  --success: #16a34a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ========================================
+ Base & Global Styles
+ ======================================== */
+.vlt-theme-dashboard {
+  box-sizing: border-box;
+  margin-top: 10px;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+.vlt-theme-dashboard *,
+.vlt-theme-dashboard *::before,
+.vlt-theme-dashboard *::after {
+  box-sizing: inherit;
+}
+.vlt-theme-dashboard ::selection {
+  color: var(--on-brand);
+  background: var(--brand);
+}
+.vlt-theme-dashboard :focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.vlt-theme-dashboard h1, .vlt-theme-dashboard h2, .vlt-theme-dashboard h3 {
+  padding: 0;
+  font-family: var(--font);
+  color: var(--text);
+}
+.vlt-theme-dashboard p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.vlt-theme-dashboard p.submit {
+  padding: 0;
+}
+.vlt-theme-dashboard p.small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.vlt-theme-dashboard a:not([class]) {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--brand);
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 100%/100% 0;
+  transition: background-size 0.25s var(--ease);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.vlt-theme-dashboard a:not([class]):hover {
+  background-size: 100% 100%;
+}
+.vlt-theme-dashboard a:not([class]):focus {
+  box-shadow: none;
+}
+.vlt-theme-dashboard strong {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.vlt-theme-dashboard img {
+  width: 100%;
+  height: auto;
+}
+.vlt-theme-dashboard mark {
+  color: inherit;
+  background-color: transparent;
+}
+.vlt-theme-dashboard mark.true {
+  color: var(--brand-text);
+}
+.vlt-theme-dashboard mark.false {
+  color: var(--danger);
+}
+.vlt-theme-dashboard mark.elements {
+  padding: 0 0.06em;
+  font-style: italic;
+  background: linear-gradient(transparent 64%, var(--brand) 64%, var(--brand) 90%, transparent 90%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.vlt-theme-dashboard {
+  /* Margin utilities */
+}
+.vlt-theme-dashboard .mt-xs {
+  margin-top: 0.5rem !important;
+}
+.vlt-theme-dashboard .mb-sm {
+  margin-bottom: 1rem !important;
+}
+.vlt-theme-dashboard .mt-sm {
+  margin-top: 1rem !important;
+}
+.vlt-theme-dashboard .mt-md {
+  margin-top: 1.5rem !important;
+}
+.vlt-theme-dashboard .mt-lg {
+  margin-top: 2rem !important;
+}
+.vlt-theme-dashboard {
+  /* Padding utilities */
+}
+.vlt-theme-dashboard .pb-sm {
+  padding-bottom: 1rem !important;
+}
+.vlt-theme-dashboard .notice {
+  --c: var(--accent);
+  padding: 12px 16px;
+  margin: 0;
+  background: color-mix(in srgb, var(--c) 6%, var(--surface));
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c);
+  border-radius: 0;
+  box-shadow: none;
+}
+.vlt-theme-dashboard .notice p {
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.vlt-theme-dashboard .notice-success {
+  --c: var(--success);
+}
+.vlt-theme-dashboard .notice-warning {
+  --c: var(--warning);
+}
+.vlt-theme-dashboard .notice-error {
+  --c: var(--danger);
+}
+
+/* ========================================
+ Layout & Structure
+ ======================================== */
+.vlt-theme-dashboard__navigation .nav-tab-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+.vlt-theme-dashboard__navigation .nav-tab-wrapper::after {
+  content: none;
+}
+.vlt-theme-dashboard__navigation .nav-tab {
+  display: inline-flex;
+  align-items: center;
+  height: var(--chip-h);
+  padding: 0 12px;
+  margin: 0;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+}
+.vlt-theme-dashboard__navigation .nav-tab:hover {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border-strong);
+}
+.vlt-theme-dashboard__navigation .nav-tab:focus {
+  box-shadow: none;
+}
+.vlt-theme-dashboard__navigation .nav-tab.nav-tab-active, .vlt-theme-dashboard__navigation .nav-tab.nav-tab-active:hover {
+  color: var(--bg);
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.vlt-theme-dashboard__content {
+  margin-top: 32px;
+}
+
+/* Template: Plugins — TGMPA list table as a store card */
+.vlt-theme-dashboard--template-plugins .subsubsub {
+  margin: 0 0 15px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.vlt-theme-dashboard--template-plugins .subsubsub a {
+  color: var(--text-2);
+  text-decoration: none;
+}
+.vlt-theme-dashboard--template-plugins .subsubsub a.current {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.vlt-theme-dashboard--template-plugins .subsubsub a:hover {
+  color: var(--text);
+}
+.vlt-theme-dashboard--template-plugins .subsubsub .count {
+  color: var(--muted);
+}
+.vlt-theme-dashboard--template-plugins .tablenav.top {
+  display: none;
+}
+.vlt-theme-dashboard--template-plugins .tablenav.bottom {
+  height: auto;
+  padding: 0;
+  margin: 12px 0 0;
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: var(--shadow);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table thead th,
+.vlt-theme-dashboard--template-plugins .wp-list-table thead td,
+.vlt-theme-dashboard--template-plugins .wp-list-table tfoot th,
+.vlt-theme-dashboard--template-plugins .wp-list-table tfoot td {
+  padding: 12px 10px;
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-color: var(--border);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table thead th a,
+.vlt-theme-dashboard--template-plugins .wp-list-table thead td a,
+.vlt-theme-dashboard--template-plugins .wp-list-table tfoot th a,
+.vlt-theme-dashboard--template-plugins .wp-list-table tfoot td a {
+  color: var(--muted);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table tbody tr {
+  background: var(--surface);
+  transition: background-color 0.2s;
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table tbody tr:hover {
+  background: var(--bg);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table tbody th,
+.vlt-theme-dashboard--template-plugins .wp-list-table tbody td {
+  padding: 14px 10px;
+  font-size: 13px;
+  color: var(--text-2);
+  border-top: 1px solid var(--border);
+  box-shadow: none;
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table tbody strong {
+  font-size: 14px;
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table a {
+  color: var(--text);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table .row-actions {
+  font-size: 12px;
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table .row-actions a {
+  color: var(--brand-text);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table .check-column {
+  width: 2.8em;
+  padding-left: 12px;
+  vertical-align: middle;
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table .check-column input[type=checkbox] {
+  margin: 0;
+  accent-color: var(--brand);
+}
+.vlt-theme-dashboard--template-plugins .wp-list-table .no-items td {
+  color: var(--muted);
+}
+.vlt-theme-dashboard--template-plugins.striped > tbody > :nth-child(odd),
+.vlt-theme-dashboard--template-plugins .striped > tbody > :nth-child(odd) {
+  background: var(--surface);
+}
+.vlt-theme-dashboard--template-plugins .tablenav select {
+  height: 38px;
+  border-color: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ========================================
+ Components
+ ======================================== */
+/* Badge — store .vlt-pill */
+.vlt-badge {
+  display: inline-flex;
+  flex: none;
+  gap: 6px;
+  align-items: center;
+  padding: 2px 8px;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+  color: var(--text-2);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: var(--muted-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+.vlt-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--brand);
+  border-radius: 50%;
+}
+.vlt-badge.true, .vlt-badge.false {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: transparent;
+}
+.vlt-badge.true {
+  color: var(--brand-text);
+  border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+}
+.vlt-badge.false {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+}
+.vlt-badge.false::before {
+  background: var(--danger);
+}
+
+/* Check — requirement value with a status dot (store .vlt-status) */
+.vlt-check {
+  --c: var(--brand);
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--text);
+}
+.vlt-check::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--c);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent);
+}
+.vlt-check--fail {
+  --c: var(--danger);
+  color: var(--danger);
+}
+
+/* Subtitle */
+.vlt-subtitle {
+  font-size: 20px;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* List */
+.vlt-styled-list {
+  padding-left: 1.2em;
+  margin: 0;
+  color: var(--text-2);
+  list-style: disc;
+}
+.vlt-styled-list li {
+  margin: 0;
+}
+.vlt-styled-list li + li {
+  margin-top: 0.4em;
+}
+.vlt-styled-list li::marker {
+  color: var(--brand-text);
+}
+
+/* Help links — store .vlt-list */
+.vlt-help-links {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+}
+.vlt-help-links__item {
+  margin: 0;
+}
+.vlt-help-links__item + .vlt-help-links__item {
+  border-top: 1px solid var(--border);
+}
+.vlt-help-links__link {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 20px;
+  color: var(--text);
+  text-decoration: none;
+  transition: background-color 0.2s, padding-left 0.3s var(--ease);
+}
+.vlt-help-links__link::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  width: 3px;
+  background: var(--brand);
+  transform: scaleY(0);
+  transition: transform 0.3s var(--ease);
+}
+.vlt-help-links__link:hover {
+  padding-left: 26px;
+  color: var(--text);
+  background: var(--bg);
+}
+.vlt-help-links__link:hover::before {
+  transform: none;
+}
+.vlt-help-links__link:focus {
+  color: var(--text);
+  box-shadow: none;
+}
+.vlt-help-links__index {
+  flex: none;
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.vlt-help-links__index::after {
+  content: " /";
+  color: var(--brand-text);
+}
+.vlt-help-links__body {
+  flex: 1;
+  min-width: 0;
+}
+.vlt-help-links__title {
+  display: block;
+  font-size: 15px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+.vlt-help-links__text {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.vlt-help-links__arrow {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+  transition: color 0.2s, transform 0.3s var(--ease);
+}
+.vlt-help-links__link:hover .vlt-help-links__arrow {
+  color: var(--text);
+  transform: translateX(3px);
+}
+
+/* Button Group */
+.vlt-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Buttons (WP core .button, restyled as store .vlt-btn) */
+.vlt-theme-dashboard .button,
+.vlt-theme-dashboard .button-secondary {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  min-height: 0;
+  padding: 0 16px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+.vlt-theme-dashboard .button:hover,
+.vlt-theme-dashboard .button-secondary:hover {
+  color: var(--text);
+  background: var(--muted-bg);
+  border-color: var(--border-strong);
+}
+.vlt-theme-dashboard .button:active,
+.vlt-theme-dashboard .button-secondary:active {
+  transform: scale(0.97);
+}
+.vlt-theme-dashboard .button:focus,
+.vlt-theme-dashboard .button-secondary:focus {
+  color: var(--text);
+  border-color: var(--border-strong);
+  outline: none;
+  box-shadow: var(--shadow);
+}
+.vlt-theme-dashboard .button:focus-visible,
+.vlt-theme-dashboard .button-secondary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.vlt-theme-dashboard .button-primary,
+.vlt-theme-dashboard .button-primary:focus {
+  color: var(--on-brand);
+  background: var(--brand);
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.vlt-theme-dashboard .button-primary:hover {
+  color: var(--on-brand);
+  background: var(--brand-hover);
+  border-color: transparent;
+}
+
+/* Form Group — store .vlt-field / .vlt-input */
+.vlt-form-group p.small {
+  margin-top: 7px;
+}
+.vlt-form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.vlt-form-group input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.vlt-form-group input::placeholder {
+  color: var(--muted);
+}
+.vlt-form-group input:hover {
+  border-color: var(--border-strong);
+}
+.vlt-form-group input:focus {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px var(--mark);
+}
+.vlt-form-group input.license-key {
+  height: auto;
+  min-height: auto;
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.vlt-form-group input.license-key:focus {
+  box-shadow: none;
+}
+
+/* ========================================
+ Widget: Welcome — store hero (grid + brand glow)
+ ======================================== */
+.vlt-widget-welcome {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 56px;
+  align-items: center;
+  max-width: 1000px;
+  padding: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  isolation: isolate;
+}
+@media (max-width: 782px) {
+  .vlt-widget-welcome {
+    flex-direction: column;
+    gap: 32px;
+    align-items: stretch;
+    padding: 24px;
+  }
+}
+.vlt-widget-welcome::before {
+  content: "";
+  position: absolute;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.7;
+  z-index: -1;
+  inset: 0;
+  -webkit-mask-image: radial-gradient(ellipse 50% 80% at 20% 50%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(ellipse 50% 80% at 20% 50%, #000 10%, transparent 75%);
+}
+.vlt-widget-welcome::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  width: 360px;
+  height: 200px;
+  pointer-events: none;
+  background: var(--brand);
+  filter: blur(80px);
+  border-radius: 50%;
+  opacity: 0.14;
+  z-index: -1;
+}
+.vlt-widget-welcome__image {
+  display: flex;
+  flex: none;
+  max-width: 420px;
+  background: var(--muted-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  will-change: transform;
+  transition: transform 0.6s var(--ease);
+  overflow: hidden;
+}
+@media (max-width: 782px) {
+  .vlt-widget-welcome__image {
+    max-width: none;
+  }
+}
+.vlt-widget-welcome__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 420px;
+  max-width: 100%;
+  padding: 24px;
+  font-family: var(--font-accent);
+  font-size: 40px;
+  line-height: 1;
+  color: var(--text);
+  text-align: center;
+  background: repeating-linear-gradient(-45deg, transparent 0 10px, var(--border) 10px 11px), var(--muted-bg);
+  aspect-ratio: 4/3;
+}
+.vlt-widget-welcome:hover .vlt-widget-welcome__image {
+  transform: translateY(-4px);
+}
+.vlt-widget-welcome h1 {
+  margin: 16px 0 0;
+  font-family: var(--font-accent);
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: var(--fw-regular);
+  line-height: 1;
+  text-wrap: balance;
+  letter-spacing: -0.015em;
+}
+.vlt-widget-welcome p {
+  font-size: 15px;
+}
+
+/* ========================================
+ Widget Base — store card (flat, dashed head, caption title)
+ ======================================== */
+.vlt-widget {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.vlt-widget::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 2px;
+  background: var(--brand);
+  transition: width 0.4s var(--ease);
+}
+.vlt-widget:hover::before {
+  width: 100%;
+}
+.vlt-widget__title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 16px 0 14px;
+  margin: 0 20px;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  line-height: normal;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px dashed var(--border-strong);
+}
+.vlt-widget__title mark,
+.vlt-widget__title mark.true,
+.vlt-widget__title mark.false {
+  color: var(--text);
+}
+.vlt-widget__content {
+  padding: 16px 20px 20px;
+}
+.vlt-widget__content .widefat {
+  margin: 0;
+  border-collapse: collapse;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.vlt-widget__content .widefat td {
+  padding: 9px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.vlt-widget__content .widefat td:first-child {
+  padding-right: 16px;
+  color: var(--text-2);
+}
+.vlt-widget__content .widefat td:not(:first-child) {
+  font-weight: var(--fw-medium);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.vlt-widget__content .widefat tr:last-child td {
+  border-bottom: none;
+}
+.vlt-widget__content .postbox-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--border-strong);
+}
+.vlt-widget__content .postbox-header strong {
+  font-size: 16px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+}
+
+/* ========================================
+ Masonry Grid
+ ======================================== */
+.vlt-masonry-grid {
+  display: block;
+  max-width: 1200px;
+  margin: -10px;
+}
+
+.vlt-masonry-item {
+  display: block;
+  float: none;
+  width: calc(33.333% - 20px);
+  margin: 10px;
+}
+.vlt-masonry-item > * + * {
+  margin-top: 20px;
+}
+.vlt-masonry-item--wide {
+  width: calc(66.666% - 20px);
+}
+
+.vlt-masonry-sizer {
+  width: calc(33.333% - 20px);
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .vlt-masonry-item,
+  .vlt-masonry-item--wide,
+  .vlt-masonry-sizer {
+    width: calc(50% - 20px);
+  }
+}
+@media (max-width: 782px) {
+  .vlt-masonry-item,
+  .vlt-masonry-item--wide,
+  .vlt-masonry-sizer {
+    width: calc(100% - 20px);
+  }
+}

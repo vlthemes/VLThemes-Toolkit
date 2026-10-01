@@ -1,0 +1,2644 @@
+# Copyright (C) 2026 VLThemes
+# This file is distributed under the https://www.gnu.org/licenses/gpl-2.0.html.
+msgid ""
+msgstr ""
+"Project-Id-Version: VLThemes Toolkit 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/vlthemes-toolkit\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-01T15:30:53+02:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: toolkit\n"
+
+#. Plugin Name of the plugin
+#: vlthemes-toolkit.php
+msgid "VLThemes Toolkit"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: vlthemes-toolkit.php
+msgid "https://vlthemes.me/"
+msgstr ""
+
+#. Description of the plugin
+#: vlthemes-toolkit.php
+msgid "VLThemes Toolkit expands the functionality of the theme. Adds new icons, widgets and much more."
+msgstr ""
+
+#. Author of the plugin
+#: vlthemes-toolkit.php
+msgid "VLThemes"
+msgstr ""
+
+#. Author URI of the plugin
+#: vlthemes-toolkit.php
+msgid "https://themeforest.net/user/vlthemes"
+msgstr ""
+
+#. translators: %s: theme version
+#: includes/Admin/Dashboard.php:186
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:207
+#: includes/Admin/Dashboard.php:208
+msgid "Welcome"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:217
+#: includes/Admin/Dashboard.php:218
+msgid "Activate Theme"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:227
+#: includes/Admin/Dashboard.php:228
+msgid "Requirements"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:237
+#: includes/Admin/Dashboard.php:238
+msgid "Required Plugins"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:247
+#: includes/Admin/Dashboard.php:248
+msgid "Demo Import"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:258
+#: includes/Admin/Dashboard.php:259
+msgid "Theme Options"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:269
+#: includes/Admin/Dashboard.php:270
+msgid "System Status"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:280
+#: includes/Admin/Dashboard.php:281
+#: includes/Modules/Features/TemplateParts.php:80
+#: includes/Modules/Features/TemplateParts.php:82
+msgid "Template Parts"
+msgstr ""
+
+#: includes/Admin/Dashboard.php:291
+#: includes/Admin/Dashboard.php:292
+msgid "Help Center"
+msgstr ""
+
+#. translators: %s: theme name
+#: includes/Admin/Dashboard.php:557
+#, php-format
+msgid "%s Dashboard"
+msgstr ""
+
+#: includes/Admin/templates/template-activate-theme.php:28
+msgid "No License Key?"
+msgstr ""
+
+#: includes/Admin/templates/template-activate-theme.php:36
+msgid "You can <strong>skip the activation</strong> — the core features of the theme work without it. Activation unlocks one-click updates right here in the dashboard."
+msgstr ""
+
+#. translators: 1: theme name, 2: link to vlthemes.me
+#: includes/Admin/templates/template-activate-theme.php:48
+#, php-format
+msgid "Got %1$s without a license (for example, through a subscription)? Get your own license on %2$s — lifetime updates and 12 months of support included."
+msgstr ""
+
+#: includes/Admin/templates/template-activate-theme.php:56
+msgid "Support is provided only for licensed copies of the theme."
+msgstr ""
+
+#: includes/Admin/templates/template-activate-theme.php:60
+msgid "Get a License"
+msgstr ""
+
+#: includes/Admin/templates/template-activate-theme.php:61
+#: includes/Admin/templates/template-helper.php:119
+msgid "All-access Pass"
+msgstr ""
+
+#: includes/Admin/templates/template-activate-theme.php:64
+#: includes/Admin/templates/template-helper.php:122
+msgid "Secure checkout via Gumroad · 14-day money-back guarantee"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:13
+msgid "Documentation"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:14
+msgid "Installation, demo import, theme options and customization — step by step."
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:18
+msgid "Knowledge Base"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:19
+msgid "Answers to common questions about licenses, updates, hosting and plugins."
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:23
+msgid "Support Ticket"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:24
+msgid "Still stuck? Describe the issue, add a link and a screenshot — we'll help."
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:37
+msgid "Help & Support"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:38
+msgid "Replies within 24h"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:42
+msgid "Everything you need to set up and run the theme. Start with the docs — most questions are already answered there."
+msgstr ""
+
+#. translators: 1: Support Policy link, 2: reply time
+#: includes/Admin/templates/template-helper.php:64
+#, php-format
+msgid "Please read the %1$s first: support covers bugs and questions about our products, not custom development. We reply within %2$s, Mon–Fri, 09:00–18:00 (UTC+3)."
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:65
+msgid "Support Policy"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:66
+msgid "24 hours"
+msgstr ""
+
+#. translators: 1: link to vlthemes.me products, 2: support email link
+#: includes/Admin/templates/template-helper.php:76
+#, php-format
+msgid "12 months of support included with purchases on %1$s (via Gumroad) · %2$s"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:90
+msgid "More Themes"
+msgstr ""
+
+#. translators: %s: link to vlthemes.me products
+#: includes/Admin/templates/template-helper.php:99
+#, php-format
+msgid "Like this theme? Get the next one straight from %s — WordPress themes, HTML templates and plugins."
+msgstr ""
+
+#. translators: %s: "All-access pass" in bold
+#: includes/Admin/templates/template-helper.php:110
+#, php-format
+msgid "%s — all WordPress & HTML themes in one purchase, with lifetime updates and priority support for 12 months."
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:111
+msgid "All-access pass"
+msgstr ""
+
+#: includes/Admin/templates/template-helper.php:118
+msgid "Browse Themes"
+msgstr ""
+
+#. translators: %s - theme name.
+#: includes/Admin/templates/template-plugins.php:24
+#, php-format
+msgid "These plugins come with the %s theme. Install and activate all of them to get every feature shown in the demo."
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:37
+#: includes/Admin/templates/template-requirements.php:86
+#: includes/Admin/templates/template-requirements.php:143
+msgid "Unlimited"
+msgstr ""
+
+#. translators: %s: number of seconds
+#: includes/Admin/templates/template-requirements.php:37
+#, php-format
+msgid "%s sec"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:64
+msgid "Server Settings"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:66
+#: includes/Admin/templates/template-requirements.php:120
+#: includes/Admin/templates/template-requirements.php:162
+msgid "No Problems"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:68
+#: includes/Admin/templates/template-requirements.php:122
+#: includes/Admin/templates/template-requirements.php:164
+msgid "Can be improved"
+msgstr ""
+
+#. translators: %1$s-%6$s: <strong> tags
+#: includes/Admin/templates/template-requirements.php:75
+#, php-format
+msgid "%1$sNote:%2$s These settings affect %3$sonly the speed of demo content import%4$s. Low values will not break the site — they are %5$snot critical%6$s."
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:81
+msgid "PHP Version:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:85
+msgid "Memory Limit:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:89
+msgid "Max Execution Time:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:93
+msgid "Max Input Time:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:97
+msgid "Post Max Size:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:101
+msgid "Upload Max Filesize:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:105
+msgid "Max Input Vars:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:118
+msgid "WordPress Settings"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:130
+msgid "Home URL:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:134
+msgid "Site URL:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:138
+msgid "WP Version:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:142
+msgid "Memory Limit (WP):"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:146
+msgid "WP Debug:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:147
+#: includes/Admin/templates/template-requirements.php:177
+#: includes/Admin/templates/template-status.php:34
+#: includes/Admin/templates/template-status.php:38
+#: includes/Admin/templates/template-status.php:42
+#: includes/Admin/templates/template-status.php:46
+#: includes/Admin/templates/template-status.php:50
+#: includes/Modules/Features/AI.php:102
+#: includes/Modules/Features/Noise.php:69
+msgid "Enabled"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:147
+#: includes/Admin/templates/template-requirements.php:177
+#: includes/Admin/templates/template-status.php:34
+#: includes/Admin/templates/template-status.php:38
+#: includes/Admin/templates/template-status.php:42
+#: includes/Admin/templates/template-status.php:46
+#: includes/Admin/templates/template-status.php:50
+#: includes/Modules/Features/AI.php:101
+#: includes/Modules/Features/Noise.php:68
+msgid "Disabled"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:160
+msgid "Theme Config"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:172
+msgid "Theme Name:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:176
+msgid "Child Theme:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:180
+msgid "Version:"
+msgstr ""
+
+#: includes/Admin/templates/template-requirements.php:184
+msgid "Author:"
+msgstr ""
+
+#. translators: %1$s-%4$s: <strong> tags
+#: includes/Admin/templates/template-requirements.php:193
+#, php-format
+msgid "%1$sRecommendation:%2$s We recommend working with a %3$schild theme%4$s to safely customize styles and functions without losing changes on theme updates."
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:26
+msgid "PHP Extensions"
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:33
+msgid "cURL"
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:37
+msgid "GD Library"
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:41
+msgid "ZIP Archive"
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:45
+msgid "DOM"
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:49
+msgid "XML"
+msgstr ""
+
+#: includes/Admin/templates/template-status.php:62
+msgid "Active Plugins"
+msgstr ""
+
+#. translators: %s: theme version
+#: includes/Admin/templates/template-welcome.php:25
+#, php-format
+msgid "v%s"
+msgstr ""
+
+#. translators: %s: theme name
+#: includes/Admin/templates/template-welcome.php:27
+#, php-format
+msgid "Getting started with %s"
+msgstr ""
+
+#: includes/Admin/templates/template-welcome.php:30
+msgid "The theme is installed and ready to go."
+msgstr ""
+
+#. translators: %s: theme name
+#: includes/Admin/templates/template-welcome.php:37
+#, php-format
+msgid "Thanks for choosing %s. Activate your license, install the required plugins and import a demo — your site will be ready in a few minutes."
+msgstr ""
+
+#. translators: %s: link to vlthemes.me
+#: includes/Admin/templates/template-welcome.php:47
+#, php-format
+msgid "Activate the theme with your license key or purchase code to get updates right here in the dashboard. Guides and answers to common questions live on %s."
+msgstr ""
+
+#. translators: 1: "Next theme?" in bold, 2: link to vlthemes.me products
+#: includes/Admin/templates/template-welcome.php:58
+#, php-format
+msgid "%1$s Get it directly on %2$s — lifetime updates and 12 months of support included."
+msgstr ""
+
+#: includes/Admin/templates/template-welcome.php:59
+msgid "Next theme?"
+msgstr ""
+
+#: includes/Admin/templates/template-welcome.php:67
+msgid "Read the docs"
+msgstr ""
+
+#: includes/Admin/templates/template-welcome.php:68
+msgid "Browse all themes"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:74
+msgid "AI Assistant"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:75
+msgid "Connect a Claude (Anthropic) API key to enable an AI writing assistant inside the Elementor editor."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:86
+msgid "Claude API Key"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:87
+msgid "For testing without a real key or cost, enter \"test\" — the assistant will return sample text instead of calling Claude."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:98
+#: includes/Modules/Features/AI.php:281
+msgid "AI Content Assistant"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:159
+msgid "Claude API key is not configured."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:165
+msgid "Please enter a prompt."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:205
+msgid "Unknown Claude API error."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:211
+msgid "Claude declined to generate this content."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:223
+msgid "Unexpected response from Claude."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:247
+msgid "[Mock AI response — no API call was made]"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:248
+#, php-format
+msgid "Prompt: \"%s\""
+msgstr ""
+
+#. translators: %s: the prompt that was submitted
+#: includes/Modules/Features/AI.php:253
+#, php-format
+msgid "[Mock AI text for: \"%s\"]"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:282
+msgid "Select a text element on the page first."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:283
+msgid "Describe what to write:"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:284
+msgid "e.g. Write a short, punchy headline about our new product launch."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:285
+msgid "Generate"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:286
+msgid "Insert"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:287
+msgid "Generating…"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:288
+msgid "Please describe what you want to write."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:289
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:290
+msgid "Will be inserted into:"
+msgstr ""
+
+#: includes/Modules/Features/AI.php:303
+msgid "Permission denied."
+msgstr ""
+
+#: includes/Modules/Features/AI.php:307
+msgid "AI Content Assistant is disabled."
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:59
+msgid "Simple Fade"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:60
+msgid "Fade In Up"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:61
+msgid "Fade In Down"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:62
+msgid "Fade In From Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:63
+msgid "Fade In From Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:64
+msgid "Fade In Up Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:65
+msgid "Fade In Up Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:66
+msgid "Fade In Down Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:67
+msgid "Fade In Down Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:69
+msgid "Flip Up"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:70
+msgid "Flip Down"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:71
+msgid "Flip Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:72
+msgid "Flip Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:74
+msgid "Slide In Up"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:75
+msgid "Slide In Down"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:76
+msgid "Slide In From Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:77
+msgid "Slide In From Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:79
+msgid "Zoom In"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:80
+msgid "Zoom In Up"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:81
+msgid "Zoom In Down"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:82
+msgid "Zoom In From Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:83
+msgid "Zoom In From Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:84
+msgid "Zoom Out"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:85
+msgid "Zoom Out Up"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:86
+msgid "Zoom Out Down"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:87
+msgid "Zoom Out Left"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:88
+msgid "Zoom Out Right"
+msgstr ""
+
+#: includes/Modules/Features/AOS.php:93
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:216
+msgid "None"
+msgstr ""
+
+#: includes/Modules/Features/Breadcrumbs.php:49
+msgid "Home"
+msgstr ""
+
+#. translators: %s: search term
+#: includes/Modules/Features/Breadcrumbs.php:206
+#, php-format
+msgid "Search results for: %s"
+msgstr ""
+
+#: includes/Modules/Features/Breadcrumbs.php:215
+msgid "404 Not Found"
+msgstr ""
+
+#: includes/Modules/Features/Breadcrumbs.php:255
+msgid "Breadcrumb"
+msgstr ""
+
+#: includes/Modules/Features/CustomFonts.php:91
+msgid "Custom Fonts"
+msgstr ""
+
+#: includes/Modules/Features/CustomFonts.php:128
+msgid "Adobe Fonts"
+msgstr ""
+
+#: includes/Modules/Features/CustomFonts.php:167
+msgid "Theme Fonts"
+msgstr ""
+
+#: includes/Modules/Features/Noise.php:54
+msgid "Noise Background"
+msgstr ""
+
+#: includes/Modules/Features/Noise.php:65
+msgid "Enable"
+msgstr ""
+
+#: includes/Modules/Features/Noise.php:80
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:244
+msgid "Opacity"
+msgstr ""
+
+#: includes/Modules/Features/Noise.php:103
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:141
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:236
+msgid "Z-Index"
+msgstr ""
+
+#: includes/Modules/Features/Noise.php:104
+msgid "Stacking order of the noise overlay relative to the rest of the page."
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:186
+msgid "Internet"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:187
+msgid "Moddb"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:188
+msgid "Indiedb"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:189
+msgid "Traxsource"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:190
+msgid "Gamefor"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:191
+msgid "Pixiv"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:192
+msgid "Myanimelist"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:193
+msgid "Blackberry"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:194
+msgid "Wickr"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:195
+msgid "Spip"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:196
+msgid "Napster"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:197
+msgid "Beatport"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:198
+msgid "Hackerone"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:199
+msgid "Hackernews"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:200
+msgid "Smashwords"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:201
+msgid "Kobo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:202
+msgid "Bookbub"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:203
+msgid "Mailru"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:204
+msgid "Gitlab"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:205
+msgid "Instructables"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:206
+msgid "Portfolio"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:207
+msgid "Codered"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:208
+msgid "Origin"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:209
+msgid "Nextdoor"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:210
+msgid "Udemy"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:211
+msgid "Livemaster"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:212
+msgid "Crunchbase"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:213
+msgid "Homefy"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:214
+msgid "Calendly"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:215
+msgid "Realtor"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:216
+msgid "Tidal"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:217
+msgid "Qobuz"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:218
+msgid "Natgeo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:219
+msgid "Mastodon"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:220
+msgid "Unsplash"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:221
+msgid "Homeadvisor"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:222
+msgid "Angieslist"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:223
+msgid "Codepen"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:224
+msgid "Slack"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:225
+msgid "Openaigym"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:226
+msgid "Logmein"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:227
+msgid "Fiverr"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:228
+msgid "Gotomeeting"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:229
+msgid "Aliexpress"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:230
+msgid "Guru"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:231
+msgid "Appstore"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:232
+msgid "Homes"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:233
+msgid "Zoom"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:234
+msgid "Alibaba"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:235
+msgid "Craigslist"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:236
+msgid "Wix"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:237
+msgid "Redfin"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:238
+msgid "Googlecalendar"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:239
+msgid "Shopify"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:240
+msgid "Freelancer"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:241
+msgid "Seedrs"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:242
+msgid "Bing"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:243
+msgid "Doodle"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:244
+msgid "Bonanza"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:245
+msgid "Squarespace"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:246
+msgid "Toptal"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:247
+msgid "Gust"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:248
+msgid "Ask"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:249
+msgid "Trulia"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:250
+msgid "Loomly"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:251
+msgid "Ghost"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:252
+msgid "Upwork"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:253
+msgid "Fundable"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:254
+msgid "Booking"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:255
+msgid "Googlemaps"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:256
+msgid "Zillow"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:257
+msgid "Niconico"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:258
+msgid "Toneden"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:259
+msgid "Augment"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:260
+msgid "Bitbucket"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:261
+msgid "Fyuse"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:262
+msgid "Yt-gaming"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:263
+msgid "Sketchfab"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:264
+msgid "Mobcrush"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:265
+msgid "Microsoft"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:266
+msgid "Pandora"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:267
+msgid "Messenger"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:268
+msgid "Gamewisp"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:269
+msgid "Bloglovin"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:270
+msgid "Tunein"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:271
+msgid "Gamejolt"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:272
+msgid "Trello"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:273
+msgid "Spreadshirt"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:274
+msgid "500px"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:275
+msgid "8tracks"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:276
+msgid "Airbnb"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:277
+msgid "Alliance"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:278
+msgid "Amazon"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:279
+msgid "Amplement"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:280
+msgid "Android"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:281
+msgid "Angellist"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:282
+msgid "Apple"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:283
+msgid "Appnet"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:284
+msgid "Baidu"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:285
+msgid "Bandcamp"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:286
+msgid "Battlenet"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:287
+msgid "Mixer"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:288
+msgid "Bebee"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:289
+msgid "Bebo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:290
+msgid "Behance"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:291
+msgid "Blizzard"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:292
+msgid "Blogger"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:293
+msgid "Buffer"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:294
+msgid "Chrome"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:295
+msgid "Coderwall"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:296
+msgid "Curse"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:297
+msgid "Dailymotion"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:298
+msgid "Deezer"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:299
+msgid "Delicious"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:300
+msgid "Deviantart"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:301
+msgid "Diablo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:302
+msgid "Digg"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:303
+msgid "Discord"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:304
+msgid "Disqus"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:305
+msgid "Douban"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:306
+msgid "Draugiem"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:307
+msgid "Dribbble"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:308
+msgid "Drupal"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:309
+msgid "Ebay"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:310
+msgid "Ello"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:311
+msgid "Endomodo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:312
+msgid "Envato"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:313
+msgid "Etsy"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:314
+msgid "Facebook"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:315
+msgid "Feedburner"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:316
+msgid "Filmweb"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:317
+msgid "Firefox"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:318
+msgid "Flattr"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:319
+msgid "Flickr"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:320
+msgid "Formulr"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:321
+msgid "Forrst"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:322
+msgid "Foursquare"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:323
+msgid "Friendfeed"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:324
+msgid "Github"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:325
+msgid "Goodreads"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:326
+msgid "Google"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:327
+msgid "Googlescholar"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:328
+msgid "Googlegroups"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:329
+msgid "Googlephotos"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:330
+msgid "Googleplus"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:331
+msgid "Grooveshark"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:332
+msgid "Hackerrank"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:333
+msgid "Hearthstone"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:334
+msgid "Hellocoton"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:335
+msgid "Heroes"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:336
+msgid "Smashcast"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:337
+msgid "Horde"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:338
+msgid "Houzz"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:339
+msgid "Icq"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:340
+msgid "Identica"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:341
+msgid "Imdb"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:342
+msgid "Instagram"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:343
+msgid "Issuu"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:344
+msgid "Istock"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:345
+msgid "Itunes"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:346
+msgid "Keybase"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:347
+msgid "Lanyrd"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:348
+msgid "Lastfm"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:349
+msgid "Line"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:350
+msgid "Linkedin"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:351
+msgid "Livejournal"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:352
+msgid "Lyft"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:353
+msgid "Macos"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:354
+msgid "E-Mail"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:355
+msgid "Medium"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:356
+msgid "Meetup"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:357
+msgid "Mixcloud"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:358
+msgid "Modelmayhem"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:359
+msgid "Mumble"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:360
+msgid "Myspace"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:361
+msgid "Newsvine"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:362
+msgid "Nintendo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:363
+msgid "Npm"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:364
+msgid "Ok.ru"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:365
+msgid "Openid"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:366
+msgid "Opera"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:367
+msgid "Outlook"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:368
+msgid "Overwatch"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:369
+msgid "Patreon"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:370
+msgid "Paypal"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:371
+msgid "Periscope"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:372
+msgid "Persona"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:373
+msgid "Pinterest"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:374
+msgid "Play"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:375
+msgid "Player"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:376
+msgid "Playstation"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:377
+msgid "Pocket"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:378
+msgid "Qq"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:379
+msgid "Quora"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:380
+msgid "Raidcall"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:381
+msgid "Ravelry"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:382
+msgid "Reddit"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:383
+msgid "Renren"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:384
+msgid "Researchgate"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:385
+msgid "Residentadvisor"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:386
+msgid "Reverbnation"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:387
+msgid "Rss"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:388
+msgid "Sharethis"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:389
+msgid "Skype"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:390
+msgid "Slideshare"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:391
+msgid "Smugmug"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:392
+msgid "Snapchat"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:393
+msgid "Songkick"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:394
+msgid "Soundcloud"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:395
+msgid "Spotify"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:396
+msgid "Stackexchange"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:397
+msgid "Stackoverflow"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:398
+msgid "Starcraft"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:399
+msgid "Stayfriends"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:400
+msgid "Steam"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:401
+msgid "Storehouse"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:402
+msgid "Strava"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:403
+msgid "Streamjar"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:404
+msgid "Stumbleupon"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:405
+msgid "Swarm"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:406
+msgid "Teamspeak"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:407
+msgid "Teamviewer"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:408
+msgid "Technorati"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:409
+msgid "Telegram"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:410
+msgid "Tripadvisor"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:411
+msgid "Tripit"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:412
+msgid "Triplej"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:413
+msgid "TikTok"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:414
+msgid "Threads"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:415
+msgid "Tumblr"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:416
+msgid "Twitch"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:417
+msgid "Twitter"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:418
+msgid "Uber"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:419
+msgid "Ventrilo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:420
+msgid "Viadeo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:421
+msgid "Viber"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:422
+msgid "Viewbug"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:423
+msgid "Vimeo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:424
+msgid "Vine"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:425
+msgid "VK"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:426
+msgid "Warcraft"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:427
+msgid "Wechat"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:428
+msgid "Weibo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:429
+msgid "Whatsapp"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:430
+msgid "Wikipedia"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:431
+msgid "Windows"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:432
+msgid "Wordpress"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:433
+msgid "Wykop"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:434
+msgid "Xbox"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:435
+msgid "Xing"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:436
+msgid "Yahoo"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:437
+msgid "Yammer"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:438
+msgid "Yandex"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:439
+msgid "Yelp"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:440
+msgid "Younow"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:441
+msgid "Youtube"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:442
+msgid "Zapier"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:443
+msgid "Zerply"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:444
+msgid "Zomato"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:445
+msgid "Zynga"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:538
+msgid "Facebook URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:539
+msgid "Instagram URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:540
+msgid "Twitter URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:541
+msgid "LinkedIn URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:542
+msgid "YouTube URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:543
+msgid "Pinterest URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:544
+msgid "TikTok URL"
+msgstr ""
+
+#: includes/Modules/Features/SocialIcons.php:545
+msgid "Threads URL"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:81
+#: includes/Modules/Features/TemplateParts.php:1239
+msgid "Template Part"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:83
+msgid "Add New"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:84
+msgid "Add New Template Part"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:85
+msgid "Edit Template Part"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:86
+msgid "New Template Part"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:87
+msgid "View Template Part"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:88
+msgid "Search Template Parts"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:89
+msgid "No template parts found"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:90
+msgid "No template parts found in trash"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:229
+msgid "View All"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:245
+msgid "Template Settings"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:249
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:107
+msgid "Template Type"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:254
+#: includes/Modules/Features/TemplateParts.php:718
+#: includes/Modules/Features/TemplateParts.php:745
+msgid "Header"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:255
+#: includes/Modules/Features/TemplateParts.php:719
+#: includes/Modules/Features/TemplateParts.php:746
+msgid "Footer"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:256
+#: includes/Modules/Features/TemplateParts.php:720
+#: includes/Modules/Features/TemplateParts.php:747
+msgid "Above Footer"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:257
+#: includes/Modules/Features/TemplateParts.php:721
+#: includes/Modules/Features/TemplateParts.php:748
+msgid "404 Page"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:258
+#: includes/Modules/Features/TemplateParts.php:722
+#: includes/Modules/Features/TemplateParts.php:749
+msgid "Submenu"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:259
+#: includes/Modules/Features/TemplateParts.php:723
+#: includes/Modules/Features/TemplateParts.php:750
+msgid "Custom"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:265
+#: includes/Modules/Features/TemplateParts.php:494
+msgid "Display Rules"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:266
+msgid "Add locations for where this template should appear."
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:270
+msgid "Add Rule"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:293
+#: includes/Modules/Features/TemplateParts.php:350
+msgid "Rule"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:300
+#: includes/Modules/Features/TemplateParts.php:357
+msgid "Specific Target"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:322
+msgid "Exclude Rules"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:323
+msgid "Add locations for where this template should not appear."
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:327
+msgid "Add Exclusion"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:379
+#: includes/Modules/Features/TemplateParts.php:495
+msgid "Note"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:382
+msgid "This note is only visible in the admin area."
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:385
+msgid "Add a note for this template..."
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:407
+#: includes/Modules/Features/TemplateParts.php:496
+msgid "Shortcode"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:427
+#: includes/Modules/Features/TemplateParts.php:684
+msgid "Click to copy"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:567
+#: includes/Modules/Features/TemplateParts.php:639
+msgid "View"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:587
+msgid "Display:"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:659
+msgid "Exclusion:"
+msgstr ""
+
+#: includes/Modules/Features/TemplateParts.php:744
+msgid "All Types"
+msgstr ""
+
+#. translators: %d: reading time in minutes
+#: includes/Modules/Helpers/ContentHelper.php:121
+#, php-format
+msgid "%d min read"
+msgid_plural "%d min read"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Modules/Helpers/ImageHelper.php:151
+msgid "Placeholder"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:219
+#, php-format
+msgid "%s Elements"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:223
+#, php-format
+msgid "%s Showcase"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:227
+#, php-format
+msgid "%s WooCommerce"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:338
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:125
+msgid "Default"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:339
+msgid "Absolute"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:340
+msgid "Fixed"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:341
+msgid "Sticky"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor.php:368
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:78
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:120
+msgid "Top"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Helpers.php:89
+msgid "No sidebars were found"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Helpers.php:91
+msgid "Choose Sidebar"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:61
+msgid "Socicons"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:74
+msgid "ET-Line"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:87
+msgid "Icomoon"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:100
+msgid "Iconsmind"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:113
+msgid "Linearicons"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:126
+msgid "Elusive Icons"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/IconSets.php:139
+msgid "Icofont"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:69
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:77
+msgid "Entrance Animation"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:88
+msgid "Duration (seconds)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:89
+msgid "Animation duration in seconds"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:103
+msgid "Delay (seconds)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:104
+msgid "Delay before animation starts in seconds"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:119
+msgid "Easing"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:120
+msgid "Animation easing function"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:126
+msgid "Linear"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:127
+msgid "Ease (default)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:128
+msgid "Ease In"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:129
+msgid "Ease Out"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:130
+msgid "Ease In Out"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:131
+msgid "Ease In Back"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:132
+msgid "Ease Out Back"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:133
+msgid "Ease In Out Back"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:134
+msgid "Ease In Sine"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:135
+msgid "Ease Out Sine"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:136
+msgid "Ease In Out Sine"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:137
+msgid "Ease In Quad"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:138
+msgid "Ease Out Quad"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:139
+msgid "Ease In Out Quad"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:140
+msgid "Ease In Cubic"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:141
+msgid "Ease Out Cubic"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:142
+msgid "Ease In Out Cubic"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:143
+msgid "Ease In Quart"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:144
+msgid "Ease Out Quart"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:145
+msgid "Ease In Out Quart"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:156
+msgid "Offset (px)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/AosModule.php:157
+msgid "Distance from bottom of viewport to start"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/CustomAttributesModule.php:76
+msgid "Attributes"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/CustomAttributesModule.php:84
+msgid "Custom Attributes"
+msgstr ""
+
+#. translators: %s: The `|` separate char.
+#: includes/Modules/Integrations/Elementor/Modules/CustomAttributesModule.php:89
+#, php-format
+msgid "Set custom attributes for the wrapper element. Each attribute in a separate line. Separate attribute key from the value using %s character."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/CustomCssModule.php:74
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/CustomCssModule.php:82
+msgid "Add your own custom CSS"
+msgstr ""
+
+#. translators: 1: Link opening tag, 2: Link opening tag, 3: Link closing tag.
+#: includes/Modules/Integrations/Elementor/Modules/CustomCssModule.php:86
+#, php-format
+msgid "Use %1$scustom CSS%3$s to style your content or add %2$sthe \"selector\" prefix%3$s to target specific elements."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:71
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:79
+msgid "Equal Height"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:81
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:63
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:105
+msgid "Yes"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:82
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:64
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:106
+msgid "No"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:93
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:88
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:145
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:200
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:108
+msgid "Settings"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:104
+msgid "Select Widgets"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:108
+msgid "Select specific widgets to apply equal height."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:117
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:116
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:172
+msgid "Reset On Device"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:131
+msgid "Height Mode"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:135
+msgid "Separately"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:136
+msgid "Together"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:138
+msgid "Choose whether to apply equal height to each widget type separately or to all selected widgets together."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/EqualHeightModule.php:181
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:317
+msgid "Desktop"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:67
+msgid "Layout"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:76
+msgid "Stretch"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:99
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:156
+msgid "Side"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:103
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:160
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:81
+msgid "Left"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:104
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:161
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:79
+msgid "Right"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:105
+msgid "Container"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:133
+msgid "Padding to Container"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:189
+msgid "Scroll Reveal"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:211
+msgid "Offset X (px)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:221
+msgid "Offset Y (px)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:231
+msgid "Scale"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:257
+msgid "Trigger"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:259
+msgid ".my-class"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:260
+msgid "CSS selector to use as the ScrollTrigger trigger. Leave empty to use the element itself."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:268
+msgid "Trigger Start"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:271
+msgid "Format: \"[element position] [viewport position]\". \"top 85%\" means the animation starts when the top of the element reaches 85% down the viewport."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:279
+msgid "Trigger End"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/LayoutModule.php:282
+msgid "Format: \"[element position] [viewport position]\". \"top 40%\" means the animation finishes when the top of the element reaches 40% down the viewport."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:53
+msgid "Mask"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:61
+msgid "Enable Mask"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:73
+msgid "Mask Direction"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:76
+msgid "Horizontal"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:77
+msgid "Vertical"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:80
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:119
+msgid "Bottom"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:94
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:186
+msgid "Start Fade (%)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/MaskModule.php:117
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:209
+msgid "End Fade (%)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:65
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:73
+msgid "Parallax"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:85
+msgid "Speed"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:86
+msgid "Negative = up, Positive = down"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:121
+msgid "Percentage"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:123
+msgid "Element position in scroll (0 = start, 0.5 = center, 1 = end)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:142
+msgid "Z-index for parallax 3D effect"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:154
+msgid "Min Offset"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:155
+msgid "Minimum offset in pixels (limits movement)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:164
+msgid "Max Offset"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ParallaxModule.php:165
+msgid "Maximum offset in pixels (limits movement)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:95
+msgid "Progressive Blur"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:103
+msgid "Enable Progressive Blur"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:116
+msgid "Position"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:133
+msgid "Size"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Modules/ProgressiveBlurModule.php:162
+msgid "Blur Amount (px)"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/ContactForm7Widget.php:33
+#: includes/Modules/Integrations/Elementor/Widgets/ContactForm7Widget.php:90
+msgid "Contact Form 7"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/ContactForm7Widget.php:71
+msgid "Warning!"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/ContactForm7Widget.php:99
+#: includes/Modules/Integrations/Elementor/Widgets/SpacerWidget.php:79
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:89
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:80
+msgid "Theme not activated!"
+msgstr ""
+
+#. translators: %s: Dashboard URL
+#: includes/Modules/Integrations/Elementor/Widgets/ContactForm7Widget.php:102
+#: includes/Modules/Integrations/Elementor/Widgets/SpacerWidget.php:82
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:92
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:83
+#, php-format
+msgid "Go to the <a href=\"%s\" target=\"_blank\">Dashboard</a> to activate."
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/ContactForm7Widget.php:115
+msgid "Select Form"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/SpacerWidget.php:33
+#: includes/Modules/Integrations/Elementor/Widgets/SpacerWidget.php:70
+msgid "Spacer"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/SpacerWidget.php:94
+msgid "Space"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:34
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:80
+msgid "Template"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:102
+msgid "All"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:118
+#: includes/Modules/Integrations/Elementor/Widgets/TemplateWidget.php:136
+msgid "Choose Template"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:34
+msgid "WC Page"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:71
+msgid "WooCommerce Page"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:95
+msgid "Page to render"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:99
+msgid "Cart"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:100
+msgid "Checkout"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:101
+msgid "My Account"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:109
+msgid "Wrapper CSS class"
+msgstr ""
+
+#: includes/Modules/Integrations/Elementor/Widgets/WoocommercePageWidget.php:124
+msgid "WooCommerce is not active. Please activate WooCommerce to display this content."
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:129
+msgid "The license server can't be reached. Please try again later."
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:169
+msgid "Sorry, you are not allowed to do that."
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:188
+msgid "License deactivated."
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:192
+msgid "Enter your purchase code or license key."
+msgstr ""
+
+#. translators: %d: days
+#: includes/ThemeActivation/Init.php:275
+#, php-format
+msgid "active, %d day left"
+msgid_plural "active, %d days left"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: days
+#: includes/ThemeActivation/Init.php:277
+#, php-format
+msgid "expired %d day ago"
+msgid_plural "expired %d days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/ThemeActivation/Init.php:295
+msgid "Theme License"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:297
+msgid "Active"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:297
+msgid "Not Active"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:318
+msgid "Status:"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:323
+msgid "Product:"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:328
+msgid "Domain:"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:333
+msgid "Support until:"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:338
+msgid "Your License Key:"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:350
+#: includes/ThemeActivation/Init.php:370
+msgid "Activate"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:352
+msgid "Deactivate"
+msgstr ""
+
+#. translators: %s: theme name
+#: includes/ThemeActivation/Init.php:357
+#, php-format
+msgid "To activate your copy of %s, enter your purchase code or license key."
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:362
+msgid "Purchase code / license key"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:366
+msgid "Where to find your purchase code or license key?"
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:378
+msgid "One license works on one live site; local and staging sites (localhost, *.local, *.test, staging.*, dev.*) don't take the slot. To move the license to another site, deactivate it here first."
+msgstr ""
+
+#: includes/ThemeActivation/Init.php:384
+msgid "Note that you are not required to separately register any of the plugins which came bundled with the theme."
+msgstr ""
+
+#: includes/Updater.php:97
+#, php-format
+msgid "version %s is available."
+msgstr ""
+
+#: includes/Updater.php:105
+msgid "Update now"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:19
+msgid "Displays popular posts (by comment count)."
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:24
+msgid "VLThemes: Popular Posts"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:123
+#: includes/Widgets/RecentPosts.php:123
+#: includes/Widgets/TrendingPosts.php:141
+msgid "Title:"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:134
+#: includes/Widgets/RecentPosts.php:134
+#: includes/Widgets/TrendingPosts.php:152
+msgid "Number of Posts:"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:142
+#: includes/Widgets/RecentPosts.php:142
+#: includes/Widgets/TrendingPosts.php:160
+msgid "Enter the number of posts to display (1-20)."
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:148
+#: includes/Widgets/RecentPosts.php:148
+#: includes/Widgets/TrendingPosts.php:166
+msgid "Layout:"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:154
+#: includes/Widgets/RecentPosts.php:154
+#: includes/Widgets/TrendingPosts.php:172
+msgid "List"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:157
+#: includes/Widgets/RecentPosts.php:157
+#: includes/Widgets/TrendingPosts.php:175
+msgid "Slider"
+msgstr ""
+
+#: includes/Widgets/PopularPosts.php:161
+#: includes/Widgets/RecentPosts.php:161
+#: includes/Widgets/TrendingPosts.php:179
+msgid "Choose how to display the posts."
+msgstr ""
+
+#: includes/Widgets/RecentPosts.php:19
+msgid "Displays recent blog posts."
+msgstr ""
+
+#: includes/Widgets/RecentPosts.php:24
+msgid "VLThemes: Recent Posts"
+msgstr ""
+
+#: includes/Widgets/TrendingPosts.php:19
+msgid "Displays trending posts (by views from last 30 days)."
+msgstr ""
+
+#: includes/Widgets/TrendingPosts.php:24
+msgid "VLThemes: Trending Posts"
+msgstr ""

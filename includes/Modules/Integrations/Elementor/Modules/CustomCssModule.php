@@ -46,7 +46,7 @@ class CustomCssModule extends Module {
 	public function enqueue_scripts_editor() {
 		wp_enqueue_script(
 			'vlt-custom-css',
-			plugin_dir_url( __FILE__ ) . 'js/CustomCssModule.js',
+			VLT_TOOLKIT_URL . 'assets/js/elementor-custom-css.js',
 			[ 'elementor-editor' ],
 			VLT_TOOLKIT_VERSION,
 			true

@@ -1,0 +1,27 @@
+@use "sass:map";
+@use "sass:meta";
+@use "variables" as *;
+
+// Mixins
+
+// Emit a theme from $themes as CSS custom properties: --<prefix><key>
+@mixin tokens($theme, $prefix: "") {
+	@each $key, $value in map.get($themes, $theme) {
+		--#{$prefix}#{$key}: #{$value};
+	}
+}
+
+// Shared non-color tokens: fonts, weights, sizes, radii, motion
+@mixin base-tokens($prefix: "") {
+	--#{$prefix}font: #{meta.inspect($font)};
+	--#{$prefix}font-accent: #{meta.inspect($font-accent)};
+	--#{$prefix}fw-regular: #{$fw-regular};
+	--#{$prefix}fw-medium: #{$fw-medium};
+	--#{$prefix}fw-semibold: #{$fw-semibold};
+	--#{$prefix}fw-bold: #{$fw-bold};
+	--#{$prefix}chip-h: #{$chip-h};
+	--#{$prefix}radius-sm: #{$radius-sm};
+	--#{$prefix}radius: #{$radius};
+	--#{$prefix}radius-pill: #{$radius-pill};
+	--#{$prefix}ease: #{$ease};
+}

@@ -48,7 +48,7 @@ class EqualHeightModule extends Module_Base {
 
 		wp_enqueue_script(
 			'vlt-equal-height-module',
-			plugin_dir_url( __FILE__ ) . 'js/EqualHeightModule.js',
+			VLT_TOOLKIT_URL . 'assets/js/elementor-equal-height.js',
 			[ 'jquery', 'elementor-frontend', 'jquery-match-height' ],
 			VLT_TOOLKIT_VERSION,
 			true

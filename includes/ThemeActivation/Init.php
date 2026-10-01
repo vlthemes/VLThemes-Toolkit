@@ -4,353 +4,384 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use VLT\Toolkit\ThemeActivation\ThemeActivation;
-
 /**
  * Check if theme is activated
+ *
+ * Sites activated with the old licenser keep their `{slug}_is_activated` flag.
  *
  * @return bool
  */
 if ( !function_exists( 'vlt_is_theme_activated' ) ) {
 	function vlt_is_theme_activated() {
-		$theme = wp_get_theme();
-		$slug  = $theme->get_template();
-
-		$status = get_option( $slug . '_is_activated', 0 );
-
-		return 1 == $status;
+		return VLThemesThemeActivation::is_active() || 1 == get_option( get_template() . '_is_activated', 0 );
 	}
 }
 
 /**
  * Theme Activation Manager
+ *
+ * Activation with a ThemeForest purchase code or a Gumroad license key on the VLThemes license server,
+ * daily license check and theme updates from the same server.
+ * Without activation the theme works as usual: updates come without a package.
+ *
+ * Config (filter `vlt_toolkit_license`): [ 'item' => theme slug on the server, 'server' => REST base ].
  */
 if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 	class VLThemesThemeActivation {
+		const CRON   = 'vlt_toolkit_license_check';
+		const UPDATE = 'vlt_toolkit_theme_update';
+		const PAGE   = 'vlt-dashboard-activate-theme';
+
 		/**
-		 * Plugin file
+		 * Theme slug on the license server
 		 *
 		 * @var string
 		 */
-		public $plugin_file = __FILE__;
+		public $item;
 
 		/**
-		 * Response object
-		 *
-		 * @var object
-		 */
-		public $responseObj;
-
-		/**
-		 * License message
+		 * License server REST base
 		 *
 		 * @var string
 		 */
-		public $licenseMessage;
-
-		/**
-		 * Show message flag
-		 *
-		 * @var bool
-		 */
-		public $showMessage = false;
-
-		/**
-		 * Theme slug
-		 *
-		 * @var string
-		 */
-		public $slug;
-
-		/**
-		 * License key option name
-		 *
-		 * @var string
-		 */
-		public $lic_key_slug;
-
-		/**
-		 * License email option name
-		 *
-		 * @var string
-		 */
-		public $lic_email_slug;
-
-		/**
-		 * Product ID
-		 *
-		 * @var string
-		 */
-		public $product_id;
-
-		/**
-		 * Product base
-		 *
-		 * @var string
-		 */
-		public $product_base;
-
-		/**
-		 * Theme file path
-		 *
-		 * @var string
-		 */
-		public $theme_file;
+		public $server;
 
 		/**
 		 * Constructor
 		 */
 		public function __construct() {
-			// Get current theme
-			$theme      = wp_get_theme();
-			$this->slug = $theme->get_template();
-
-			// Get theme configurations
-			$theme_configs = apply_filters(
-				'vlt_theme_activation_configs',
+			$config = wp_parse_args(
+				(array) apply_filters( 'vlt_toolkit_license', [] ),
 				[
-					'leedo' => [
-						'key'          => '8488A777D6F7E194',
-						'product_id'   => '1',
-						'product_base' => 'leedo',
-					],
+					'item'   => get_template(),
+					'server' => 'https://vlthemes.me/wp-json/vlthemes/v1/',
 				],
 			);
 
-			// Check if current theme has activation config
-			if ( !isset( $theme_configs[ $this->slug ] ) ) {
+			$this->item   = (string) $config['item'];
+			$this->server = trailingslashit( (string) $config['server'] );
+
+			add_action( 'vlt_toolkit_print_activation_form', [ $this, 'render' ] );
+			add_action( 'admin_post_vlt_toolkit_license', [ $this, 'handle' ] );
+			add_action( self::CRON, [ $this, 'check' ] );
+			add_action( 'init', [ $this, 'schedule' ] );
+			add_filter( 'pre_set_site_transient_update_themes', [ $this, 'update' ] );
+		}
+
+		/**
+		 * Stored license of the current theme: [ key, status, product, supported_until, checked ]
+		 *
+		 * @return array
+		 */
+		public static function get() {
+			return wp_parse_args( (array) get_option( 'vlt_toolkit_license_' . get_template(), [] ), [ 'key' => '', 'status' => '', 'product' => '', 'supported_until' => '', 'checked' => 0 ] );
+		}
+
+		/**
+		 * Is the theme activated on this site
+		 *
+		 * @return bool
+		 */
+		public static function is_active() {
+			return 'active' === self::get()['status'];
+		}
+
+		/**
+		 * Daily check while there is a key
+		 */
+		public function schedule() {
+			if ( self::get()['key'] && !wp_next_scheduled( self::CRON ) ) {
+				wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', self::CRON );
+			}
+		}
+
+		/**
+		 * This site's domain
+		 *
+		 * @return string
+		 */
+		private function domain() {
+			return (string) wp_parse_url( home_url(), PHP_URL_HOST );
+		}
+
+		/**
+		 * Request to the license server → decoded answer or WP_Error (server message when there is one)
+		 *
+		 * @return array|WP_Error
+		 */
+		private function request( $route, $key, $method = 'POST' ) {
+			$args = [ 'key' => $key, 'domain' => $this->domain(), 'item' => $this->item ];
+
+			$response = 'GET' === $method
+				? wp_remote_get( add_query_arg( array_map( 'rawurlencode', $args ), $this->server . $route ), [ 'timeout' => 15 ] )
+				: wp_remote_post( $this->server . $route, [ 'timeout' => 15, 'body' => $args ] );
+
+			if ( is_wp_error( $response ) ) {
+				return $response;
+			}
+
+			$code = (int) wp_remote_retrieve_response_code( $response );
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( 200 !== $code || !is_array( $body ) ) {
+				return new WP_Error(
+					is_array( $body ) && !empty( $body['code'] ) ? $body['code'] : 'vlt_toolkit_license_server',
+					is_array( $body ) && !empty( $body['message'] ) ? $body['message'] : esc_html__( 'The license server can\'t be reached. Please try again later.', 'toolkit' ),
+					[ 'status' => $code ],
+				);
+			}
+
+			return $body;
+		}
+
+		/**
+		 * Save the server answer
+		 */
+		private function save( $key, $body ) {
+			update_option(
+				'vlt_toolkit_license_' . get_template(),
+				[
+					'key'             => $key,
+					'status'          => (string) ( $body['status'] ?? '' ),
+					'product'         => (string) ( $body['product'] ?? '' ),
+					'supported_until' => (string) ( $body['supported_until'] ?? '' ),
+					'checked'         => time(),
+				],
+				false,
+			);
+
+			$this->flush_updates();
+		}
+
+		/**
+		 * Updates: ask the server again with the new license
+		 */
+		private function flush_updates() {
+			delete_transient( self::UPDATE );
+			delete_site_transient( 'update_themes' );
+		}
+
+		/**
+		 * Action: activate / deactivate
+		 */
+		public function handle() {
+			if ( !current_user_can( 'manage_options' ) ) {
+				wp_die( esc_html__( 'Sorry, you are not allowed to do that.', 'toolkit' ) );
+			}
+
+			check_admin_referer( 'vlt_toolkit_license' );
+
+			$license = self::get();
+			$message = [ 'type' => 'success', 'text' => '' ];
+
+			if ( 'deactivate' === ( $_POST['license_action'] ?? '' ) ) {
+				$body = $this->request( 'license/deactivate', $license['key'] );
+
+				// Server can't be reached: keep the key, the domain is still taken there
+				if ( is_wp_error( $body ) && 'http_request_failed' === $body->get_error_code() ) {
+					$message = [ 'type' => 'error', 'text' => $body->get_error_message() ];
+				} else {
+					delete_option( 'vlt_toolkit_license_' . get_template() );
+					delete_option( get_template() . '_is_activated' );
+					wp_clear_scheduled_hook( self::CRON );
+					$this->flush_updates();
+					$message['text'] = esc_html__( 'License deactivated.', 'toolkit' );
+				}
+			} else {
+				$key  = trim( sanitize_text_field( wp_unslash( $_POST['license_key'] ?? '' ) ) );
+				$body = $key ? $this->request( 'license/activate', $key ) : new WP_Error( 'vlt_toolkit_license_empty', esc_html__( 'Enter your purchase code or license key.', 'toolkit' ) );
+
+				if ( is_wp_error( $body ) ) {
+					$message = [ 'type' => 'error', 'text' => $body->get_error_message() ];
+				} else {
+					$this->save( $key, $body );
+					$message['text'] = (string) ( $body['message'] ?? '' );
+				}
+			}
+
+			set_transient( 'vlt_toolkit_license_message_' . get_current_user_id(), $message, MINUTE_IN_SECONDS );
+
+			wp_safe_redirect( admin_url( 'admin.php?page=' . self::PAGE ) );
+
+			exit;
+		}
+
+		/**
+		 * Daily check: changes made on the license server reach the site. Server down → the last status stays.
+		 */
+		public function check() {
+			$license = self::get();
+
+			if ( !$license['key'] ) {
 				return;
 			}
 
-			$config               = $theme_configs[ $this->slug ];
-			$this->product_id     = $config['product_id'];
-			$this->product_base   = $config['product_base'];
-			$encryption_key       = isset( $config['key'] ) ? $config['key'] : 'A1C7A8768D996F69';
-			$this->theme_file     = get_template_directory() . '/style.css';
-			$this->lic_key_slug   = ucfirst( $this->slug ) . '_lic_Key';
-			$this->lic_email_slug = ucfirst( $this->slug ) . '_lic_email';
+			$body = $this->request( 'license/check', $license['key'] );
 
-			// Initialize activation
-			$instance = ThemeActivation::getInstance(
-				$this->theme_file,
-				$this->product_id,
-				$this->product_base,
-			);
-
-			// Set custom encryption key for this theme
-			$instance->key = $encryption_key;
-
-			$licenseKey = get_option( $this->lic_key_slug, '' );
-			$liceEmail  = get_option( $this->lic_email_slug, '' );
-
-			// Add on delete callback
-			ThemeActivation::addOnDelete(
-				function () {
-					delete_option( $this->lic_key_slug );
-				},
-			);
-
-			// Check license
-			if ( ThemeActivation::CheckWPPlugin( $licenseKey, $liceEmail, $this->licenseMessage, $this->responseObj, $this->theme_file, $this->product_id, $this->product_base ) ) {
-				add_action( 'vlt_toolkit_print_activation_form', [ $this, 'activated_form' ] );
-				add_action( 'admin_post_' . $this->slug . '_deactivate_license', [ $this, 'action_deactivate_license' ] );
-
-				if ( $this->responseObj->is_valid ) {
-					update_option( $this->slug . '_is_activated', 1 );
-				}
-			} else {
-				if ( !empty( $licenseKey ) && !empty( $this->licenseMessage ) ) {
-					$this->showMessage = true;
-				}
-				update_option( $this->lic_key_slug, '' ) || add_option( $this->lic_key_slug, '' );
-				update_option( $this->slug . '_is_activated', 0 );
-				add_action( 'admin_post_' . $this->slug . '_activate_license', [ $this, 'action_activate_license' ] );
-				add_action( 'vlt_toolkit_print_activation_form', [ $this, 'license_form' ] );
+			if ( !is_wp_error( $body ) ) {
+				$this->save( $license['key'], $body );
+			} elseif ( 404 === ( $body->get_error_data()['status'] ?? 0 ) ) {
+				$this->save( $license['key'], [ 'status' => 'inactive' ] );
 			}
 		}
 
 		/**
-		 * Action: Activate license
+		 * Theme updates from the license server (package only for an active license)
 		 */
-		public function action_activate_license() {
-			check_admin_referer( 'el-license' );
-			$licenseKey   = !empty( $_POST['el_license_key'] ) ? sanitize_text_field( wp_unslash( $_POST['el_license_key'] ) ) : '';
-			$licenseEmail = !empty( $_POST['el_license_email'] ) ? sanitize_email( wp_unslash( $_POST['el_license_email'] ) ) : '';
-			update_option( $this->lic_key_slug, $licenseKey ) || add_option( $this->lic_key_slug, $licenseKey );
-			update_option( $this->lic_email_slug, $licenseEmail ) || add_option( $this->lic_email_slug, $licenseEmail );
-			update_option( '_site_transient_update_plugins', '' );
-			wp_safe_redirect( admin_url( 'admin.php?page=vlt-dashboard-activate-theme' ) );
-
-			exit;
-		}
-
-		/**
-		 * Action: Deactivate license
-		 */
-		public function action_deactivate_license() {
-			check_admin_referer( 'el-license' );
-			$message = '';
-
-			if ( ThemeActivation::RemoveLicenseKey( $this->theme_file, $message, $this->product_id, $this->product_base ) ) {
-				update_option( $this->lic_key_slug, '' ) || add_option( $this->lic_key_slug, '' );
+		public function update( $transient ) {
+			if ( empty( $transient->checked ) ) {
+				return $transient;
 			}
-			wp_safe_redirect( admin_url( 'admin.php?page=vlt-dashboard-activate-theme' ) );
 
-			exit;
+			$remote = get_transient( self::UPDATE );
+
+			if ( false === $remote ) {
+				$remote = $this->request( 'theme/update', self::get()['key'], 'GET' );
+				$remote = is_wp_error( $remote ) ? [] : $remote;
+
+				set_transient( self::UPDATE, $remote, $remote ? 12 * HOUR_IN_SECONDS : HOUR_IN_SECONDS );
+			}
+
+			$theme = get_template();
+
+			if ( !empty( $remote['version'] ) && version_compare( $remote['version'], wp_get_theme( $theme )->get( 'Version' ), '>' ) ) {
+				$transient->response[ $theme ] = [
+					'theme'        => $theme,
+					'new_version'  => $remote['version'],
+					'url'          => $remote['url'] ?? '',
+					'package'      => $remote['package'] ?? '',
+					'requires'     => $remote['requires'] ?? '',
+					'requires_php' => $remote['requires_php'] ?? '',
+				];
+			}
+
+			return $transient;
 		}
 
 		/**
-		 * Render activated form
+		 * Support end date: 07-11-2026 (active, 37 days left) / 07-11-2026 (expired 3 days ago)
 		 */
-		public function activated_form() {
-			?>
-<div class="vlt-widget">
-	<div class="vlt-widget__title">
-		<mark
-			class="true"><?php esc_html_e( 'Theme License', 'toolkit' ); ?></mark>
-		<span
-			class="vlt-badge true"><?php esc_html_e( 'Active', 'toolkit' ); ?></span>
-	</div>
+		private function support_label( $date ) {
+			$until = $date ? strtotime( $date ) : 0;
 
-	<div class="vlt-widget__content">
-		<table class="widefat" cellspacing="0">
-			<tbody>
-				<tr>
-					<td><?php esc_html_e( 'Status:', 'toolkit' ); ?>
-					</td>
-					<td>
-						<?php
-									if ( $this->responseObj->is_valid ) {
-										echo '<mark class="true">✅ ' . esc_html__( 'Valid', 'toolkit' ) . '</mark>';
-									} else {
-										echo '<mark class="false">❌ ' . esc_html__( 'Invalid', 'toolkit' ) . '</mark>';
-									}
-			?>
-					</td>
-				</tr>
-				<tr>
-					<td><?php esc_html_e( 'License Type:', 'toolkit' ); ?>
-					</td>
-					<td><?php echo esc_html( $this->responseObj->license_title ); ?>
-					</td>
-				</tr>
-				<tr>
-					<td><?php esc_html_e( 'License Expired on:', 'toolkit' ); ?>
-					</td>
-					<td>
-						<?php
-								echo esc_html( $this->responseObj->expire_date );
+			if ( !$until ) {
+				return '';
+			}
 
-			if ( !empty( $this->responseObj->expire_renew_link ) ) {
-				?>
-						<a target="_blank"
-							href="<?php echo esc_url( $this->responseObj->expire_renew_link ); ?>"><?php esc_html_e( 'Renew', 'toolkit' ); ?></a><?php } ?>
-					</td>
-				</tr>
-				<tr>
-					<td><?php esc_html_e( 'Support Expired on:', 'toolkit' ); ?>
-					</td>
-					<td>
-						<?php
-								echo esc_html( $this->responseObj->support_end );
+			$days = (int) floor( ( $until - strtotime( gmdate( 'Y-m-d' ) ) ) / DAY_IN_SECONDS );
 
-			if ( !empty( $this->responseObj->support_renew_link ) ) {
-				?>
-						<a target="_blank"
-							href="<?php echo esc_url( $this->responseObj->support_renew_link ); ?>"><?php esc_html_e( 'Renew', 'toolkit' ); ?></a><?php } ?>
-					</td>
-				</tr>
-				<tr>
-					<td><?php esc_html_e( 'Your License Key:', 'toolkit' ); ?>
-					</td>
-					<td>
-						<div class="vlt-form-group">
-							<input class="license-key" type="text"
-								value="<?php echo esc_attr( substr( $this->responseObj->license_key, 0, 9 ) . 'XXXXXXXX-XXXXXXXX' . substr( $this->responseObj->license_key, -9 ) ); ?>"
-								readonly>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<form method="post"
-			action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action"
-				value="<?php echo esc_attr( $this->slug ); ?>_deactivate_license">
-			<?php wp_nonce_field( 'el-license' ); ?>
-			<?php submit_button( 'Deactivate', 'secondary mt-sm' ); ?>
-		</form>
-
-	</div>
-</div>
-
-<?php
+			return gmdate( 'd-m-Y', $until ) . ' (' . ( $days >= 0
+				/* translators: %d: days */
+				? sprintf( _n( 'active, %d day left', 'active, %d days left', $days, 'toolkit' ), $days )
+				/* translators: %d: days */
+				: sprintf( _n( 'expired %d day ago', 'expired %d days ago', -$days, 'toolkit' ), -$days ) ) . ')';
 		}
 
 		/**
-		 * Render license form
+		 * Render license widget
 		 */
-		public function license_form() {
+		public function render() {
+			$license = self::get();
+			$active  = self::is_active();
+			$user    = 'vlt_toolkit_license_message_' . get_current_user_id();
+			$message = get_transient( $user );
+			$masked  = $license['key'] ? substr( $license['key'], 0, 4 ) . str_repeat( '•', 8 ) . substr( $license['key'], -4 ) : '';
+
+			delete_transient( $user );
 			?>
 
 <div class="vlt-widget">
 	<div class="vlt-widget__title">
-		<mark><?php esc_html_e( 'Theme License', 'toolkit' ); ?></mark>
+		<mark<?php echo $active ? ' class="true"' : ''; ?>><?php esc_html_e( 'Theme License', 'toolkit' ); ?></mark>
 		<span
-			class="vlt-badge false"><?php esc_html_e( 'Not Active', 'toolkit' ); ?></span>
+			class="vlt-badge <?php echo $active ? 'true' : 'false'; ?>"><?php echo $active ? esc_html__( 'Active', 'toolkit' ) : esc_html__( 'Not Active', 'toolkit' ); ?></span>
 	</div>
 
 	<div class="vlt-widget__content">
+
+		<?php if ( !empty( $message['text'] ) ) { ?>
+		<div class="notice notice-<?php echo esc_attr( $message['type'] ); ?> inline mb-sm">
+			<p><?php echo esc_html( $message['text'] ); ?></p>
+		</div>
+		<?php } ?>
+
 		<form method="post"
 			action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="vlt_toolkit_license">
+			<?php wp_nonce_field( 'vlt_toolkit_license' ); ?>
 
-			<input type="hidden" name="action"
-				value="<?php echo esc_attr( $this->slug ); ?>_activate_license">
+			<?php if ( $license['key'] ) { ?>
+
+			<table class="widefat" cellspacing="0">
+				<tbody>
+					<tr>
+						<td><?php esc_html_e( 'Status:', 'toolkit' ); ?></td>
+						<td><mark class="<?php echo $active ? 'true' : 'false'; ?>"><?php echo esc_html( $license['status'] ? ucfirst( $license['status'] ) : '—' ); ?></mark></td>
+					</tr>
+					<?php if ( $license['product'] ) { ?>
+					<tr>
+						<td><?php esc_html_e( 'Product:', 'toolkit' ); ?></td>
+						<td><?php echo esc_html( $license['product'] ); ?></td>
+					</tr>
+					<?php } ?>
+					<tr>
+						<td><?php esc_html_e( 'Domain:', 'toolkit' ); ?></td>
+						<td><?php echo esc_html( $this->domain() ); ?></td>
+					</tr>
+					<?php if ( $license['supported_until'] ) { ?>
+					<tr>
+						<td><?php esc_html_e( 'Support until:', 'toolkit' ); ?></td>
+						<td><?php echo esc_html( $this->support_label( $license['supported_until'] ) ); ?></td>
+					</tr>
+					<?php } ?>
+					<tr>
+						<td><?php esc_html_e( 'Your License Key:', 'toolkit' ); ?></td>
+						<td>
+							<div class="vlt-form-group">
+								<input class="license-key" type="text" value="<?php echo esc_attr( $masked ); ?>" readonly>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<?php if ( !$active ) { ?>
+			<input type="hidden" name="license_key" value="<?php echo esc_attr( $license['key'] ); ?>">
+			<button class="button button-primary mt-sm" type="submit" name="license_action" value="activate"><?php esc_html_e( 'Activate', 'toolkit' ); ?></button>
+			<?php } ?>
+			<button class="button button-secondary mt-sm" type="submit" name="license_action" value="deactivate"><?php esc_html_e( 'Deactivate', 'toolkit' ); ?></button>
+
+			<?php } else { ?>
 
 			<p class="mb-sm">
-				<?php printf( esc_html__( 'To activate your copy of %s, enter your purchase code and email address to register the theme.', 'toolkit' ), esc_html( VLT\Toolkit\Admin\Dashboard::instance()->theme_name ) ); ?>
+				<?php /* translators: %s: theme name */ printf( esc_html__( 'To activate your copy of %s, enter your purchase code or license key.', 'toolkit' ), esc_html( VLT\Toolkit\Admin\Dashboard::instance()->theme_name ) ); ?>
 			</p>
-
-			<?php if ( !empty( $this->showMessage ) && !empty( $this->licenseMessage ) ) { ?>
-			<div class="notice notice-error is-dismissible mb-sm">
-				<p><?php echo esc_html( $this->licenseMessage ); ?></p>
-			</div>
-			<?php } ?>
 
 			<div class="vlt-form-group">
 				<label
-					for="el_license_key"><?php esc_html_e( 'License code', 'toolkit' ); ?></label>
-				<input type="text" id="el_license_key" name="el_license_key" size="50"
-					placeholder="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxxxxx" required="required">
-			</div>
-
-			<div class="vlt-form-group mt-xs">
-				<label
-					for="el_license_email"><?php esc_html_e( 'Email Address', 'toolkit' ); ?></label>
-				<?php $purchaseEmail = get_option( $this->lic_email_slug, get_bloginfo( 'admin_email' ) ); ?>
-				<input type="email" id="el_license_email" name="el_license_email" size="50"
-					value="<?php echo esc_attr( $purchaseEmail ); ?>"
-					placeholder required="required">
+					for="vlt-license-key"><?php esc_html_e( 'Purchase code / license key', 'toolkit' ); ?></label>
+				<input type="text" id="vlt-license-key" name="license_key" size="50" autocomplete="off" spellcheck="false"
+					placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required="required">
 				<p class="small">
-					<?php esc_html_e( 'We will send update news of this product by this email address, don\'t worry, we hate spam.', 'toolkit' ); ?>
+					<a href="<?php echo esc_url( VLT\Toolkit\Admin\Dashboard::instance()->utm( VLT\Toolkit\Admin\Dashboard::instance()->license_help_url, 'activate-find-key' ) ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Where to find your purchase code or license key?', 'toolkit' ); ?></a>
 				</p>
 			</div>
 
-			<?php wp_nonce_field( 'el-license' ); ?>
-			<?php submit_button( 'Activate', 'primary mt-sm' ); ?>
+			<button class="button button-primary mt-sm" type="submit" name="license_action" value="activate"><?php esc_html_e( 'Activate', 'toolkit' ); ?></button>
+
+			<?php } ?>
 
 		</form>
 
 		<div class="notice notice-info inline mt-sm">
 			<p>
-				<?php esc_html_e( 'Note that you are not required to separately register any of the plugins which came bundled with the theme.', 'toolkit' ); ?>
+				<?php esc_html_e( 'One license works on one live site; local and staging sites (localhost, *.local, *.test, staging.*, dev.*) don\'t take the slot. To move the license to another site, deactivate it here first.', 'toolkit' ); ?>
 			</p>
 		</div>
 
 		<div class="notice notice-info inline mt-sm">
 			<p>
-				<?php esc_html_e( 'Please note that if you used your purchase code on one installation, you are required to Deactivate in order to use the purchase code on a different installation.', 'toolkit' ); ?>
+				<?php esc_html_e( 'Note that you are not required to separately register any of the plugins which came bundled with the theme.', 'toolkit' ); ?>
 			</p>
 		</div>
 	</div>
@@ -363,4 +394,3 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 
 // Initialize theme activation
 new VLThemesThemeActivation();
-?>

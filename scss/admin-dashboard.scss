@@ -1,0 +1,924 @@
+@use "abstracts/variables" as *;
+@use "abstracts/mixins" as *;
+
+/* Admin dashboard */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap");
+
+/* ========================================
+ CSS Variables — store tokens, light theme
+ ======================================== */
+:root {
+	@include base-tokens;
+	@include tokens(light);
+}
+
+/* ========================================
+ Base & Global Styles
+ ======================================== */
+.vlt-theme-dashboard {
+	box-sizing: border-box;
+	margin-top: 10px;
+	font-family: var(--font);
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--text);
+	-webkit-font-smoothing: antialiased;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: inherit;
+	}
+
+	::selection {
+		color: var(--on-brand);
+		background: var(--brand);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
+	}
+
+	h1, h2, h3 {
+		padding: 0;
+		font-family: var(--font);
+		color: var(--text);
+	}
+
+	p {
+		margin: 0;
+		font-size: 14px;
+		line-height: 1.6;
+		color: var(--text-2);
+
+		&.submit {
+			padding: 0;
+		}
+
+		&.small {
+			font-size: 12px;
+			color: var(--muted);
+		}
+	}
+
+	// Store .vlt-content link: brand underline that fills on hover
+	a:not([class]) {
+		color: var(--text);
+		text-decoration: underline;
+		text-decoration-color: var(--brand);
+		background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 100% / 100% 0;
+		transition: background-size .25s var(--ease);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+
+		&:hover {
+			background-size: 100% 100%;
+		}
+
+		&:focus {
+			box-shadow: none;
+		}
+	}
+
+	strong {
+		font-weight: var(--fw-semibold);
+		color: var(--text);
+	}
+
+	img {
+		width: 100%;
+		height: auto;
+	}
+
+	mark {
+		color: inherit;
+		background-color: transparent;
+
+		&.true { color: var(--brand-text); }
+		&.false { color: var(--danger); }
+
+		// Store .vlt-mark
+		&.elements {
+			padding: 0 .06em;
+			font-style: italic;
+			background: linear-gradient(transparent 64%, var(--brand) 64%, var(--brand) 90%, transparent 90%);
+			-webkit-box-decoration-break: clone;
+			box-decoration-break: clone;
+		}
+	}
+
+	/* Margin utilities */
+	.mt-xs { margin-top: 0.5rem !important; }
+	.mb-sm { margin-bottom: 1rem !important; }
+	.mt-sm { margin-top: 1rem !important; }
+	.mt-md { margin-top: 1.5rem !important; }
+	.mt-lg { margin-top: 2rem !important; }
+
+	/* Padding utilities */
+	.pb-sm {padding-bottom: 1rem !important;}
+
+	// Store .vlt-note
+	.notice {
+		--c: var(--accent);
+		padding: 12px 16px;
+		margin: 0;
+		background: color-mix(in srgb, var(--c) 6%, var(--surface));
+		border: 1px solid var(--border);
+		border-left: 3px solid var(--c);
+		border-radius: 0;
+		box-shadow: none;
+
+		p {
+			padding: 0;
+			margin: 0;
+			font-size: 13px;
+			color: var(--text-2);
+		}
+	}
+
+	.notice-success { --c: var(--success); }
+	.notice-warning { --c: var(--warning); }
+	.notice-error { --c: var(--danger); }
+
+}
+
+/* ========================================
+ Layout & Structure
+ ======================================== */
+
+// Store .vlt-chips
+.vlt-theme-dashboard__navigation {
+
+	.nav-tab-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		padding: 0 0 20px;
+		border-bottom: 1px solid var(--border);
+
+		&::after {
+			content: none;
+		}
+	}
+
+	.nav-tab {
+		display: inline-flex;
+		align-items: center;
+		height: var(--chip-h);
+		padding: 0 12px;
+		margin: 0;
+		font-family: var(--font);
+		font-size: 13px;
+		font-weight: var(--fw-medium);
+		line-height: 1;
+		color: var(--text-2);
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-pill);
+		transition: color .15s, background-color .15s, border-color .15s;
+
+		&:hover {
+			color: var(--text);
+			background: var(--surface);
+			border-color: var(--border-strong);
+		}
+
+		&:focus {
+			box-shadow: none;
+		}
+
+		&.nav-tab-active,
+		&.nav-tab-active:hover {
+			color: var(--bg);
+			background: var(--text);
+			border-color: var(--text);
+		}
+	}
+}
+
+.vlt-theme-dashboard__content {
+	margin-top: 32px;
+}
+
+/* Template: Plugins — TGMPA list table as a store card */
+.vlt-theme-dashboard--template-plugins {
+	.subsubsub {
+		margin: 0 0 15px;
+		font-size: 13px;
+		color: var(--muted);
+
+		a {
+			color: var(--text-2);
+			text-decoration: none;
+
+			&.current {
+				font-weight: var(--fw-semibold);
+				color: var(--text);
+			}
+
+			&:hover {
+				color: var(--text);
+			}
+		}
+
+		.count {
+			color: var(--muted);
+		}
+	}
+
+	.tablenav.top {
+		display: none;
+	}
+
+	.tablenav.bottom {
+		height: auto;
+		padding: 0;
+		margin: 12px 0 0;
+	}
+
+	.wp-list-table {
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 0;
+		box-shadow: var(--shadow);
+
+		thead,
+		tfoot {
+			th,
+			td {
+				padding: 12px 10px;
+				font-size: 11px;
+				font-weight: var(--fw-medium);
+				color: var(--muted);
+				text-transform: uppercase;
+				letter-spacing: .06em;
+				border-color: var(--border);
+
+				a {
+					color: var(--muted);
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				background: var(--surface);
+				transition: background-color .2s;
+
+				&:hover {
+					background: var(--bg);
+				}
+			}
+
+			th,
+			td {
+				padding: 14px 10px;
+				font-size: 13px;
+				color: var(--text-2);
+				border-top: 1px solid var(--border);
+				box-shadow: none;
+			}
+
+			strong {
+				font-size: 14px;
+			}
+		}
+
+		a {
+			color: var(--text);
+		}
+
+		.row-actions {
+			font-size: 12px;
+
+			a {
+				color: var(--brand-text);
+			}
+		}
+
+		.check-column {
+			width: 2.8em;
+			padding-left: 12px;
+			vertical-align: middle;
+
+			input[type="checkbox"] {
+				margin: 0;
+				accent-color: var(--brand);
+			}
+		}
+
+		.no-items td {
+			color: var(--muted);
+		}
+	}
+
+	&.striped > tbody > :nth-child(odd),
+	.striped > tbody > :nth-child(odd) {
+		background: var(--surface);
+	}
+
+	.tablenav select {
+		height: 38px;
+		border-color: var(--border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+	}
+}
+
+/* ========================================
+ Components
+ ======================================== */
+
+/* Badge — store .vlt-pill */
+.vlt-badge {
+	display: inline-flex;
+	flex: none;
+	gap: 6px;
+	align-items: center;
+	padding: 2px 8px;
+	font-family: var(--font);
+	font-size: 11px;
+	font-weight: var(--fw-medium);
+	line-height: 1.5;
+	color: var(--text-2);
+	letter-spacing: .02em;
+	white-space: nowrap;
+	background: var(--muted-bg);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-pill);
+
+	&::before {
+		content: "";
+		width: 6px;
+		height: 6px;
+		background: var(--brand);
+		border-radius: 50%;
+	}
+
+	&.true,
+	&.false {
+		font-size: 10px;
+		text-transform: uppercase;
+		letter-spacing: .04em;
+		background: transparent;
+	}
+
+	&.true {
+		color: var(--brand-text);
+		border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+	}
+
+	&.false {
+		color: var(--danger);
+		border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+
+		&::before {
+			background: var(--danger);
+		}
+	}
+}
+
+/* Check — requirement value with a status dot (store .vlt-status) */
+.vlt-check {
+	--c: var(--brand);
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	color: var(--text);
+
+	&::before {
+		content: "";
+		flex: none;
+		width: 8px;
+		height: 8px;
+		background: var(--c);
+		border-radius: 50%;
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent);
+	}
+
+	&--fail {
+		--c: var(--danger);
+		color: var(--danger);
+	}
+}
+
+/* Subtitle */
+.vlt-subtitle {
+	font-size: 20px;
+	font-weight: var(--fw-bold);
+	color: var(--text);
+	letter-spacing: -.02em;
+}
+
+/* List */
+.vlt-styled-list {
+	padding-left: 1.2em;
+	margin: 0;
+	color: var(--text-2);
+	list-style: disc;
+
+	li {
+		margin: 0;
+
+		& + li {
+			margin-top: .4em;
+		}
+
+		&::marker {
+			color: var(--brand-text);
+		}
+	}
+}
+
+/* Help links — store .vlt-list */
+.vlt-help-links {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	border: 1px solid var(--border);
+
+	&__item {
+		margin: 0;
+
+		& + & {
+			border-top: 1px solid var(--border);
+		}
+	}
+
+	&__link {
+		position: relative;
+		display: flex;
+		gap: 16px;
+		align-items: center;
+		padding: 16px 20px;
+		color: var(--text);
+		text-decoration: none;
+		transition: background-color .2s, padding-left .3s var(--ease);
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: -1px;
+			bottom: -1px;
+			left: -1px;
+			width: 3px;
+			background: var(--brand);
+			transform: scaleY(0);
+			transition: transform .3s var(--ease);
+		}
+
+		&:hover {
+			padding-left: 26px;
+			color: var(--text);
+			background: var(--bg);
+
+			&::before {
+				transform: none;
+			}
+		}
+
+		&:focus {
+			color: var(--text);
+			box-shadow: none;
+		}
+	}
+
+	&__index {
+		flex: none;
+		font-size: 12px;
+		font-weight: var(--fw-medium);
+		color: var(--muted);
+		letter-spacing: .04em;
+		font-variant-numeric: tabular-nums;
+
+		&::after {
+			content: " /";
+			color: var(--brand-text);
+		}
+	}
+
+	&__body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	&__title {
+		display: block;
+		font-size: 15px;
+		font-weight: var(--fw-semibold);
+		letter-spacing: -.01em;
+	}
+
+	&__text {
+		display: block;
+		margin-top: 3px;
+		font-size: 13px;
+		color: var(--muted);
+	}
+
+	&__arrow {
+		flex: none;
+		width: 16px;
+		height: 16px;
+		color: var(--muted);
+		transition: color .2s, transform .3s var(--ease);
+	}
+
+	&__link:hover &__arrow {
+		color: var(--text);
+		transform: translateX(3px);
+	}
+}
+
+/* Button Group */
+.vlt-btn-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* Buttons (WP core .button, restyled as store .vlt-btn) */
+.vlt-theme-dashboard {
+
+	.button,
+	.button-secondary {
+		display: inline-flex;
+		gap: 8px;
+		align-items: center;
+		justify-content: center;
+		height: 38px;
+		min-height: 0;
+		padding: 0 16px;
+		font-family: var(--font);
+		font-size: 13px;
+		font-weight: var(--fw-semibold);
+		line-height: 1;
+		color: var(--text);
+		white-space: nowrap;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+		transition: background-color .2s, border-color .2s, transform .1s;
+
+		&:hover {
+			color: var(--text);
+			background: var(--muted-bg);
+			border-color: var(--border-strong);
+		}
+
+		&:active {
+			transform: scale(.97);
+		}
+
+		&:focus {
+			color: var(--text);
+			border-color: var(--border-strong);
+			outline: none;
+			box-shadow: var(--shadow);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--ring);
+			outline-offset: 2px;
+		}
+	}
+
+	.button-primary,
+	.button-primary:focus {
+		color: var(--on-brand);
+		background: var(--brand);
+		border-color: transparent;
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3);
+	}
+
+	.button-primary:hover {
+		color: var(--on-brand);
+		background: var(--brand-hover);
+		border-color: transparent;
+	}
+}
+
+/* Form Group — store .vlt-field / .vlt-input */
+.vlt-form-group {
+
+	p.small {
+		margin-top: 7px;
+	}
+
+	label {
+		display: block;
+		margin-bottom: 7px;
+		font-size: 13px;
+		font-weight: var(--fw-semibold);
+		color: var(--text);
+	}
+
+	input {
+		width: 100%;
+		height: 42px;
+		padding: 0 12px;
+		font-family: var(--font);
+		font-size: 14px;
+		color: var(--text);
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		outline: none;
+		box-shadow: var(--shadow);
+		transition: border-color .15s, box-shadow .15s;
+
+		&::placeholder {
+			color: var(--muted);
+		}
+
+		&:hover {
+			border-color: var(--border-strong);
+		}
+
+		&:focus {
+			border-color: var(--text);
+			box-shadow: 0 0 0 3px var(--mark);
+		}
+
+		&.license-key {
+			height: auto;
+			min-height: auto;
+			padding: 0;
+			margin: 0;
+			line-height: inherit;
+			color: inherit;
+			background: none;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+
+			&:focus {
+				box-shadow: none;
+			}
+		}
+
+	}
+
+}
+
+/* ========================================
+ Widget: Welcome — store hero (grid + brand glow)
+ ======================================== */
+.vlt-widget-welcome {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	gap: 56px;
+	align-items: center;
+	max-width: 1000px;
+	padding: 40px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow);
+	overflow: hidden;
+	isolation: isolate;
+
+	@media (max-width: $bp-wp-md) {
+		flex-direction: column;
+		gap: 32px;
+		align-items: stretch;
+		padding: 24px;
+	}
+
+	&::before {
+		content: "";
+		position: absolute;
+		background-image:
+			linear-gradient(var(--border) 1px, transparent 1px),
+			linear-gradient(90deg, var(--border) 1px, transparent 1px);
+		background-size: 40px 40px;
+		opacity: .7;
+		z-index: -1;
+		inset: 0;
+		-webkit-mask-image: radial-gradient(ellipse 50% 80% at 20% 50%, #000 10%, transparent 75%);
+		mask-image: radial-gradient(ellipse 50% 80% at 20% 50%, #000 10%, transparent 75%);
+	}
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 20%;
+		left: 5%;
+		width: 360px;
+		height: 200px;
+		pointer-events: none;
+		background: var(--brand);
+		filter: blur(80px);
+		border-radius: 50%;
+		opacity: .14;
+		z-index: -1;
+	}
+
+	&__image {
+		display: flex;
+		flex: none;
+		max-width: 420px;
+		background: var(--muted-bg);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		box-shadow: var(--shadow-lg);
+		will-change: transform;
+		transition: transform .6s var(--ease);
+		overflow: hidden;
+
+		@media (max-width: $bp-wp-md) {
+			max-width: none;
+		}
+	}
+
+	&__placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 420px;
+		max-width: 100%;
+		padding: 24px;
+		font-family: var(--font-accent);
+		font-size: 40px;
+		line-height: 1;
+		color: var(--text);
+		text-align: center;
+		background:
+			repeating-linear-gradient(-45deg, transparent 0 10px, var(--border) 10px 11px),
+			var(--muted-bg);
+		aspect-ratio: 4 / 3;
+	}
+
+	&:hover {
+		.vlt-widget-welcome__image {
+			transform: translateY(-4px);
+		}
+	}
+
+	h1 {
+		margin: 16px 0 0;
+		font-family: var(--font-accent);
+		font-size: clamp(36px, 4vw, 52px);
+		font-weight: var(--fw-regular);
+		line-height: 1;
+		text-wrap: balance;
+		letter-spacing: -.015em;
+	}
+
+	p {
+		font-size: 15px;
+	}
+
+}
+
+/* ========================================
+ Widget Base — store card (flat, dashed head, caption title)
+ ======================================== */
+.vlt-widget {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 0;
+	box-shadow: var(--shadow);
+	overflow: hidden;
+
+	&::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 14px;
+		height: 2px;
+		background: var(--brand);
+		transition: width .4s var(--ease);
+	}
+
+	&:hover::before {
+		width: 100%;
+	}
+
+	&__title {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 52px;
+		padding: 16px 0 14px;
+		margin: 0 20px;
+		font-family: var(--font);
+		font-size: 11px;
+		font-weight: var(--fw-medium);
+		line-height: normal;
+		color: var(--muted);
+		text-transform: uppercase;
+		letter-spacing: .06em;
+		border-bottom: 1px dashed var(--border-strong);
+
+		mark,
+		mark.true,
+		mark.false {
+			color: var(--text);
+		}
+	}
+
+	&__content {
+		padding: 16px 20px 20px;
+
+		.widefat {
+			margin: 0;
+			border-collapse: collapse;
+			background: transparent;
+			border: none;
+			box-shadow: none;
+
+			td {
+				padding: 9px 0;
+				font-size: 13px;
+				line-height: 1.5;
+				color: var(--text);
+				border-bottom: 1px solid var(--border);
+
+				&:first-child {
+					padding-right: 16px;
+					color: var(--text-2);
+				}
+
+				&:not(:first-child) {
+					font-weight: var(--fw-medium);
+					text-align: right;
+					white-space: nowrap;
+					font-variant-numeric: tabular-nums;
+				}
+
+			}
+
+			tr:last-child td {
+				border-bottom: none;
+			}
+		}
+
+		.postbox-header {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px dashed var(--border-strong);
+
+			strong {
+				font-size: 16px;
+				font-weight: var(--fw-semibold);
+				letter-spacing: -.01em;
+			}
+		}
+	}
+}
+
+/* ========================================
+ Masonry Grid
+ ======================================== */
+.vlt-masonry-grid {
+	display: block;
+	max-width: 1200px;
+	margin: -10px;
+}
+
+.vlt-masonry-item {
+	display: block;
+	float: none;
+	width: calc(33.333% - 20px);
+	margin: 10px;
+
+	> * + * {
+		margin-top: 20px;
+	}
+
+	&--wide {
+		width: calc(66.666% - 20px);
+	}
+}
+
+.vlt-masonry-sizer {
+	width: calc(33.333% - 20px);
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+	.vlt-masonry-item,
+	.vlt-masonry-item--wide,
+	.vlt-masonry-sizer {
+		width: calc(50% - 20px);
+	}
+}
+
+@media (max-width: $bp-wp-md) {
+	.vlt-masonry-item,
+	.vlt-masonry-item--wide,
+	.vlt-masonry-sizer {
+		width: calc(100% - 20px);
+	}
+}

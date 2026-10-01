@@ -57,7 +57,7 @@ class ProgressiveBlurModule extends Module_Base {
 	public function register_scripts() {
 		wp_enqueue_script(
 			'vlt-progressive-blur-module',
-			plugin_dir_url( __FILE__ ) . 'js/ProgressiveBlurModule.js',
+			VLT_TOOLKIT_URL . 'assets/js/elementor-progressive-blur.js',
 			[ 'jquery', 'elementor-frontend' ],
 			VLT_TOOLKIT_VERSION,
 			true

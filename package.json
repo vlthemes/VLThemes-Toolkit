@@ -24,6 +24,8 @@
     "tinyglobby": "^0.2.15"
   },
   "scripts": {
+    "scss": "node scss/build.mjs",
+    "scss:watch": "node scss/build.mjs --watch",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

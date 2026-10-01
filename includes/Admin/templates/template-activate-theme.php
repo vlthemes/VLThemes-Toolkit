@@ -25,14 +25,15 @@ if ( !defined( 'ABSPATH' ) ) {
 		<div class="vlt-widget">
 
 			<div class="vlt-widget__title">
-				<mark class="elements"><?php echo esc_html_e( 'Envato Elements Customer?', 'toolkit' ); ?></mark>
+				<mark><?php esc_html_e( 'No License Key?', 'toolkit' ); ?></mark>
+				<span class="vlt-badge">vlthemes.me</span>
 			</div>
 
 			<div class="vlt-widget__content">
 				<p>
 					<?php
 			echo wp_kses(
-				__( 'The theme activation is possible only for items purchased from <strong>Themeforest</strong> when you have the purchase code.', 'toolkit' ),
+				__( 'You can <strong>skip the activation</strong> — the core features of the theme work without it. Activation unlocks one-click updates right here in the dashboard.', 'toolkit' ),
 				[
 					'strong' => [],
 				],
@@ -42,19 +43,25 @@ if ( !defined( 'ABSPATH' ) ) {
 
 				<p class="mt-sm">
 					<?php
-echo wp_kses(
-	__( 'You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation.', 'toolkit' ),
-	[
-		'strong' => [],
-	],
+printf(
+	/* translators: 1: theme name, 2: link to vlthemes.me */
+	esc_html__( 'Got %1$s without a license (for example, through a subscription)? Get your own license on %2$s — lifetime updates and 12 months of support included.', 'toolkit' ),
+	'<strong>' . esc_html( $this->theme_name ) . '</strong>',
+	'<a href="' . esc_url( $this->utm( $this->products_url . $this->theme_slug . '/', 'activate-no-license' ) ) . '" target="_blank" rel="noopener">vlthemes.me</a>',
 );
 ?>
 				</p>
+
 				<div class="notice notice-info inline mt-sm">
-					<p>
-						<?php echo esc_html_e( 'Please be aware that item support is not provided for products obtained through Envato Elements.', 'toolkit' ); ?>
-					</p>
+					<p><?php esc_html_e( 'Support is provided only for licensed copies of the theme.', 'toolkit' ); ?></p>
 				</div>
+
+				<div class="vlt-btn-group mt-xs">
+					<a href="<?php echo esc_url( $this->utm( $this->products_url . $this->theme_slug . '/', 'activate-get-license' ) ); ?>" target="_blank" rel="noopener" class="button button-primary mt-sm"><?php esc_html_e( 'Get a License', 'toolkit' ); ?></a>
+					<a href="<?php echo esc_url( $this->utm( $this->products_url . '#all-access', 'activate-all-access' ) ); ?>" target="_blank" rel="noopener" class="button button-secondary mt-sm"><?php esc_html_e( 'All-access Pass', 'toolkit' ); ?></a>
+				</div>
+
+				<p class="small mt-sm"><?php esc_html_e( 'Secure checkout via Gumroad · 14-day money-back guarantee', 'toolkit' ); ?></p>
 
 			</div>
 

@@ -14,13 +14,6 @@ $zip_enabled  = class_exists( 'ZipArchive' );
 $dom_enabled  = extension_loaded( 'dom' );
 $xml_enabled  = extension_loaded( 'xml' );
 
-// Simple check function: checkmark or cross only
-function vlt_status( $condition, $value = '' ) {
-	return $condition
-		? '<mark class="true">✅ ' . esc_html( $value ) . '</mark>'
-		: '<mark class="false">❌ ' . esc_html( $value ) . '</mark>';
-}
-
 ?>
 
 <div class="vlt-masonry-grid">
@@ -30,7 +23,7 @@ function vlt_status( $condition, $value = '' ) {
 	<div class="vlt-masonry-item">
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
-				<?php esc_html_e( 'PHP Extensions', 'toolkit' ); ?>
+				<mark><?php esc_html_e( 'PHP Extensions', 'toolkit' ); ?></mark>
 			</div>
 
 			<div class="vlt-widget__content">
@@ -38,23 +31,23 @@ function vlt_status( $condition, $value = '' ) {
 					<tbody>
 						<tr>
 							<td><?php esc_html_e( 'cURL', 'toolkit' ); ?></td>
-							<td><?php echo vlt_status( $curl_enabled, esc_html__( 'Enabled', 'toolkit' ) ); ?></td>
+							<td><?php echo $this->status( $curl_enabled, $curl_enabled ? esc_html__( 'Enabled', 'toolkit' ) : esc_html__( 'Disabled', 'toolkit' ) ); ?></td>
 						</tr>
 						<tr>
 							<td><?php esc_html_e( 'GD Library', 'toolkit' ); ?></td>
-							<td><?php echo vlt_status( $gd_enabled, esc_html__( 'Enabled', 'toolkit' ) ); ?></td>
+							<td><?php echo $this->status( $gd_enabled, $gd_enabled ? esc_html__( 'Enabled', 'toolkit' ) : esc_html__( 'Disabled', 'toolkit' ) ); ?></td>
 						</tr>
 						<tr>
 							<td><?php esc_html_e( 'ZIP Archive', 'toolkit' ); ?></td>
-							<td><?php echo vlt_status( $zip_enabled, esc_html__( 'Enabled', 'toolkit' ) ); ?></td>
+							<td><?php echo $this->status( $zip_enabled, $zip_enabled ? esc_html__( 'Enabled', 'toolkit' ) : esc_html__( 'Disabled', 'toolkit' ) ); ?></td>
 						</tr>
 						<tr>
 							<td><?php esc_html_e( 'DOM', 'toolkit' ); ?></td>
-							<td><?php echo vlt_status( $dom_enabled, esc_html__( 'Enabled', 'toolkit' ) ); ?></td>
+							<td><?php echo $this->status( $dom_enabled, $dom_enabled ? esc_html__( 'Enabled', 'toolkit' ) : esc_html__( 'Disabled', 'toolkit' ) ); ?></td>
 						</tr>
 						<tr>
 							<td><?php esc_html_e( 'XML', 'toolkit' ); ?></td>
-							<td><?php echo vlt_status( $xml_enabled, esc_html__( 'Enabled', 'toolkit' ) ); ?></td>
+							<td><?php echo $this->status( $xml_enabled, $xml_enabled ? esc_html__( 'Enabled', 'toolkit' ) : esc_html__( 'Disabled', 'toolkit' ) ); ?></td>
 						</tr>
 					</tbody>
 				</table>
@@ -66,7 +59,7 @@ function vlt_status( $condition, $value = '' ) {
 	<div class="vlt-masonry-item">
 		<div class="vlt-widget">
 			<div class="vlt-widget__title">
-				<?php esc_html_e( 'Active Plugins', 'toolkit' ); ?>
+				<mark><?php esc_html_e( 'Active Plugins', 'toolkit' ); ?></mark>
 			</div>
 
 			<div class="vlt-widget__content">

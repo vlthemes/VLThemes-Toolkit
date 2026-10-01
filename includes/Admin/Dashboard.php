@@ -46,6 +46,20 @@ class Dashboard {
 	public $theme_author;
 
 	/**
+	 * Site URL
+	 *
+	 * @var string
+	 */
+	public $site_url;
+
+	/**
+	 * Products URL
+	 *
+	 * @var string
+	 */
+	public $products_url;
+
+	/**
 	 * Documentation URL
 	 *
 	 * @var string
@@ -60,11 +74,11 @@ class Dashboard {
 	public $knowledge_base_url;
 
 	/**
-	 * Changelog URL
+	 * Knowledge Base article: where to find the purchase code / license key
 	 *
 	 * @var string
 	 */
-	public $changelog_url;
+	public $license_help_url;
 
 	/**
 	 * Support URL
@@ -81,18 +95,11 @@ class Dashboard {
 	public $support_policy_url;
 
 	/**
-	 * Elementor Partner URL
+	 * Support email
 	 *
 	 * @var string
 	 */
-	public $elementor_partner_url;
-
-	/**
-	 * Fornex Partner URL
-	 *
-	 * @var string
-	 */
-	public $fornex_partner_url;
+	public $support_email;
 
 	/**
 	 * Instance
@@ -116,18 +123,10 @@ class Dashboard {
 	private $dashboard_path;
 
 	/**
-	 * Dashboard URL
-	 *
-	 * @var string
-	 */
-	private $dashboard_url;
-
-	/**
 	 * Constructor
 	 */
 	private function __construct() {
 		$this->dashboard_path = VLT_TOOLKIT_PATH . 'includes/Admin/';
-		$this->dashboard_url  = VLT_TOOLKIT_URL . 'includes/Admin/';
 
 		// Set theme properties
 		$this->theme         = wp_get_theme();
@@ -137,13 +136,14 @@ class Dashboard {
 		$this->theme_author  = $this->theme->get( 'Author' );
 
 		// Set helper links with filters for customization
-		$this->docs_url              = apply_filters( 'vlt_toolkit_docs_url', 'https://docs.vlthemes.me/docs/', $this->theme_slug );
-		$this->knowledge_base_url    = apply_filters( 'vlt_toolkit_knowledge_base_url', 'https://docs.vlthemes.me/knowbase/' );
-		$this->changelog_url         = apply_filters( 'vlt_toolkit_changelog_url', 'https://docs.vlthemes.me/changelog/', $this->theme_slug );
-		$this->support_url           = apply_filters( 'vlt_toolkit_support_url', 'https://docs.vlthemes.me/support/' );
-		$this->support_policy_url    = apply_filters( 'vlt_toolkit_support_policy_url', 'https://themeforest.net/page/item_support_policy' );
-		$this->elementor_partner_url = apply_filters( 'vlt_toolkit_elementor_partner_url', 'https://be.elementor.com/visit/?bta=65732&nci=5352' );
-		$this->fornex_partner_url    = apply_filters( 'vlt_toolkit_fornex_partner_url', 'https://fornex.com/c/ffg4ni/' );
+		$this->site_url           = apply_filters( 'vlt_toolkit_site_url', 'https://vlthemes.me/' );
+		$this->products_url       = apply_filters( 'vlt_toolkit_products_url', $this->site_url . 'products/' );
+		$this->docs_url           = apply_filters( 'vlt_toolkit_docs_url', $this->site_url . 'docs/', $this->theme_slug );
+		$this->knowledge_base_url = apply_filters( 'vlt_toolkit_knowledge_base_url', $this->site_url . 'kb/' );
+		$this->license_help_url   = apply_filters( 'vlt_toolkit_license_help_url', $this->knowledge_base_url . 'where-to-find-my-purchase-and-download-link/' );
+		$this->support_url        = apply_filters( 'vlt_toolkit_support_url', $this->site_url . 'support-ticket/' );
+		$this->support_policy_url = apply_filters( 'vlt_toolkit_support_policy_url', $this->site_url . 'terms/#support' );
+		$this->support_email      = apply_filters( 'vlt_toolkit_support_email', 'support@vlthemes.me' );
 
 		$this->init_hooks();
 	}
@@ -162,28 +162,6 @@ class Dashboard {
 	}
 
 	/**
-	 * Customize admin footer text
-	 *
-	 * @return string
-	 */
-	public function admin_footer_text() {
-		$screen = get_current_screen();
-
-		// Only on our dashboard pages
-		if ( false === strpos( $screen->id, $this->dashboard_slug ) ) {
-			return '';
-		}
-
-		return sprintf(
-			/* translators: 1: theme name, 2: opening link tag, 3: closing link tag */
-			esc_html__( 'Enjoyed %1$s? Please leave us a %2$s★★★★★%3$s rating. We really appreciate your support!', 'toolkit' ),
-			'<strong>' . esc_html( $this->theme_name ) . '</strong>',
-			'<a href="https://themeforest.net/downloads" target="_blank" rel="noopener">',
-			'</a>',
-		);
-	}
-
-	/**
 	 * Customize admin footer version
 	 *
 	 * @return string
@@ -196,6 +174,7 @@ class Dashboard {
 			return '';
 		}
 
+		/* translators: %s: theme version */
 		return sprintf( esc_html__( 'Version %s', 'toolkit' ), esc_html( $this->theme_version ) );
 	}
 
@@ -254,8 +233,8 @@ class Dashboard {
 			[ $this, 'render_plugins_page' ],
 		);
 
-		// Demo Import
-		add_submenu_page(
+		// Demo Import (redirects to One Click Demo Import before any output is sent)
+		$demo_import_hook = add_submenu_page(
 			$this->dashboard_slug,
 			esc_html__( 'Demo Import', 'toolkit' ),
 			esc_html__( 'Demo Import', 'toolkit' ),
@@ -263,6 +242,7 @@ class Dashboard {
 			$this->dashboard_slug . '-demo-import',
 			[ $this, 'render_demo_import_page' ],
 		);
+		add_action( 'load-' . $demo_import_hook, [ $this, 'redirect_demo_import_page' ] );
 
 		// Theme Options (redirects to the Customizer before any output is sent)
 		$theme_options_hook = add_submenu_page(
@@ -320,7 +300,7 @@ class Dashboard {
 		// Enqueue dashboard CSS
 		wp_enqueue_style(
 			'vlt-dashboard',
-			$this->dashboard_url . 'css/dashboard.css',
+			VLT_TOOLKIT_URL . 'assets/css/admin-dashboard.css',
 			[],
 			VLT_TOOLKIT_VERSION,
 		);
@@ -385,9 +365,21 @@ class Dashboard {
 
 	/**
 	 * Render demo import page
+	 *
+	 * Unreachable in practice: redirect_demo_import_page() sends the
+	 * user to One Click Demo Import on 'load-{hook}', before this ever runs.
 	 */
-	public function render_demo_import_page() {
-		$this->render_template( 'template-demo-import' );
+	public function render_demo_import_page() {}
+
+	/**
+	 * Redirect the "Demo Import" submenu to One Click Demo Import
+	 *
+	 * Runs on the page's 'load-{hook}' action, before any admin HTML
+	 * has been output, so the redirect headers can still be sent.
+	 */
+	public function redirect_demo_import_page() {
+		wp_safe_redirect( admin_url( 'themes.php?page=one-click-demo-import' ) );
+		exit;
 	}
 
 	/**
@@ -424,12 +416,64 @@ class Dashboard {
 	}
 
 	/**
+	 * Add UTM tags to a vlthemes.me link, so sales from the dashboard show up in analytics
+	 *
+	 * @param string $url       link to the site
+	 * @param string $placement where the link sits (utm_content)
+	 *
+	 * @return string
+	 */
+	public function utm( $url, $placement = '' ) {
+		$args = [
+			'utm_source'   => 'wp-dashboard',
+			'utm_medium'   => 'theme',
+			'utm_campaign' => $this->theme_slug,
+		];
+
+		if ( $placement ) {
+			$args['utm_content'] = $placement;
+		}
+
+		return add_query_arg( apply_filters( 'vlt_toolkit_utm_args', $args, $url, $placement ), $url );
+	}
+
+	/**
+	 * Status value for the requirement tables: colored dot + value
+	 *
+	 * @param bool   $condition check passed
+	 * @param string $value     value to show
+	 *
+	 * @return string
+	 */
+	public function status( $condition, $value = '' ) {
+		return sprintf(
+			'<span class="vlt-check vlt-check--%1$s">%2$s</span>',
+			$condition ? 'ok' : 'fail',
+			esc_html( $value ),
+		);
+	}
+
+	/**
+	 * Theme screenshot URL (screenshot.png / .jpg / .jpeg / .webp), or empty if the theme has none
+	 *
+	 * @return string
+	 */
+	public function get_screenshot_url() {
+		foreach ( [ 'png', 'jpg', 'jpeg', 'webp' ] as $ext ) {
+			if ( file_exists( get_template_directory() . '/screenshot.' . $ext ) ) {
+				return get_template_directory_uri() . '/screenshot.' . $ext;
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Initialize hooks
 	 */
 	private function init_hooks() {
 		add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
-		add_filter( 'admin_footer_text', [ $this, 'admin_footer_text' ] );
 		add_filter( 'update_footer', [ $this, 'admin_footer_version' ], 11 );
 	}
 
@@ -501,6 +545,7 @@ class Dashboard {
 		$template_file = $this->dashboard_path . 'templates/' . $template . '.php';
 
 		echo '<div class="wrap">';
+		/* translators: %s: theme name */
 		echo '<h2>' . sprintf( esc_html__( '%s Dashboard', 'toolkit' ), esc_html( $this->theme_name ) ) . '</h2>';
 
 		$this->render_header();

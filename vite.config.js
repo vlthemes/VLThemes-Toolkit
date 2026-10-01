@@ -1,8 +1,8 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { copyFileSync, writeFileSync } from 'fs';
-import * as sass from 'sass';
+import { copyFileSync } from 'fs';
+import { compileAll, scssDir } from './scss/build.mjs';
 import AdmZip from 'adm-zip';
 
 export default defineConfig({
@@ -17,21 +17,16 @@ export default defineConfig({
 		{
 			name: 'compile-scss',
 			configureServer(server) {
-				// Watch SCSS files in dev mode
-				server.watcher.add(resolve(__dirname, 'includes/Admin/css/**/*.scss'));
+				// Recompile every entry when any file in scss/ changes
+				server.watcher.add(scssDir);
+				server.watcher.on('change', (file) => {
+					if (file.endsWith('.scss')) {
+						compileAll();
+					}
+				});
 			},
 			buildStart() {
-				// Compile SCSS on build
-				const result = sass.compile(resolve(__dirname, 'includes/Admin/css/dashboard.scss'), {
-					style: 'expanded'
-				});
-
-				writeFileSync(
-					resolve(__dirname, 'includes/Admin/css/dashboard.css'),
-					result.css
-				);
-
-				console.log('✓ SCSS compiled: dashboard.scss → dashboard.css');
+				compileAll();
 			},
 		},
 		{
@@ -111,7 +106,8 @@ export default defineConfig({
 
 				// Add directories
 				zip.addLocalFolder(resolve(__dirname, 'assets'), 'vlthemes-toolkit/assets');
-				zip.addLocalFolder(resolve(__dirname, 'includes'), 'vlthemes-toolkit/includes');
+				// Dev-only preview of the admin dashboard stays out of the package
+				zip.addLocalFolder(resolve(__dirname, 'includes'), 'vlthemes-toolkit/includes', (file) => !file.endsWith('dashboard-demo.html'));
 				zip.addLocalFolder(resolve(__dirname, 'languages'), 'vlthemes-toolkit/languages');
 
 				// Add main plugin file

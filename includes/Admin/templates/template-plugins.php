@@ -17,13 +17,13 @@ wp_clean_plugins_cache( false );
 
 ?>
 
-<div class="notice notice-info">
+<div class="notice notice-info inline mb-sm">
 	<p>
 	<?php
 		// translators: %s - theme name.
-		printf( esc_html__( 'These plugins comes with %s theme. If you want full functionality from demo page, you should activate all of these plugins.', 'toolkit' ), esc_html( $this->theme_name ) );
+		printf( esc_html__( 'These plugins come with the %s theme. Install and activate all of them to get every feature shown in the demo.', 'toolkit' ), esc_html( $this->theme_name ) );
 ?>
-		</p>
+	</p>
 </div>
 
 <div class="tgmpa">

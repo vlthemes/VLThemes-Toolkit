@@ -32,13 +32,6 @@ class Elementor extends BaseModule {
 	protected $version = '1.0.0';
 
 	/**
-	 * Assets URL
-	 *
-	 * @var string
-	 */
-	private $assets_url;
-
-	/**
 	 * Module instances
 	 *
 	 * @var array
@@ -73,7 +66,7 @@ class Elementor extends BaseModule {
 		// Enqueue main editor CSS
 		wp_enqueue_style(
 			'vlt-editor-styles',
-			$this->assets_url . 'css/editor-styles.css',
+			VLT_TOOLKIT_URL . 'assets/css/elementor-editor.css',
 			[],
 			VLT_TOOLKIT_VERSION,
 		);
@@ -82,7 +75,7 @@ class Elementor extends BaseModule {
 		if ( $this->enable_dev_debug ) {
 			wp_enqueue_style(
 				'vlt-dev-debug',
-				VLT_TOOLKIT_URL . 'assets/css/dev-debug.css',
+				VLT_TOOLKIT_URL . 'assets/css/elementor-dev-debug.css',
 				[],
 				VLT_TOOLKIT_VERSION,
 			);
@@ -100,7 +93,7 @@ class Elementor extends BaseModule {
 		if ( $this->enable_dev_debug ) {
 			wp_enqueue_style(
 				'vlt-dev-debug',
-				VLT_TOOLKIT_URL . 'assets/css/dev-debug.css',
+				VLT_TOOLKIT_URL . 'assets/css/elementor-dev-debug.css',
 				[],
 				VLT_TOOLKIT_VERSION,
 			);
@@ -484,8 +477,6 @@ class Elementor extends BaseModule {
 	 * Initialize module
 	 */
 	protected function init() {
-		$this->assets_url = VLT_TOOLKIT_URL . 'includes/Modules/Integrations/Elementor/';
-
 		// Initialize icon sets
 		$this->init_icon_sets();
 	}

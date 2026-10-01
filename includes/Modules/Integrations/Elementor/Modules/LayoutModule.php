@@ -42,7 +42,7 @@ class LayoutModule extends Module_Base {
 
 		wp_enqueue_script(
 			'vlt-layout-module',
-			plugin_dir_url( __FILE__ ) . 'js/LayoutModule.js',
+			VLT_TOOLKIT_URL . 'assets/js/elementor-layout.js',
 			[ 'jquery', 'elementor-frontend', 'gsap', 'scrolltrigger' ],
 			VLT_TOOLKIT_VERSION,
 			true,

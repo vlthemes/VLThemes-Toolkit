@@ -597,13 +597,28 @@ class SocialIcons extends BaseModule {
 
 			// Generate button HTML
 			$icon_class = 'socicon-' . $slug;
-			$output .= sprintf(
+			$button     = sprintf(
 				'<a href="javascript:;" class="vlt-social-icon vlt-social-icon--%s %s"%s><i class="%s"></i></a>',
 				esc_attr( $style ),
 				esc_attr( $slug ),
 				$attrs_string,
 				esc_attr( $icon_class ),
 			);
+
+			/**
+			 * Filter a single social share button's markup
+			 *
+			 * Allows themes to change the markup of an individual share button
+			 * (e.g. wrap the icon, add attributes, swap the tag) before it's
+			 * appended to the combined output.
+			 *
+			 * @param string $button     button HTML
+			 * @param string $slug       social network slug (e.g. 'facebook', 'twitter')
+			 * @param string $style      button style (e.g. 'style-1', 'style-2')
+			 * @param array  $data_attrs data attributes used to build the button
+			 * @param int    $post_id    post ID
+			 */
+			$output .= apply_filters( 'vlt_toolkit_post_share_button', $button, $slug, $style, $data_attrs, $post_id );
 		}
 
 		return apply_filters( 'vlt_toolkit_post_share_buttons', $output, $post_id, $style );

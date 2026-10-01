@@ -261,11 +261,11 @@ class AI extends BaseModule {
 			return;
 		}
 
-		wp_enqueue_style( 'vlt-toolkit-ai', VLT_TOOLKIT_URL . 'assets/css/ai.css', [], VLT_TOOLKIT_VERSION );
+		wp_enqueue_style( 'vlt-toolkit-ai', VLT_TOOLKIT_URL . 'assets/css/feature-ai.css', [], VLT_TOOLKIT_VERSION );
 
 		wp_enqueue_script(
 			'vlt-toolkit-ai-assistant',
-			VLT_TOOLKIT_URL . 'assets/js/ai-elementor-assistant.js',
+			VLT_TOOLKIT_URL . 'assets/js/feature-ai.js',
 			[ 'jquery', 'elementor-editor' ],
 			VLT_TOOLKIT_VERSION,
 			true,

@@ -45,7 +45,7 @@ class ParallaxModule extends Module_Base {
 		// Enqueue module script
 		wp_enqueue_script(
 			'vlt-parallax-module',
-			plugin_dir_url( __FILE__ ) . 'js/ParallaxModule.js',
+			VLT_TOOLKIT_URL . 'assets/js/elementor-parallax.js',
 			[ 'jquery', 'elementor-frontend', 'gsap', 'scrolltrigger' ],
 			VLT_TOOLKIT_VERSION,
 			true

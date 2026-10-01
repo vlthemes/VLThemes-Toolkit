@@ -59,7 +59,7 @@ class Toolkit {
 	public function enqueue_admin_scripts() {
 		wp_enqueue_script(
 			'vlt-entire-admin',
-			$this->plugin_assets_dir . 'js/entire-admin.js',
+			$this->plugin_assets_dir . 'js/admin-global.js',
 			[],
 			VLT_TOOLKIT_VERSION,
 			true,
@@ -72,7 +72,7 @@ class Toolkit {
 	public function elementor_affiliate_script() {
 		wp_enqueue_script(
 			'vlt-elementor-editor-admin',
-			$this->plugin_assets_dir . 'js/elementor-editor-admin.js',
+			$this->plugin_assets_dir . 'js/elementor-editor.js',
 			[],
 			VLT_TOOLKIT_VERSION,
 			true,

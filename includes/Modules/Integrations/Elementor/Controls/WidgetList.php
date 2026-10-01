@@ -57,7 +57,7 @@ class WidgetList extends Control_Select2 {
 	public function enqueue() {
 		wp_enqueue_script(
 			'vlt-widget-list-control',
-			plugin_dir_url( __FILE__ ) . 'js/WidgetList.js',
+			VLT_TOOLKIT_URL . 'assets/js/elementor-control-widget-list.js',
 			[ 'jquery', 'elementor-editor' ],
 			VLT_TOOLKIT_VERSION,
 			true

@@ -1,0 +1,74 @@
+// Variables — mirror VLThemes Store (src/scss/abstracts/_variables.scss)
+
+// Brand
+$brand: #87e64b;
+$brand-hover: #9cee69;
+$on-brand: #0b1a04;
+
+// Each key becomes a CSS custom property --<prefix><key> (see tokens() mixin)
+$themes: (
+	light: (
+		bg: #fafafa,
+		surface: #ffffff,
+		muted-bg: #f4f4f5,
+		text: #18181b,
+		text-2: #3f3f46,
+		muted: #71717a,
+		border: #e4e4e7,
+		border-strong: #d4d4d8,
+		ring: #a1a1aa,
+		accent: #2563eb,
+		brand: $brand,
+		brand-hover: $brand-hover,
+		on-brand: $on-brand,
+		brand-text: #3b7a12,
+		mark: rgba(135, 230, 75, .55),
+		danger: #e11d48,
+		warning: #ea580c,
+		success: #16a34a,
+		shadow: (0 1px 2px rgba(0, 0, 0, .04), 0 1px 3px rgba(0, 0, 0, .04)),
+		shadow-lg: (0 1px 2px rgba(0, 0, 0, .04), 0 12px 32px rgba(0, 0, 0, .08)),
+	),
+	dark: (
+		bg: #09090b,
+		surface: #111113,
+		muted-bg: #1c1c1f,
+		text: #fafafa,
+		text-2: #d4d4d8,
+		muted: #a1a1aa,
+		border: #27272a,
+		border-strong: #3f3f46,
+		ring: #52525b,
+		accent: #60a5fa,
+		brand: $brand,
+		brand-hover: $brand-hover,
+		on-brand: $on-brand,
+		brand-text: #a3ec74,
+		mark: rgba(135, 230, 75, .3),
+		danger: #fb7185,
+		warning: #fb923c,
+		success: #4ade80,
+		shadow: none,
+		shadow-lg: (0 16px 48px rgba(0, 0, 0, .5)),
+	),
+);
+
+// Typography
+$font: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+$font-accent: "Instrument Serif", Georgia, "Times New Roman", serif;
+$fonts-url: "https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap";
+
+$fw-regular: 400;
+$fw-medium: 500;
+$fw-semibold: 600;
+$fw-bold: 700;
+
+// Shape & motion
+$radius-sm: 4px;
+$radius: 6px;
+$radius-pill: 999px;
+$chip-h: 28px;
+$ease: cubic-bezier(.2, .8, .2, 1);
+
+// WordPress admin breakpoint
+$bp-wp-md: 782px;

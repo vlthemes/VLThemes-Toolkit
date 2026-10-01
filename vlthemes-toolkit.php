@@ -10,7 +10,6 @@
  * License: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: vlthemes-toolkit
  * Domain Path: /languages
- * Requires Plugins: elementor
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -32,8 +31,6 @@ require_once VLT_TOOLKIT_PATH . 'includes/helper-functions.php';
 require_once VLT_TOOLKIT_PATH . 'includes/Toolkit.php';
 
 // Load theme activation
-require_once VLT_TOOLKIT_PATH . 'includes/ThemeActivation/ThemeActivation.php';
-
 require_once VLT_TOOLKIT_PATH . 'includes/ThemeActivation/Init.php';
 
 // Initialize on plugins_loaded

@@ -16,7 +16,7 @@
 	z-index: 9999;
 }
 
-[data-element-parallax]::before {
+.vlt-parallax-yes::before {
 	content: 'parallax';
 	position: absolute;
 	top: 0;
@@ -32,7 +32,7 @@
 	z-index: 9999;
 }
 
-[data-aos][data-element-parallax]::before {
+[data-aos].vlt-parallax-yes::before {
 	content: 'aos: ' attr(data-aos-delay) ' + parallax';
 	color: black;
 	pointer-events: none;

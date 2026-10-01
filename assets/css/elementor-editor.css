@@ -1,0 +1,34 @@
+/* Generated from scss/elementor-editor.scss — edit the source, not this file */
+/* Elementor editor panel */
+/* ========================================
+ * Custom Widget Badges
+ * ======================================== */
+.elementor-panel .elementor-element .icon {
+  position: relative;
+}
+
+.elementor-panel .elementor-element .icon i[class*=-badge]::after {
+  content: attr(data-badge-text);
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  padding: 2px 3px;
+  font-family: var(--e-a-font-family);
+  font-size: 10px;
+  color: var(--e-a-color-txt);
+  background: transparent;
+  border: var(--e-a-border-bold);
+  border-radius: 3px;
+  transition: var(--e-a-transition-hover);
+}
+
+.elementor-panel .elementor-element:active .icon i[class*=-badge]::after {
+  color: var(--e-a-color-txt-accent);
+  background-color: var(--e-a-bg-hover);
+  border-color: var(--e-a-border-color-accent);
+}
+
+[class*=elementor-control-vlt_].elementor-control label.elementor-control-title {
+  padding: 4px 6px;
+  background: linear-gradient(90deg, rgba(135, 230, 75, 0.22), transparent 90%);
+}

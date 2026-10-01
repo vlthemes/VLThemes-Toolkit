@@ -214,7 +214,7 @@ class TemplateParts extends BaseModule {
 		// Register and enqueue Template Parts admin script
 		wp_enqueue_script(
 			'vlt-tp-admin',
-			VLT_TOOLKIT_URL . 'assets/js/tp-admin.js',
+			VLT_TOOLKIT_URL . 'assets/js/feature-template-parts.js',
 			[],
 			VLT_TOOLKIT_VERSION,
 			true,

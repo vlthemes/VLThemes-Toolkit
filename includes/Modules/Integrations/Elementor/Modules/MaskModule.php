@@ -70,14 +70,19 @@ class MaskModule extends Module_Base {
 		$element->add_control(
 			'mask_direction',
 			[
-				'label'     => esc_html__( 'Mask Direction', 'toolkit' ),
-				'type'      => Controls_Manager::SELECT,
-				'options'   => [
-					'to right' => esc_html__( 'Horizontal', 'toolkit' ),
-					'to top'   => esc_html__( 'Vertical', 'toolkit' ),
+				'label'        => esc_html__( 'Mask Direction', 'toolkit' ),
+				'type'         => Controls_Manager::SELECT,
+				'options'      => [
+					'horizontal' => esc_html__( 'Horizontal', 'toolkit' ),
+					'vertical'   => esc_html__( 'Vertical', 'toolkit' ),
+					'top'        => esc_html__( 'Top', 'toolkit' ),
+					'right'      => esc_html__( 'Right', 'toolkit' ),
+					'bottom'     => esc_html__( 'Bottom', 'toolkit' ),
+					'left'       => esc_html__( 'Left', 'toolkit' ),
 				],
-				'default'   => 'to right',
-				'condition' => [
+				'default'      => 'horizontal',
+				'prefix_class' => 'vlt-mask-',
+				'condition'    => [
 					'enable_mask' => 'yes',
 				],
 			]
@@ -124,7 +129,12 @@ class MaskModule extends Module_Base {
 					'size' => 90,
 				],
 				'selectors'  => [
-					'{{WRAPPER}}' => 'mask-image: linear-gradient({{mask_direction.VALUE}}, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) {{mask_start.SIZE}}{{mask_start.UNIT}}, rgb(0, 0, 0) {{SIZE}}{{UNIT}}, rgba(0, 0, 0, 0) 100%); -webkit-mask-image: linear-gradient({{mask_direction.VALUE}}, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) {{mask_start.SIZE}}{{mask_start.UNIT}}, rgb(0, 0, 0) {{SIZE}}{{UNIT}}, rgba(0, 0, 0, 0) 100%);',
+					'{{WRAPPER}}.vlt-mask-horizontal' => 'mask-image: linear-gradient(to right, #0000 0%, #000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}}, #0000 100%); -webkit-mask-image: linear-gradient(to right, #0000 0%, #000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}}, #0000 100%);',
+					'{{WRAPPER}}.vlt-mask-vertical'   => 'mask-image: linear-gradient(#0000 0%, #000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}}, #0000 100%); -webkit-mask-image: linear-gradient(#0000 0%, #000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}}, #0000 100%);',
+					'{{WRAPPER}}.vlt-mask-top'        => 'mask-image: linear-gradient(#0000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}}); -webkit-mask-image: linear-gradient(#0000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}});',
+					'{{WRAPPER}}.vlt-mask-bottom'     => 'mask-image: linear-gradient(#000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #0000 {{SIZE}}{{UNIT}}); -webkit-mask-image: linear-gradient(#000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #0000 {{SIZE}}{{UNIT}});',
+					'{{WRAPPER}}.vlt-mask-right'      => 'mask-image: linear-gradient(to right, #000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #0000 {{SIZE}}{{UNIT}}); -webkit-mask-image: linear-gradient(to right, #000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #0000 {{SIZE}}{{UNIT}});',
+					'{{WRAPPER}}.vlt-mask-left'       => 'mask-image: linear-gradient(to right, #0000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}}); -webkit-mask-image: linear-gradient(to right, #0000 {{mask_start.SIZE}}{{mask_start.UNIT}}, #000 {{SIZE}}{{UNIT}});',
 				],
 				'condition'  => [
 					'enable_mask' => 'yes',

@@ -1,4 +1,4 @@
-/* Generated from scss/elementor-dev-debug.scss — edit the source, not this file */
+/* Generated from assets/scss/elementor-dev-debug.scss — edit the source, not this file */
 /* Dev Debug Styles for AOS and Parallax */
 [data-aos]::before {
   content: "aos: " attr(data-aos-delay);

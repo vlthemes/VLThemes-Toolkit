@@ -1,14 +1,14 @@
-// SCSS build: every scss/<name>.scss compiles to assets/css/<name>.css (partials in abstracts/ are only imported).
+// SCSS build: every assets/scss/<name>.scss compiles to assets/css/<name>.css (partials in abstracts/ are only imported).
 // File names say who loads them: admin-* (WP admin), elementor-* (Elementor integration), feature-* (Features modules).
-//   node scss/build.mjs          — compile once
-//   node scss/build.mjs --watch  — recompile on every .scss change
+//   node assets/scss/build.mjs          — compile once
+//   node assets/scss/build.mjs --watch  — recompile on every .scss change
 import { readdirSync, watch, writeFileSync } from 'fs';
 import { basename, dirname, relative, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import * as sass from 'sass';
 
 export const scssDir = dirname(fileURLToPath(import.meta.url));
-const root = resolve(scssDir, '..');
+const root = resolve(scssDir, '../..');
 const outDir = resolve(root, 'assets/css');
 
 // Entry points: top-level .scss files that are not partials
@@ -22,7 +22,7 @@ export function compileAll() {
 
 		try {
 			const { css } = sass.compile(resolve(scssDir, file), { style: 'expanded' });
-			const banner = `/* Generated from scss/${file} — edit the source, not this file */\n`;
+			const banner = `/* Generated from assets/scss/${file} — edit the source, not this file */\n`;
 
 			// @charset must stay the very first thing in the file
 			const output = css.startsWith('@charset')
@@ -30,10 +30,10 @@ export function compileAll() {
 				: banner + css;
 
 			writeFileSync(resolve(root, out), output + '\n');
-			console.log(`✓ scss/${file} → ${out}`);
+			console.log(`✓ assets/scss/${file} → ${out}`);
 		} catch (err) {
 			ok = false;
-			console.error(`✗ scss/${file}\n${err.message}`);
+			console.error(`✗ assets/scss/${file}\n${err.message}`);
 		}
 	}
 

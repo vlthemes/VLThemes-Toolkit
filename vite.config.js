@@ -2,7 +2,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { copyFileSync } from 'fs';
-import { compileAll, scssDir } from './scss/build.mjs';
+import { compileAll, scssDir } from './assets/scss/build.mjs';
 import AdmZip from 'adm-zip';
 
 export default defineConfig({
@@ -105,7 +105,8 @@ export default defineConfig({
 				const outputPath = resolve(__dirname, 'dist/vlthemes-toolkit.zip');
 
 				// Add directories
-				zip.addLocalFolder(resolve(__dirname, 'assets'), 'vlthemes-toolkit/assets');
+				// SCSS sources stay out of the package — only the compiled assets/css ships
+				zip.addLocalFolder(resolve(__dirname, 'assets'), 'vlthemes-toolkit/assets', (file) => !file.includes('/scss/'));
 				// Dev-only preview of the admin dashboard stays out of the package
 				zip.addLocalFolder(resolve(__dirname, 'includes'), 'vlthemes-toolkit/includes', (file) => !file.endsWith('dashboard-demo.html'));
 				zip.addLocalFolder(resolve(__dirname, 'languages'), 'vlthemes-toolkit/languages');

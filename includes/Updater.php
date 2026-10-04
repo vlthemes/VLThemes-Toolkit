@@ -168,8 +168,8 @@ class Updater {
 	 * - Displaying admin notices when updates are available
 	 */
 	private function init_hooks() {
-		// Hook into WordPress plugin update check
-		add_filter( 'site_transient_update_plugins', [ $this, 'check_update' ] );
+		// Hook into WordPress plugin update check: only when WordPress refreshes the list, not on every read of it
+		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'check_update' ] );
 
 		// Display admin notice when update is available
 		add_action( 'admin_notices', [ $this, 'admin_notice' ] );
@@ -189,7 +189,7 @@ class Updater {
 		$cached_data = get_transient( $cache_key );
 
 		if ( false !== $cached_data ) {
-			return $cached_data;
+			return 'failed' === $cached_data ? false : $cached_data;
 		}
 
 		// Fetch remote data via HTTP
@@ -200,17 +200,13 @@ class Updater {
 			],
 		);
 
-		// Handle request errors
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-
 		// Parse JSON response
-		$body = wp_remote_retrieve_body( $response );
-		$data = json_decode( $body );
+		$data = is_wp_error( $response ) ? null : json_decode( wp_remote_retrieve_body( $response ) );
 
-		// Validate required fields
+		// Request error or no required fields: don't ask again for an hour
 		if ( !$data || !isset( $data->new_version ) || !isset( $data->package ) ) {
+			set_transient( $cache_key, 'failed', HOUR_IN_SECONDS );
+
 			return false;
 		}
 

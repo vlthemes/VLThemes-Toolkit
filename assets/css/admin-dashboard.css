@@ -568,6 +568,29 @@
 .vlt-form-group p.small {
   margin-top: 7px;
 }
+.vlt-form-group--copy {
+  position: relative;
+}
+.vlt-form-group--copy input {
+  padding-right: 112px;
+}
+.vlt-form-group--copy .button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  height: 34px;
+  padding: 0 12px;
+  margin: 0;
+  color: var(--text);
+}
+.vlt-form-group--copy .button, .vlt-form-group--copy .button:hover, .vlt-form-group--copy .button:focus, .vlt-form-group--copy .button:active {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.vlt-form-group--copy .button:hover {
+  color: var(--text-2);
+}
 .vlt-form-group label {
   display: block;
   margin-bottom: 7px;
@@ -787,6 +810,9 @@
   text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+.vlt-widget__content .widefat td:not(:first-child) input {
+  text-align: inherit;
 }
 .vlt-widget__content .widefat tr:last-child td {
   border-bottom: none;

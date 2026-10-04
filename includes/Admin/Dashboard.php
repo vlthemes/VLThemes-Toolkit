@@ -302,7 +302,8 @@ class Dashboard {
 			'vlt-dashboard',
 			VLT_TOOLKIT_URL . 'assets/css/admin-dashboard.css',
 			[],
-			VLT_TOOLKIT_VERSION,
+			// File time: a changed stylesheet isn't served from the browser cache
+			VLT_TOOLKIT_VERSION . '.' . filemtime( VLT_TOOLKIT_PATH . 'assets/css/admin-dashboard.css' ),
 		);
 
 		wp_enqueue_script( 'imagesloaded' );

@@ -608,6 +608,40 @@
 		margin-top: 7px;
 	}
 
+	// Read-only field with a copy button inside on the right (support reminder: the license key).
+	// Placed by top/right, not transform: the buttons' :active scale would replace a translate.
+	&--copy {
+		position: relative;
+
+		input {
+			padding-right: 112px;
+		}
+
+		// Plain text on the field's right (button font and weight), no button box in any state
+		.button {
+			position: absolute;
+			top: 4px;
+			right: 4px;
+			height: 34px;
+			padding: 0 12px;
+			margin: 0;
+			color: var(--text);
+
+			&,
+			&:hover,
+			&:focus,
+			&:active {
+				background: none;
+				border-color: transparent;
+				box-shadow: none;
+			}
+
+			&:hover {
+				color: var(--text-2);
+			}
+		}
+	}
+
 	label {
 		display: block;
 		margin-bottom: 7px;
@@ -853,6 +887,11 @@
 					text-align: right;
 					white-space: nowrap;
 					font-variant-numeric: tabular-nums;
+
+					// The masked license key: right-aligned like the other values
+					input {
+						text-align: inherit;
+					}
 				}
 
 			}

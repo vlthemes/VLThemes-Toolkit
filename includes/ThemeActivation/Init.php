@@ -62,6 +62,7 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 			$this->server = trailingslashit( (string) $config['server'] );
 
 			add_action( 'vlt_toolkit_print_activation_form', [ $this, 'render' ] );
+			add_action( 'vlt_toolkit_print_support_reminder', [ $this, 'render_support' ] );
 			add_action( 'admin_post_vlt_toolkit_license', [ $this, 'handle' ] );
 			add_action( self::CRON, [ $this, 'check' ] );
 			add_action( 'init', [ $this, 'schedule' ] );
@@ -69,12 +70,12 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 		}
 
 		/**
-		 * Stored license of the current theme: [ key, status, product, supported_until, checked ]
+		 * Stored license of the current theme: [ key, status, product, type, supported_until, renew_url, checked ]
 		 *
 		 * @return array
 		 */
 		public static function get() {
-			return wp_parse_args( (array) get_option( 'vlt_toolkit_license_' . get_template(), [] ), [ 'key' => '', 'status' => '', 'product' => '', 'supported_until' => '', 'checked' => 0 ] );
+			return wp_parse_args( (array) get_option( 'vlt_toolkit_license_' . get_template(), [] ), [ 'key' => '', 'status' => '', 'product' => '', 'type' => '', 'supported_until' => '', 'renew_url' => '', 'checked' => 0 ] );
 		}
 
 		/**
@@ -144,7 +145,9 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 					'key'             => $key,
 					'status'          => (string) ( $body['status'] ?? '' ),
 					'product'         => (string) ( $body['product'] ?? '' ),
+					'type'            => (string) ( $body['type'] ?? '' ),
 					'supported_until' => (string) ( $body['supported_until'] ?? '' ),
+					'renew_url'       => esc_url_raw( (string) ( $body['renew_url'] ?? '' ) ),
 					'checked'         => time(),
 				],
 				false,
@@ -162,7 +165,7 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 		}
 
 		/**
-		 * Action: activate / deactivate
+		 * Action: activate / deactivate / refresh (the support reminder's "Refresh")
 		 */
 		public function handle() {
 			if ( !current_user_can( 'manage_options' ) ) {
@@ -186,6 +189,21 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 					wp_clear_scheduled_hook( self::CRON );
 					$this->flush_updates();
 					$message['text'] = esc_html__( 'License deactivated.', 'toolkit' );
+				}
+			} elseif ( 'refresh' === ( $_POST['license_action'] ?? '' ) ) {
+				// "Refresh" of the support reminder: ask the server now, e.g. right after renewing support
+				$body = $license['key'] ? $this->request( 'license/check', $license['key'] ) : new WP_Error( 'vlt_toolkit_license_empty', esc_html__( 'Enter your purchase code or license key.', 'toolkit' ) );
+
+				if ( is_wp_error( $body ) ) {
+					$message = [ 'type' => 'error', 'text' => $body->get_error_message() ];
+
+					// The key is gone from the server: not active here either (same as the daily check)
+					if ( 404 === ( $body->get_error_data()['status'] ?? 0 ) ) {
+						$this->save( $license['key'], [ 'status' => 'inactive' ] );
+					}
+				} else {
+					$this->save( $license['key'], $body );
+					$message['text'] = esc_html__( 'License details updated.', 'toolkit' );
 				}
 			} else {
 				$key  = trim( sanitize_text_field( wp_unslash( $_POST['license_key'] ?? '' ) ) );
@@ -275,6 +293,88 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 				? sprintf( _n( 'active, %d day left', 'active, %d days left', $days, 'toolkit' ), $days )
 				/* translators: %d: days */
 				: sprintf( _n( 'expired %d day ago', 'expired %d days ago', -$days, 'toolkit' ), -$days ) ) . ')';
+		}
+
+		/**
+		 * Support reminder column of the Activate Theme page: shown while the license is active and support
+		 * ends within N days (filter `vlt_toolkit_support_reminder_days`, 30) or is over. "Renew support" leads to
+		 * the server's `renew_url` (ThemeForest item page or the Gumroad support extension); for Gumroad the key
+		 * can be copied for the extension's "License key" field.
+		 */
+		public function render_support() {
+			$license = self::get();
+			$until   = $license['supported_until'] ? strtotime( $license['supported_until'] ) : 0;
+
+			if ( !self::is_active() || !$until ) {
+				return;
+			}
+
+			$days = (int) floor( ( $until - strtotime( gmdate( 'Y-m-d' ) ) ) / DAY_IN_SECONDS );
+
+			if ( $days > (int) apply_filters( 'vlt_toolkit_support_reminder_days', 30 ) ) {
+				return;
+			}
+
+			$dashboard = VLT\Toolkit\Admin\Dashboard::instance();
+			$renew     = $license['renew_url'] ?: $dashboard->products_url . get_template() . '/';
+			$envato    = 'envato' === $license['type'];
+			$date      = date_i18n( 'j F Y', $until );
+			$masked    = $license['key'] ? substr( $license['key'], 0, 4 ) . str_repeat( '•', 8 ) . substr( $license['key'], -4 ) : '';
+
+			if ( $days < 0 ) {
+				/* translators: 1: days, 2: date */
+				$status = sprintf( _n( 'Your support ended %1$d day ago — on %2$s.', 'Your support ended %1$d days ago — on %2$s.', -$days, 'toolkit' ), -$days, $date );
+			} elseif ( 0 === $days ) {
+				$status = __( 'Your support ends today.', 'toolkit' );
+			} elseif ( 1 === $days ) {
+				$status = __( 'Your support ends tomorrow.', 'toolkit' );
+			} else {
+				/* translators: 1: days, 2: date */
+				$status = sprintf( _n( 'Your support ends in %1$d day — on %2$s.', 'Your support ends in %1$d days — on %2$s.', $days, 'toolkit' ), $days, $date );
+			}
+			?>
+
+<div class="vlt-masonry-item">
+	<div class="vlt-widget">
+		<div class="vlt-widget__title">
+			<mark><?php esc_html_e( 'Support', 'toolkit' ); ?></mark>
+			<span class="vlt-badge false"><?php echo $days >= 0 ? esc_html__( 'Ends soon', 'toolkit' ) : esc_html__( 'Expired', 'toolkit' ); ?></span>
+		</div>
+
+		<div class="vlt-widget__content">
+			<div class="notice notice-<?php echo $days >= 0 ? 'warning' : 'error'; ?> inline mb-sm">
+				<p><?php echo esc_html( $status ); ?></p>
+			</div>
+
+			<p>
+				<?php
+				echo $days >= 0
+					? esc_html__( 'Renew to keep getting help from our team in support tickets. Theme updates stay with you either way.', 'toolkit' )
+					: esc_html__( 'Renew to get help from our team in support tickets again. Theme updates stay with you either way.', 'toolkit' );
+				?>
+			</p>
+
+			<?php if ( $envato ) { ?>
+			<p class="mt-sm"><?php esc_html_e( 'Renew on ThemeForest — the new date will show up here within a day.', 'toolkit' ); ?></p>
+			<?php } elseif ( $license['key'] ) { ?>
+			<p class="mt-sm"><?php esc_html_e( 'When renewing, paste your license key into the "License key" field at checkout — your support will be extended automatically.', 'toolkit' ); ?></p>
+			<div class="vlt-form-group vlt-form-group--copy mt-xs">
+				<input type="text" value="<?php echo esc_attr( $masked ); ?>" readonly aria-label="<?php esc_attr_e( 'License key', 'toolkit' ); ?>">
+				<button class="button button-secondary" type="button" data-key="<?php echo esc_attr( $license['key'] ); ?>" onclick="navigator.clipboard.writeText(this.dataset.key).then(() => { this.textContent = '<?php echo esc_js( __( 'Copied', 'toolkit' ) ); ?>'; })"><?php esc_html_e( 'Copy key', 'toolkit' ); ?></button>
+			</div>
+			<?php } ?>
+
+			<form class="vlt-btn-group mt-sm" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<a href="<?php echo esc_url( $dashboard->utm( $renew, 'renew-support' ) ); ?>" target="_blank" rel="noopener" class="button button-primary"><?php echo $envato ? esc_html__( 'Renew on ThemeForest', 'toolkit' ) : esc_html__( 'Renew support', 'toolkit' ); ?></a>
+				<input type="hidden" name="action" value="vlt_toolkit_license">
+				<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce( 'vlt_toolkit_license' ) ); ?>">
+				<button class="button button-secondary" type="submit" name="license_action" value="refresh" title="<?php esc_attr_e( 'Already renewed? Get the new date now', 'toolkit' ); ?>"><?php esc_html_e( 'Refresh', 'toolkit' ); ?></button>
+			</form>
+		</div>
+	</div>
+</div>
+
+			<?php
 		}
 
 		/**

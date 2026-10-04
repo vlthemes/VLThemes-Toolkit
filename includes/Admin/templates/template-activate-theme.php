@@ -21,6 +21,13 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	</div>
 
+	<?php
+	/**
+	 * Support reminder column: only while support ends soon or is over (ThemeActivation/Init.php)
+	 */
+	do_action( 'vlt_toolkit_print_support_reminder' );
+	?>
+
 	<div class="vlt-masonry-item">
 		<div class="vlt-widget">
 

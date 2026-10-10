@@ -1,0 +1,76 @@
+/* ========================================
+ * Grid Layouts list: the layout sketch in the summary cell (Admin::sketch)
+ * The cells themselves are the shared list styles (assets/css/admin-list.css, Admin\ListTable)
+ * ======================================== */
+
+/* Layout thumbnail: same box for every type */
+.vlt-grid-list__sketch {
+	container-type: inline-size; /* tiles' row height follows the box width */
+	display: block;
+	flex: none;
+	box-sizing: border-box;
+	width: 56px;
+	height: 40px;
+	padding: 4px;
+	margin-top: 1px;
+	overflow: hidden;
+	background: #fff;
+	border: 1px solid #e4e4e7;
+	border-radius: 6px;
+}
+
+.vlt-grid-list__cells {
+	display: grid;
+	gap: 2px;
+	height: 100%;
+}
+
+.vlt-grid-list__cells span,
+.vlt-grid-list__cells i {
+	background: #d4d4d8;
+	border-radius: 2px;
+}
+
+/* Tiles: no row gap (hundreds of rows would add it up), a white border draws it; extra rows are cut */
+.vlt-grid-list__sketch.is-tiles .vlt-grid-list__cells {
+	row-gap: 0;
+	align-content: start;
+	height: auto;
+}
+
+.vlt-grid-list__sketch.is-tiles .vlt-grid-list__cells span {
+	box-sizing: border-box;
+	border: 1px solid #fff;
+}
+
+/* Masonry: stacked blocks of different heights per column */
+.vlt-grid-list__sketch.is-masonry span.is-col {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	background: none;
+}
+
+.vlt-grid-list__sketch.is-masonry i {
+	flex: 2;
+}
+
+.vlt-grid-list__sketch.is-masonry span.is-col:nth-child(odd) i:first-child,
+.vlt-grid-list__sketch.is-masonry span.is-col:nth-child(even) i:last-child {
+	flex: 1;
+}
+
+/* Justified: rows of one height, blocks of different widths */
+.vlt-grid-list__sketch.is-justified .vlt-grid-list__cells {
+	grid-auto-rows: 1fr;
+}
+
+.vlt-grid-list__sketch.is-justified span.is-row {
+	display: flex;
+	gap: 2px;
+	background: none;
+}
+
+.vlt-grid-list__sketch.is-justified i {
+	flex: 1 1 0;
+}

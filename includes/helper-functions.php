@@ -175,19 +175,6 @@ if ( !function_exists( 'vlt_toolkit_render_cf7_form' ) ) {
 }
 
 // ========================================
-// Visual Portfolio
-// ========================================
-
-if ( !function_exists( 'vlt_toolkit_render_vp_portfolio' ) ) {
-	/**
-	 * Render Visual Portfolio by ID
-	 */
-	function vlt_toolkit_render_vp_portfolio( $portfolio_id, $args = [] ) {
-		return VLT\Toolkit\Modules\Integrations\VisualPortfolio::render_portfolio( $portfolio_id, $args );
-	}
-}
-
-// ========================================
 // AOS
 // ========================================
 
@@ -224,15 +211,6 @@ if ( !function_exists( 'vlt_toolkit_is_woocommerce_page' ) ) {
 // Populate Functions
 // ========================================
 
-if ( !function_exists( 'vlt_toolkit_populate_vp_portfolios' ) ) {
-	/**
-	 * Get list of Visual Portfolio layouts
-	 */
-	function vlt_toolkit_populate_vp_portfolios() {
-		return VLT\Toolkit\Modules\Integrations\VisualPortfolio::populate_portfolios();
-	}
-}
-
 if ( !function_exists( 'vlt_toolkit_populate_template_by_type' ) ) {
 	/**
 	 * Get template parts by type
@@ -242,7 +220,7 @@ if ( !function_exists( 'vlt_toolkit_populate_template_by_type' ) ) {
 	 * @return array Array of template posts [ID => title]
 	 */
 	function vlt_toolkit_populate_template_by_type( $type = null ) {
-		return VLT\Toolkit\Modules\Features\TemplateParts::get_templates_by_type( $type );
+		return VLT\Toolkit\TemplateParts\TemplateParts::get_templates_by_type( $type );
 	}
 }
 

@@ -1,6 +1,7 @@
 @charset "UTF-8";
 /* Generated from assets/scss/feature-template-parts.scss — edit the source, not this file */
 /* Template Parts: Template Settings meta box — matches the dashboard's store design */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap");
 :root {
   --font: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-accent: "Instrument Serif", Georgia, "Times New Roman", serif;

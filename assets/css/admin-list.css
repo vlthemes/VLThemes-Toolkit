@@ -1,0 +1,215 @@
+/* Generated from assets/scss/admin-list.scss — edit the source, not this file */
+/* Admin list tables (Template Parts, Grid Layouts): shared cells, see includes/Admin/ListTable.php */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap");
+.vlt-list-summary,
+.vlt-list-code,
+.vlt-list-note {
+  --font: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-accent: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --chip-h: 28px;
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-pill: 999px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --muted-bg: #f4f4f5;
+  --text: #18181b;
+  --text-2: #3f3f46;
+  --muted: #71717a;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --ring: #a1a1aa;
+  --accent: #2563eb;
+  --brand: #87e64b;
+  --brand-hover: #9cee69;
+  --on-brand: #0b1a04;
+  --brand-text: #3b7a12;
+  --mark: rgba(135, 230, 75, 0.55);
+  --danger: #e11d48;
+  --warning: #ea580c;
+  --success: #16a34a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.vlt-list-summary,
+.vlt-list-note {
+  font-family: var(--font);
+}
+
+.wp-list-table .column-title {
+  width: 20%;
+}
+.wp-list-table .column-vlt_summary {
+  width: 34%;
+}
+.wp-list-table .column-vlt_note {
+  width: 14%;
+}
+.wp-list-table .column-vlt_shortcode {
+  width: 240px;
+}
+
+/* Summary: optional thumbnail, type in bold, quiet lines, badges */
+.vlt-list-summary {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.vlt-list-summary__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.vlt-list-summary__title {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.vlt-list-summary__title strong {
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.vlt-list-summary__meta {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.vlt-list-summary__meta strong {
+  font-weight: var(--fw-medium);
+  color: var(--text-2);
+}
+.vlt-list-summary__meta a {
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 2px;
+}
+.vlt-list-summary__meta a:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+.vlt-list-summary__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* Neutral pill (dashboard .vlt-badge without the status dot) */
+.vlt-list-badge {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  line-height: 1.6;
+  color: var(--text-2);
+  white-space: nowrap;
+  background: var(--muted-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+.vlt-list-badge svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--muted);
+}
+.vlt-list-badge.is-warning {
+  color: #9a3412;
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+.vlt-list-badge.is-warning::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--warning);
+  border-radius: 50%;
+}
+
+/* Shortcode: as wide as its text (fades out only when the column is narrower), copied whole by the icon */
+.vlt-list-code {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-height: 30px;
+  padding: 4px 32px 4px 8px;
+  vertical-align: top;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.vlt-list-code code {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: nowrap;
+  background: none;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}
+.vlt-list-code.is-fit code {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.vlt-list-code__copy {
+  position: absolute;
+  top: 50%;
+  right: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin-top: -12px;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+}
+.vlt-list-code__copy:hover, .vlt-list-code__copy:focus-visible {
+  color: var(--text);
+  background: var(--muted-bg);
+}
+.vlt-list-code__copy:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+.vlt-list-code__copy .is-done {
+  display: none;
+}
+.vlt-list-code__copy.is-copied {
+  color: var(--success);
+}
+.vlt-list-code__copy.is-copied svg {
+  display: none;
+}
+.vlt-list-code__copy.is-copied .is-done {
+  display: block;
+}
+
+/* Note: quiet text */
+.vlt-list-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.vlt-list-note.is-empty {
+  color: var(--muted);
+}

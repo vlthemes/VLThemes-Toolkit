@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@wordpress/scripts": "^36.1.0",
     "adm-zip": "^0.5.16",
     "sass": "^1.94.0"
   },
@@ -16,7 +17,9 @@
     "dev": "node assets/scss/build.mjs --watch",
     "build": "node build.mjs",
     "php-cs-fixer": "/Users/VLThemes/.composer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --verbose",
-    "php-cs-fixer:dry": "/Users/VLThemes/.composer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --verbose --dry-run --diff"
+    "php-cs-fixer:dry": "/Users/VLThemes/.composer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --verbose --dry-run --diff",
+    "grid:build": "wp-scripts build editor=./includes/GridBuilder/assets/src/editor/index.js --output-path=includes/GridBuilder/assets/build",
+    "grid:start": "wp-scripts start editor=./includes/GridBuilder/assets/src/editor/index.js --output-path=includes/GridBuilder/assets/build"
   },
   "keywords": [],
   "author": "",

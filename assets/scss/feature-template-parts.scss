@@ -3,6 +3,9 @@
 
 /* Template Parts: Template Settings meta box — matches the dashboard's store design */
 
+// Geist, as in the dashboard
+@import url($fonts-url);
+
 :root {
 	@include base-tokens;
 	@include tokens(light);

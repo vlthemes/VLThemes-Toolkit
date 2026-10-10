@@ -1,0 +1,298 @@
+/* ========================================
+ * Grid Builder: layout mechanics only — cards are styled by the theme's skin.
+ * Per-layout values (columns, gaps, tile spans) come from the <style> printed with each layout.
+ * ======================================== */
+
+.vlt-gb {
+	--vlt-grid-cols: 3;
+	--vlt-grid-gap-x: 24px;
+	--vlt-grid-gap-y: 24px;
+	position: relative;
+}
+
+.vlt-gb__items {
+	display: grid;
+	grid-template-columns: repeat(var(--vlt-grid-cols), minmax(0, 1fr));
+	column-gap: var(--vlt-grid-gap-x);
+	row-gap: var(--vlt-grid-gap-y);
+}
+
+.vlt-gb__item {
+	min-width: 0;
+}
+
+.vlt-gb__empty {
+	grid-column: 1 / -1;
+	margin: 0;
+}
+
+/* Inserts (Template Parts between items) fill their whole cell: the template's top level stretches to the row height.
+   The cell itself gets no height — a grid item already stretches to its area, and 100% would swallow the
+   bottom margin that is the vertical gap in Tiles */
+.vlt-gb__item--insert {
+	display: flex;
+	flex-direction: column;
+}
+
+.vlt-gb__item--insert > .vlt-tp-template,
+.vlt-gb__item--insert > .vlt-tp-template > .elementor {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.vlt-gb__item--insert > .vlt-tp-template,
+.vlt-gb__item--insert > .vlt-tp-template > *,
+.vlt-gb__item--insert > .vlt-tp-template > .elementor > * {
+	flex: 1;
+	box-sizing: border-box;
+	margin-block: 0;
+}
+
+/* Optional helper for skins: .vlt-gb__media gets the Grid ratio / fit settings */
+.vlt-gb--layout-grid .vlt-gb__media {
+	aspect-ratio: var(--vlt-grid-ratio, auto);
+	overflow: hidden;
+}
+
+.vlt-gb__media img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: var(--vlt-grid-fit, cover);
+}
+
+/* ----------------------------------------
+ * Tiles: a row is 1/100 of a column width, so a tile of height h spans 100h rows (TilesParser::ROWS_PER_UNIT)
+ * and any heights line up. The vertical gap is each tile's bottom margin, not row-gap — a gap between
+ * a hundred tiny rows would add up; this way a stack of tiles stays as tall as one tile of the same height.
+ * ---------------------------------------- */
+.vlt-gb--layout-tiles {
+	container-type: inline-size;
+}
+
+.vlt-gb--layout-tiles .vlt-gb__items {
+	row-gap: 0;
+	grid-auto-rows: calc((100cqw - (var(--vlt-grid-cols) - 1) * var(--vlt-grid-gap-x)) / var(--vlt-grid-cols) / 100);
+	margin-bottom: calc(-1 * var(--vlt-grid-gap-y));
+}
+
+.vlt-gb--layout-tiles .vlt-gb__item {
+	min-height: 0;
+	margin-bottom: var(--vlt-grid-gap-y);
+	overflow: hidden;
+}
+
+.vlt-gb--layout-tiles .vlt-gb__item > *,
+.vlt-gb--layout-tiles .vlt-gb__media {
+	height: 100%;
+}
+
+/* ----------------------------------------
+ * Masonry: CSS columns, filled top to bottom
+ * ---------------------------------------- */
+.vlt-gb--layout-masonry .vlt-gb__items {
+	display: block;
+	column-count: var(--vlt-grid-cols);
+	column-gap: var(--vlt-grid-gap-x);
+}
+
+.vlt-gb--layout-masonry .vlt-gb__item {
+	break-inside: avoid;
+	margin-bottom: var(--vlt-grid-gap-y);
+}
+
+.vlt-gb--layout-masonry .vlt-gb__empty {
+	column-span: all;
+}
+
+/* ----------------------------------------
+ * Justified: flex rows of --vlt-gb-row-height; an item grows with its image ratio (--vlt-ratio, set by the
+ * Renderer), so every row fills the width and keeps the proportions. No JS.
+ * ---------------------------------------- */
+.vlt-gb--layout-justified .vlt-gb__items {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--vlt-grid-gap-y) var(--vlt-grid-gap-x);
+}
+
+.vlt-gb--layout-justified .vlt-gb__item {
+	flex: calc(var(--vlt-ratio, 1.5) * 100) 1 calc(var(--vlt-ratio, 1.5) * var(--vlt-gb-row-height, 260px));
+	min-width: 0;
+	height: var(--vlt-gb-row-height, 260px);
+}
+
+/*
+ * Spacer that keeps the last row at the row height (off with "Stretch the last row"): it only takes the free
+ * width of the last line — no height, and a negative margin cancels its gap, so it never makes a row of its own
+ */
+.vlt-gb--layout-justified .vlt-gb__items::after {
+	content: "";
+	flex: calc((1 - var(--vlt-gb-stretch-last, 0)) * 999999) 1 0;
+	align-self: flex-start;
+	height: 0;
+	margin-left: calc(-1 * var(--vlt-grid-gap-x));
+}
+
+.vlt-gb--layout-justified .vlt-gb__media {
+	height: 100%;
+}
+
+.vlt-gb--layout-justified .vlt-gb__empty {
+	flex-basis: 100%;
+}
+
+/* ----------------------------------------
+ * Filter, pagination, states — minimal defaults
+ * Zero specificity (:where) so a theme overrides them with any selector; colours derive from currentColor,
+ * so they suit light and dark themes. Tweak with the variables below.
+ * ---------------------------------------- */
+:where(.vlt-gb__filters, .vlt-gb__pagination) {
+	--vlt-gb-control-height: 40px;
+	--vlt-gb-control-radius: 999px;
+	--vlt-gb-control-border: color-mix(in srgb, currentColor 18%, transparent);
+	--vlt-gb-control-hover: color-mix(in srgb, currentColor 8%, transparent);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+/* Spacing to the grid. Placed by their own shortcodes they are ordinary content blocks, so a theme's flow
+   rules (".content > * { margin: … }") may take over — that is the theme's rhythm. Output with the grid they sit
+   in .vlt-gb-group, out of reach of such rules, so these values hold. */
+:where(.vlt-gb__filters) {
+	margin-bottom: var(--vlt-gb-filters-space, 32px);
+}
+
+:where(.vlt-gb__pagination) {
+	justify-content: center;
+	margin-top: var(--vlt-gb-pagination-space, 40px);
+}
+
+:where(.vlt-gb-group) > :where(.vlt-gb__filters, .vlt-gb, .vlt-gb__pagination) {
+	margin-block: 0;
+}
+
+:where(.vlt-gb-group) > :where(.vlt-gb__filters) {
+	margin-bottom: var(--vlt-gb-filters-space, 32px);
+}
+
+:where(.vlt-gb-group) > :where(.vlt-gb__pagination) {
+	margin-top: var(--vlt-gb-pagination-space, 40px);
+}
+
+/* Alignment of the built-in style */
+:where(.vlt-gb__filters, .vlt-gb__pagination).is-align-left {
+	justify-content: flex-start;
+}
+
+:where(.vlt-gb__filters, .vlt-gb__pagination).is-align-center {
+	justify-content: center;
+}
+
+:where(.vlt-gb__filters, .vlt-gb__pagination).is-align-right {
+	justify-content: flex-end;
+}
+
+:where(.vlt-gb__pagination:empty) {
+	display: none;
+}
+
+/* Shared control look: filter buttons, page numbers, Load More, the dropdown */
+:where(.vlt-gb__filter, .vlt-gb__page, .vlt-gb__more, .vlt-gb__filter-select) {
+	box-sizing: border-box;
+	min-height: var(--vlt-gb-control-height);
+	margin: 0;
+	padding: 0 18px;
+	font: inherit;
+	font-size: 14px;
+	line-height: 1;
+	color: inherit;
+	background: transparent;
+	border: 1px solid var(--vlt-gb-control-border);
+	border-radius: var(--vlt-gb-control-radius);
+	transition: background-color .2s, border-color .2s, color .2s, opacity .2s;
+}
+
+:where(.vlt-gb__filter, .vlt-gb__page, .vlt-gb__more) {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+:where(.vlt-gb__filter, .vlt-gb__page, .vlt-gb__more):hover {
+	background: var(--vlt-gb-control-hover);
+	border-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+
+:where(.vlt-gb__filter, .vlt-gb__page, .vlt-gb__more):focus-visible,
+:where(.vlt-gb__filter-select):focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* Active filter / current page: outlined in the text colour, light fill — readable on light and dark themes.
+   A theme can fill it: --vlt-gb-control-active (background) and --vlt-gb-control-active-text */
+:where(.vlt-gb__filter.is-active, .vlt-gb__page.is-current) {
+	font-weight: 600;
+	color: var(--vlt-gb-control-active-text, inherit);
+	background: var(--vlt-gb-control-active, color-mix(in srgb, currentColor 10%, transparent));
+	border-color: currentColor;
+}
+
+:where(.vlt-gb__page.is-current) {
+	cursor: default;
+}
+
+/* Page numbers: round */
+:where(.vlt-gb__page) {
+	min-width: var(--vlt-gb-control-height);
+	padding: 0 12px;
+	font-variant-numeric: tabular-nums;
+}
+
+:where(.vlt-gb__page-gap) {
+	padding: 0 4px;
+	opacity: .5;
+}
+
+:where(.vlt-gb__more) {
+	padding: 0 28px;
+	font-weight: 500;
+}
+
+:where(.vlt-gb__more.is-loading) {
+	cursor: progress;
+	opacity: .6;
+}
+
+:where(.vlt-gb__more.is-done) {
+	cursor: default;
+	opacity: .5;
+}
+
+:where(.vlt-gb__filter-select) {
+	min-width: 200px;
+	padding-right: 40px;
+	cursor: pointer;
+	appearance: none;
+	background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+	background-repeat: no-repeat;
+	background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
+	background-size: 5px 5px;
+}
+
+/* Loading */
+.vlt-gb.is-loading .vlt-gb__items {
+	opacity: 0.5;
+	transition: opacity 0.2s;
+}
+
+.vlt-gb__error,
+.vlt-gb__notice {
+	margin: var(--vlt-grid-gap-y) 0 0;
+	padding: 0.75em 1em;
+	border: 1px dashed currentColor;
+}

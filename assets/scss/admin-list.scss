@@ -1,0 +1,223 @@
+@use "abstracts/variables" as *;
+@use "abstracts/mixins" as *;
+
+/* Admin list tables (Template Parts, Grid Layouts): shared cells, see includes/Admin/ListTable.php */
+
+// Geist, as in the dashboard
+@import url($fonts-url);
+
+// Dashboard tokens, only on the toolkit's cells: the rest of the screen stays WordPress
+.vlt-list-summary,
+.vlt-list-code,
+.vlt-list-note {
+	@include base-tokens;
+	@include tokens(light);
+}
+
+.vlt-list-summary,
+.vlt-list-note {
+	font-family: var(--font);
+}
+
+// Same columns on every toolkit list; the title keeps at least a fifth of the table
+.wp-list-table {
+	.column-title {
+		width: 20%;
+	}
+
+	.column-vlt_summary {
+		width: 34%;
+	}
+
+	.column-vlt_note {
+		width: 14%;
+	}
+
+	.column-vlt_shortcode {
+		width: 240px;
+	}
+}
+
+/* Summary: optional thumbnail, type in bold, quiet lines, badges */
+.vlt-list-summary {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+
+	&__body {
+		display: grid;
+		gap: 3px;
+		min-width: 0;
+	}
+
+	&__title {
+		font-size: 13px;
+		line-height: 1.4;
+		color: var(--muted);
+
+		strong {
+			font-weight: var(--fw-semibold);
+			color: var(--text);
+		}
+	}
+
+	&__meta {
+		font-size: 12px;
+		line-height: 1.5;
+		color: var(--muted);
+
+		strong {
+			font-weight: var(--fw-medium);
+			color: var(--text-2);
+		}
+
+		a {
+			color: var(--text-2);
+			text-decoration: underline;
+			text-decoration-color: var(--border-strong);
+			text-underline-offset: 2px;
+
+			&:hover {
+				color: var(--text);
+				text-decoration-color: currentColor;
+			}
+		}
+	}
+
+	&__badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-top: 4px;
+	}
+}
+
+/* Neutral pill (dashboard .vlt-badge without the status dot) */
+.vlt-list-badge {
+	display: inline-flex;
+	gap: 5px;
+	align-items: center;
+	padding: 1px 8px;
+	font-size: 11px;
+	font-weight: var(--fw-medium);
+	line-height: 1.6;
+	color: var(--text-2);
+	white-space: nowrap;
+	background: var(--muted-bg);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-pill);
+
+	// Section icon, as in the editor
+	svg {
+		flex: none;
+		width: 12px;
+		height: 12px;
+		color: var(--muted);
+	}
+
+	// Something to fix: warning colour with a dot
+	&.is-warning {
+		color: #9a3412;
+		background: #fff7ed;
+		border-color: #fed7aa;
+
+		&::before {
+			content: "";
+			width: 6px;
+			height: 6px;
+			background: var(--warning);
+			border-radius: 50%;
+		}
+	}
+}
+
+/* Shortcode: as wide as its text (fades out only when the column is narrower), copied whole by the icon */
+.vlt-list-code {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	max-width: 100%;
+	min-height: 30px;
+	padding: 4px 32px 4px 8px;
+	vertical-align: top;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+
+	code {
+		flex: 0 1 auto;
+		min-width: 0;
+		padding: 0;
+		overflow: hidden;
+		font-size: 11px;
+		line-height: 1.5;
+		color: var(--text);
+		white-space: nowrap;
+		background: none;
+		-webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+		mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+	}
+
+	// Short enough to fit: no fade
+	&.is-fit code {
+		-webkit-mask-image: none;
+		mask-image: none;
+	}
+
+	&__copy {
+		position: absolute;
+		top: 50%;
+		right: 3px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		margin-top: -12px;
+		color: var(--muted);
+		cursor: pointer;
+		background: none;
+		border: 0;
+		border-radius: var(--radius-sm);
+
+		&:hover,
+		&:focus-visible {
+			color: var(--text);
+			background: var(--muted-bg);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--ring);
+			outline-offset: 1px;
+		}
+
+		.is-done {
+			display: none;
+		}
+
+		&.is-copied {
+			color: var(--success);
+
+			svg {
+				display: none;
+			}
+
+			.is-done {
+				display: block;
+			}
+		}
+	}
+}
+
+/* Note: quiet text */
+.vlt-list-note {
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--text-2);
+
+	&.is-empty {
+		color: var(--muted);
+	}
+}

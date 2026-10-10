@@ -1,8 +1,8 @@
 <?php
 
-namespace VLT\Toolkit\Modules\Features;
+namespace VLT\Toolkit\TemplateParts;
 
-use VLT\Toolkit\Modules\BaseModule;
+use VLT\Toolkit\Admin\ListTable;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,20 +14,38 @@ if ( !defined( 'ABSPATH' ) ) {
  * Provides template parts system for headers, footers, and 404 pages
  * with conditional display rules.
  */
-class TemplateParts extends BaseModule {
-	protected $name = 'template_parts';
-
+class TemplateParts {
 	/**
-	 * Module version
+	 * Instance
 	 *
-	 * @var string
+	 * @var TemplateParts|null
 	 */
-	protected $version = '1.0.0';
+	private static $instance = null;
 
 	/**
-	 * Register module
+	 * Get instance
+	 *
+	 * @return TemplateParts
 	 */
-	public function register() {
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * Constructor
+	 */
+	private function __construct() {
+		$this->register();
+	}
+
+	/**
+	 * Register hooks
+	 */
+	private function register() {
 		// Register custom post type
 		add_action( 'init', [ $this, 'register_post_type' ] );
 
@@ -52,15 +70,13 @@ class TemplateParts extends BaseModule {
 		add_action( 'manage_vlt_tp_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
 		add_filter( 'manage_edit-vlt_tp_sortable_columns', [ $this, 'make_columns_sortable' ] );
 
-		// Add post states
-		add_filter( 'display_post_states', [ $this, 'add_template_type_state' ], 10, 2 );
-
 		// Admin filters
 		add_action( 'restrict_manage_posts', [ $this, 'add_template_type_filter' ] );
 		add_filter( 'parse_query', [ $this, 'filter_by_template_type' ] );
 
 		// Admin scripts
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_list_styles' ] );
 
 		// Register shortcode
 		add_shortcode( 'vlt_template_part', [ $this, 'render_shortcode' ] );
@@ -180,7 +196,7 @@ class TemplateParts extends BaseModule {
 
 		// Build with Elementor when available and the post was actually built with it,
 		// otherwise fall back to the post's regular content so the feature works standalone.
-		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::instance()->documents->get( $template_id )->is_built_with_elementor() ) {
+		if ( $this->is_elementor( $template_id ) ) {
 			$content = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $template_id );
 		} else {
 			$post = get_post( $template_id );
@@ -274,14 +290,7 @@ class TemplateParts extends BaseModule {
 		$display_rules = is_array( $display_rules ) ? $display_rules : [];
 		$exclude_rules = is_array( $exclude_rules ) ? $exclude_rules : [];
 
-		$template_types = [
-			'header'       => esc_html__( 'Header', 'toolkit' ),
-			'footer'       => esc_html__( 'Footer', 'toolkit' ),
-			'above_footer' => esc_html__( 'Above Footer', 'toolkit' ),
-			'404'          => esc_html__( '404 Page', 'toolkit' ),
-			'submenu'      => esc_html__( 'Submenu', 'toolkit' ),
-			'custom'       => esc_html__( 'Custom', 'toolkit' ),
-		];
+		$template_types = $this->template_types();
 
 		$rule_choices = $this->prepare_rule_choices();
 		$rules_hidden = in_array( $template_type, [ '404', 'custom', 'submenu' ], true );
@@ -630,9 +639,10 @@ class TemplateParts extends BaseModule {
 			$new_columns[ $key ] = $value;
 
 			if ( 'title' === $key ) {
-				$new_columns['display_rules'] = esc_html__( 'Display Rules', 'toolkit' );
-				$new_columns['note']          = esc_html__( 'Note', 'toolkit' );
-				$new_columns['shortcode']     = esc_html__( 'Shortcode', 'toolkit' );
+				// Column keys shared by the toolkit lists (Admin\ListTable styles)
+				$new_columns['vlt_summary']   = esc_html__( 'Template', 'toolkit' );
+				$new_columns['vlt_note']      = esc_html__( 'Note', 'toolkit' );
+				$new_columns['vlt_shortcode'] = esc_html__( 'Shortcode', 'toolkit' );
 			}
 		}
 
@@ -647,183 +657,193 @@ class TemplateParts extends BaseModule {
 	 */
 	public function render_admin_columns( $column, $post_id ) {
 		switch ( $column ) {
-			case 'display_rules':
-				// Get both display and exclude rules
-				$display_rules = get_post_meta( $post_id, 'display_rules', true );
-				$exclude_rules = get_post_meta( $post_id, 'exclude_rules', true );
-				$choices       = $this->prepare_rule_choices();
+			case 'vlt_summary':
+				$type   = get_post_meta( $post_id, 'template_type', true );
+				$types  = $this->template_types();
+				$lines  = $this->rule_lines( $post_id );
+				$badges = [ [ $this->is_elementor( $post_id ) ? __( 'Elementor', 'toolkit' ) : __( 'Block editor', 'toolkit' ), '' ] ];
 
-				$output = [];
-
-				// Process Display Rules
-				if ( $display_rules && is_array( $display_rules ) ) {
-					$rule_labels = [];
-					foreach ( $display_rules as $rule ) {
-						$rule_value = $rule['rule'] ?? '';
-
-						if ( empty( $rule_value ) ) {
-							continue;
-						}
-
-						$label = '';
-						foreach ( $choices as $options ) {
-							if ( isset( $options[ $rule_value ] ) ) {
-								$label = $options[ $rule_value ];
-
-								break;
-							}
-						}
-
-						if ( 'specifics' === $rule_value && !empty( $rule['specifics'] ) ) {
-							$specifics       = $rule['specifics'];
-							$specifics_array = is_array( $specifics ) ? $specifics : [ $specifics ];
-							$linked_names    = [];
-
-							foreach ( $specifics_array as $specific_item ) {
-								$specific_id    = is_object( $specific_item ) ? $specific_item->ID : $specific_item;
-								$queried_object = get_post( $specific_id );
-								$is_term        = false;
-
-								if ( !$queried_object ) {
-									$queried_object = get_term( $specific_id );
-									$is_term        = true;
-								}
-
-								if ( $queried_object ) {
-									$name = isset( $queried_object->post_title ) ? $queried_object->post_title : $queried_object->name;
-
-									// Create permalink
-									if ( $is_term ) {
-										$permalink = get_term_link( $specific_id, $queried_object->taxonomy );
-									} else {
-										$permalink = get_permalink( $specific_id );
-									}
-
-									if ( $permalink && !is_wp_error( $permalink ) ) {
-										$linked_names[] = sprintf(
-											'<a href="%s" target="_blank" title="%s">%s</a>',
-											esc_url( $permalink ),
-											esc_attr__( 'View', 'toolkit' ) . ': ' . esc_attr( $name ),
-											esc_html( $name ),
-										);
-									} else {
-										$linked_names[] = esc_html( $name );
-									}
-								}
-							}
-
-							if ( !empty( $linked_names ) ) {
-								$label .= ': ' . implode( ', ', $linked_names );
-							}
-						}
-
-						if ( $label ) {
-							$rule_labels[] = $label;
-						}
-					}
-
-					if ( !empty( $rule_labels ) ) {
-						$output[] = '<strong>' . esc_html__( 'Display:', 'toolkit' ) . '</strong> ' . implode( ', ', $rule_labels );
-					}
+				// Header, footer, above footer and 404 only show where their rules say
+				if ( !$lines && in_array( $type, [ 'header', 'footer', 'above_footer', '404' ], true ) ) {
+					$badges[] = [ __( 'No display rules', 'toolkit' ), 'is-warning' ];
 				}
 
-				// Process Exclude Rules
-				if ( $exclude_rules && is_array( $exclude_rules ) ) {
-					$rule_labels = [];
-					foreach ( $exclude_rules as $rule ) {
-						$rule_value = $rule['rule'] ?? '';
-
-						if ( empty( $rule_value ) ) {
-							continue;
-						}
-
-						$label = '';
-						foreach ( $choices as $options ) {
-							if ( isset( $options[ $rule_value ] ) ) {
-								$label = $options[ $rule_value ];
-
-								break;
-							}
-						}
-
-						if ( 'specifics' === $rule_value && !empty( $rule['specifics'] ) ) {
-							$specifics       = $rule['specifics'];
-							$specifics_array = is_array( $specifics ) ? $specifics : [ $specifics ];
-							$linked_names    = [];
-
-							foreach ( $specifics_array as $specific_item ) {
-								$specific_id    = is_object( $specific_item ) ? $specific_item->ID : $specific_item;
-								$queried_object = get_post( $specific_id );
-								$is_term        = false;
-
-								if ( !$queried_object ) {
-									$queried_object = get_term( $specific_id );
-									$is_term        = true;
-								}
-
-								if ( $queried_object ) {
-									$name = isset( $queried_object->post_title ) ? $queried_object->post_title : $queried_object->name;
-
-									// Create permalink
-									if ( $is_term ) {
-										$permalink = get_term_link( $specific_id, $queried_object->taxonomy );
-									} else {
-										$permalink = get_permalink( $specific_id );
-									}
-
-									if ( $permalink && !is_wp_error( $permalink ) ) {
-										$linked_names[] = sprintf(
-											'<a href="%s" target="_blank" title="%s">%s</a>',
-											esc_url( $permalink ),
-											esc_attr__( 'View', 'toolkit' ) . ': ' . esc_attr( $name ),
-											esc_html( $name ),
-										);
-									} else {
-										$linked_names[] = esc_html( $name );
-									}
-								}
-							}
-
-							if ( !empty( $linked_names ) ) {
-								$label .= ': ' . implode( ', ', $linked_names );
-							}
-						}
-
-						if ( $label ) {
-							$rule_labels[] = $label;
-						}
-					}
-
-					if ( !empty( $rule_labels ) ) {
-						$output[] = '<strong>' . esc_html__( 'Exclusion:', 'toolkit' ) . '</strong> ' . implode( ', ', $rule_labels );
-					}
-				}
-
-				if ( !empty( $output ) ) {
-					echo implode( '<br>', $output );
-				} else {
-					echo '—';
-				}
+				echo ListTable::summary( $types[ $type ] ?? ( $type ?: __( 'No type', 'toolkit' ) ), '', $lines, $badges ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside
 
 				break;
 
-			case 'note':
-				$note = get_post_meta( $post_id, 'note', true );
-
-				if ( $note ) {
-					echo wp_kses_post( nl2br( $note ) );
-				} else {
-					echo '—';
-				}
+			case 'vlt_note':
+				echo ListTable::note( (string) get_post_meta( $post_id, 'note', true ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside
 
 				break;
 
-			case 'shortcode':
-				$shortcode = '[vlt_template_part id="' . $post_id . '"]';
-				echo '<input type="text" readonly value="' . esc_attr( $shortcode ) . '" style="width: 100%; font-family: monospace; font-size: 12px; padding: 4px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 2px;" onclick="this.select(); document.execCommand(\'copy\'); this.style.background=\'#d4edda\'; setTimeout(() => this.style.background=\'#f0f0f1\', 1000);" title="' . esc_attr__( 'Click to copy', 'toolkit' ) . '" />';
+			case 'vlt_shortcode':
+				echo ListTable::shortcode( '[vlt_template_part id="' . absint( $post_id ) . '"]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside
 
 				break;
 		}
+	}
+
+	/**
+	 * Display / exclusion rules of a template as list lines (HTML, escaped; specific targets link to themselves)
+	 *
+	 * @param int $post_id Post ID
+	 *
+	 * @return array
+	 */
+	private function rule_lines( $post_id ) {
+		// Get both display and exclude rules
+		$display_rules = get_post_meta( $post_id, 'display_rules', true );
+		$exclude_rules = get_post_meta( $post_id, 'exclude_rules', true );
+		$choices       = $this->prepare_rule_choices();
+
+		$output = [];
+
+		// Process Display Rules
+		if ( $display_rules && is_array( $display_rules ) ) {
+			$rule_labels = [];
+			foreach ( $display_rules as $rule ) {
+				$rule_value = $rule['rule'] ?? '';
+
+				if ( empty( $rule_value ) ) {
+					continue;
+				}
+
+				$label = '';
+				foreach ( $choices as $options ) {
+					if ( isset( $options[ $rule_value ] ) ) {
+						$label = $options[ $rule_value ];
+
+						break;
+					}
+				}
+
+				if ( 'specifics' === $rule_value && !empty( $rule['specifics'] ) ) {
+					$specifics       = $rule['specifics'];
+					$specifics_array = is_array( $specifics ) ? $specifics : [ $specifics ];
+					$linked_names    = [];
+
+					foreach ( $specifics_array as $specific_item ) {
+						$specific_id    = is_object( $specific_item ) ? $specific_item->ID : $specific_item;
+						$queried_object = get_post( $specific_id );
+						$is_term        = false;
+
+						if ( !$queried_object ) {
+							$queried_object = get_term( $specific_id );
+							$is_term        = true;
+						}
+
+						if ( $queried_object ) {
+							$name = isset( $queried_object->post_title ) ? $queried_object->post_title : $queried_object->name;
+
+							// Create permalink
+							if ( $is_term ) {
+								$permalink = get_term_link( $specific_id, $queried_object->taxonomy );
+							} else {
+								$permalink = get_permalink( $specific_id );
+							}
+
+							if ( $permalink && !is_wp_error( $permalink ) ) {
+								$linked_names[] = sprintf(
+									'<a href="%s" target="_blank" title="%s">%s</a>',
+									esc_url( $permalink ),
+									esc_attr__( 'View', 'toolkit' ) . ': ' . esc_attr( $name ),
+									esc_html( $name ),
+								);
+							} else {
+								$linked_names[] = esc_html( $name );
+							}
+						}
+					}
+
+					if ( !empty( $linked_names ) ) {
+						$label .= ': ' . implode( ', ', $linked_names );
+					}
+				}
+
+				if ( $label ) {
+					$rule_labels[] = $label;
+				}
+			}
+
+			if ( !empty( $rule_labels ) ) {
+				$output[] = '<strong>' . esc_html__( 'Display:', 'toolkit' ) . '</strong> ' . implode( ', ', $rule_labels );
+			}
+		}
+
+		// Process Exclude Rules
+		if ( $exclude_rules && is_array( $exclude_rules ) ) {
+			$rule_labels = [];
+			foreach ( $exclude_rules as $rule ) {
+				$rule_value = $rule['rule'] ?? '';
+
+				if ( empty( $rule_value ) ) {
+					continue;
+				}
+
+				$label = '';
+				foreach ( $choices as $options ) {
+					if ( isset( $options[ $rule_value ] ) ) {
+						$label = $options[ $rule_value ];
+
+						break;
+					}
+				}
+
+				if ( 'specifics' === $rule_value && !empty( $rule['specifics'] ) ) {
+					$specifics       = $rule['specifics'];
+					$specifics_array = is_array( $specifics ) ? $specifics : [ $specifics ];
+					$linked_names    = [];
+
+					foreach ( $specifics_array as $specific_item ) {
+						$specific_id    = is_object( $specific_item ) ? $specific_item->ID : $specific_item;
+						$queried_object = get_post( $specific_id );
+						$is_term        = false;
+
+						if ( !$queried_object ) {
+							$queried_object = get_term( $specific_id );
+							$is_term        = true;
+						}
+
+						if ( $queried_object ) {
+							$name = isset( $queried_object->post_title ) ? $queried_object->post_title : $queried_object->name;
+
+							// Create permalink
+							if ( $is_term ) {
+								$permalink = get_term_link( $specific_id, $queried_object->taxonomy );
+							} else {
+								$permalink = get_permalink( $specific_id );
+							}
+
+							if ( $permalink && !is_wp_error( $permalink ) ) {
+								$linked_names[] = sprintf(
+									'<a href="%s" target="_blank" title="%s">%s</a>',
+									esc_url( $permalink ),
+									esc_attr__( 'View', 'toolkit' ) . ': ' . esc_attr( $name ),
+									esc_html( $name ),
+								);
+							} else {
+								$linked_names[] = esc_html( $name );
+							}
+						}
+					}
+
+					if ( !empty( $linked_names ) ) {
+						$label .= ': ' . implode( ', ', $linked_names );
+					}
+				}
+
+				if ( $label ) {
+					$rule_labels[] = $label;
+				}
+			}
+
+			if ( !empty( $rule_labels ) ) {
+				$output[] = '<strong>' . esc_html__( 'Exclusion:', 'toolkit' ) . '</strong> ' . implode( ', ', $rule_labels );
+			}
+		}
+
+		return $output;
 	}
 
 	/**
@@ -838,33 +858,43 @@ class TemplateParts extends BaseModule {
 	}
 
 	/**
-	 * Add template type to post states
-	 *
-	 * @param array   $post_states post states
-	 * @param WP_Post $post        post object
-	 *
-	 * @return array
+	 * List screen: the shared toolkit list cells (Admin\ListTable)
 	 */
-	public function add_template_type_state( $post_states, $post ) {
-		if ( 'vlt_tp' !== $post->post_type ) {
-			return $post_states;
+	public function enqueue_list_styles() {
+		ListTable::screen( 'edit-vlt_tp' );
+	}
+
+	/**
+	 * Template types
+	 *
+	 * @return array [ type => label ]
+	 */
+	private function template_types() {
+		return [
+			'header'       => esc_html__( 'Header', 'toolkit' ),
+			'footer'       => esc_html__( 'Footer', 'toolkit' ),
+			'above_footer' => esc_html__( 'Above Footer', 'toolkit' ),
+			'404'          => esc_html__( '404 Page', 'toolkit' ),
+			'submenu'      => esc_html__( 'Submenu', 'toolkit' ),
+			'custom'       => esc_html__( 'Custom', 'toolkit' ),
+		];
+	}
+
+	/**
+	 * Whether a template is built with Elementor (and Elementor is active)
+	 *
+	 * @param int $template_id Template ID
+	 *
+	 * @return bool
+	 */
+	private function is_elementor( $template_id ) {
+		if ( !class_exists( '\Elementor\Plugin' ) ) {
+			return false;
 		}
 
-		$type = get_post_meta( $post->ID, 'template_type', true );
+		$document = \Elementor\Plugin::instance()->documents->get( $template_id );
 
-		if ( $type ) {
-			$types = [
-				'header'       => esc_html__( 'Header', 'toolkit' ),
-				'footer'       => esc_html__( 'Footer', 'toolkit' ),
-				'above_footer' => esc_html__( 'Above Footer', 'toolkit' ),
-				'404'          => esc_html__( '404 Page', 'toolkit' ),
-				'submenu'      => esc_html__( 'Submenu', 'toolkit' ),
-				'custom'       => esc_html__( 'Custom', 'toolkit' ),
-			];
-			$post_states['vlt_tp_type'] = $types[ $type ] ?? $type;
-		}
-
-		return $post_states;
+		return $document && $document->is_built_with_elementor();
 	}
 
 	/**
@@ -879,15 +909,7 @@ class TemplateParts extends BaseModule {
 
 		$current_type = isset( $_GET['template_type_filter'] ) ? sanitize_text_field( $_GET['template_type_filter'] ) : '';
 
-		$types = [
-			''             => esc_html__( 'All Types', 'toolkit' ),
-			'header'       => esc_html__( 'Header', 'toolkit' ),
-			'footer'       => esc_html__( 'Footer', 'toolkit' ),
-			'above_footer' => esc_html__( 'Above Footer', 'toolkit' ),
-			'404'          => esc_html__( '404 Page', 'toolkit' ),
-			'submenu'      => esc_html__( 'Submenu', 'toolkit' ),
-			'custom'       => esc_html__( 'Custom', 'toolkit' ),
-		];
+		$types = [ '' => esc_html__( 'All Types', 'toolkit' ) ] + $this->template_types();
 
 		echo '<select name="template_type_filter" id="template_type_filter">';
 		foreach ( $types as $value => $label ) {

@@ -16,6 +16,9 @@ if (!compileAll()) {
 	process.exit(1);
 }
 
+// Grid Builder editor UI (@wordpress/scripts) → includes/GridBuilder/assets/build
+execFileSync('npm', ['run', 'grid:build'], { cwd: root, stdio: 'inherit' });
+
 // Vendor libraries copied from node_modules
 const libs = [
 	// Sharer
@@ -38,8 +41,8 @@ const outputPath = resolve(root, 'dist/vlthemes-toolkit.zip');
 // Add directories
 // SCSS sources stay out of the package — only the compiled assets/css ships
 zip.addLocalFolder(resolve(root, 'assets'), 'vlthemes-toolkit/assets', (file) => !file.includes('/scss/'));
-// Dev-only preview of the admin dashboard stays out of the package
-zip.addLocalFolder(resolve(root, 'includes'), 'vlthemes-toolkit/includes', (file) => !file.endsWith('dashboard-demo.html'));
+// Dev-only preview of the admin dashboard and the Grid Builder editor sources stay out of the package
+zip.addLocalFolder(resolve(root, 'includes'), 'vlthemes-toolkit/includes', (file) => !file.endsWith('dashboard-demo.html') && !file.includes('GridBuilder/assets/src/'));
 // languages/ exists only in the package: the POT is generated fresh from the sources on every build
 const potDir = mkdtempSync(join(tmpdir(), 'vlt-toolkit-pot-'));
 const potFile = join(potDir, 'toolkit.pot');

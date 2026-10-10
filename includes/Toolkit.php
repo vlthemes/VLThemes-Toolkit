@@ -161,7 +161,6 @@ class Toolkit {
 			'Features\\DemoImport',
 			'Features\\SocialIcons',
 			'Features\\SpriteIcons',
-			'Features\\TemplateParts',
 			'Features\\PostViews',
 			'Features\\AOS',
 			'Features\\Breadcrumbs',
@@ -172,7 +171,6 @@ class Toolkit {
 			'Helpers\\MediaHelper',
 			// Integrations
 			'Integrations\\ContactForm7',
-			'Integrations\\VisualPortfolio',
 			'Integrations\\WooCommerce',
 			'Integrations\\ACF',
 		];
@@ -180,6 +178,22 @@ class Toolkit {
 		foreach ( $modules as $module ) {
 			$this->load_module( $module );
 		}
+
+		// Shared list table cells of the toolkit's post types
+		if ( is_admin() ) {
+			require_once VLT_TOOLKIT_PATH . 'includes/Admin/ListTable.php';
+		}
+
+		// Top-level modules (includes/{Name}/), each self-contained
+		require_once VLT_TOOLKIT_PATH . 'includes/TemplateParts/TemplateParts.php';
+		TemplateParts\TemplateParts::instance();
+
+		// Portfolio before Grid Builder: its post type is the default grid source and its menu hosts the grid pages
+		require_once VLT_TOOLKIT_PATH . 'includes/Portfolio/Portfolio.php';
+		require_once VLT_TOOLKIT_PATH . 'includes/Portfolio/Migrations/VisualPortfolio.php';
+		Portfolio\Portfolio::instance();
+
+		require_once VLT_TOOLKIT_PATH . 'includes/GridBuilder/grid-builder.php';
 
 		do_action( 'vlt_toolkit/modules_loaded' );
 	}

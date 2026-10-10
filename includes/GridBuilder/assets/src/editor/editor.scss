@@ -1,0 +1,848 @@
+// Grid Layout editor UI: sidebar + preview canvas (built to assets/build/editor.css, loaded only on vlt_grid screens)
+// Same look as the toolkit dashboard: its tokens are reused, not copied (assets/scss/abstracts).
+
+@use "../../../../../assets/scss/abstracts/variables" as *;
+@use "../../../../../assets/scss/abstracts/mixins" as *;
+
+// Geist, as in the dashboard
+@import url($fonts-url);
+
+// ----------------------------------------
+// Canvas: the preview only — no frame around it
+// ----------------------------------------
+
+// Whole canvas width whatever the theme's editor content width (.wp-block max-width): the preview needs the room
+.editor-styles-wrapper .wp-block.wp-block-vlt-toolkit-grid-settings,
+.vlt-grid-editor {
+	max-width: none;
+	margin-right: 0;
+	margin-left: 0;
+}
+
+.vlt-grid-editor {
+	margin: 0;
+	padding: 0;
+
+	&__preview {
+		position: relative;
+		padding: 0 24px 48px;
+		transition: opacity .2s;
+
+		&.is-loading {
+			opacity: .6;
+		}
+	}
+
+	// Each device at its own width, real size (device.js); centred, or scrolled sideways when wider than the canvas
+	&__stage {
+		display: grid;
+		justify-content: center;
+		padding: 9px; // room for the device outline
+		overflow-x: auto;
+
+		&.is-overflowing {
+			justify-content: start;
+		}
+	}
+
+	&__viewport {
+		position: relative;
+		overflow: hidden;
+		transition: width .3s cubic-bezier(.2, .8, .2, 1), height .3s cubic-bezier(.2, .8, .2, 1);
+
+		// Tablet / mobile: where the device ends
+		&.is-tablet,
+		&.is-mobile {
+			outline: 1px dashed #d4d4d8;
+			outline-offset: 8px;
+		}
+	}
+
+	&__frame {
+		display: block;
+		max-width: none;
+		border: 0;
+	}
+
+	// The canvas carries the theme's editor fonts: the note stays in the admin font
+	&__viewport-info {
+		margin: 6px 0 0;
+		text-align: center;
+		font: 11px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+		color: #a1a1aa;
+		font-variant-numeric: tabular-nums;
+	}
+
+	// Why the preview shows placeholders
+	&__preview-note {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0 0 16px;
+		padding: 6px 12px;
+		font-size: 12px;
+		line-height: 1.4;
+		color: #3f3f46;
+		background: #f4f4f5;
+		border: 1px solid #e4e4e7;
+		border-radius: 999px;
+
+		&::before {
+			content: "";
+			width: 6px;
+			height: 6px;
+			background: #a1a1aa;
+			border-radius: 50%;
+		}
+	}
+}
+
+// ----------------------------------------
+// Sidebar + CSS modal: dashboard tokens, scoped to the editor UI
+// ----------------------------------------
+.vlt-grid-editor__sidebar,
+.vlt-grid-editor__css-modal {
+	@include base-tokens;
+	@include tokens(light);
+
+	// Focus ring of inputs, as in the dashboard (.vlt-input:focus)
+	--focus: var(--mark);
+
+	font-family: var(--font);
+	color: var(--text);
+	-webkit-font-smoothing: antialiased;
+
+	// Components set their own font: the dashboard's everywhere in the sidebar (code stays monospace)
+	.components-base-control,
+	.components-button,
+	.components-panel__body-title,
+	.components-toggle-group-control,
+	.components-form-token-field__input,
+	input:not([type="checkbox"]),
+	select,
+	textarea:not(.CodeMirror textarea) {
+		font-family: var(--font);
+	}
+
+	// Labels and help (dashboard form group)
+	.components-base-control__label,
+	.components-input-control__label,
+	.components-form-token-field__label,
+	.vlt-grid-editor__label,
+	legend {
+		margin-bottom: 7px;
+		font-size: 13px;
+		font-weight: var(--fw-semibold);
+		line-height: 1.4;
+		color: var(--text);
+		text-transform: none;
+	}
+
+	// Select / number labels are styled by the components' own CSS-in-JS: override it
+	.components-input-control__label,
+	.components-input-control__label * {
+		font-size: 13px !important;
+		font-weight: var(--fw-semibold) !important;
+		text-transform: none !important;
+	}
+
+	.components-base-control__help,
+	.vlt-grid-editor__muted {
+		margin: 7px 0 0;
+		font-size: 12px;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+
+	// Inputs (dashboard .vlt-input)
+	.components-text-control__input,
+	.components-select-control__input,
+	.components-input-control__input,
+	.components-form-token-field__input-container,
+	textarea {
+		min-height: 40px;
+		font-size: 14px;
+		color: var(--text);
+		background: var(--surface);
+		border-radius: var(--radius);
+	}
+
+	.components-text-control__input,
+	textarea,
+	.components-form-token-field__input-container {
+		border: 1px solid var(--border);
+		box-shadow: var(--shadow);
+		transition: border-color .15s, box-shadow .15s;
+
+		&:hover {
+			border-color: var(--border-strong);
+		}
+
+		&:focus,
+		&.is-active {
+			border-color: var(--text);
+			outline: none;
+			box-shadow: 0 0 0 3px var(--focus);
+		}
+	}
+
+	// Select / number inputs draw their border on a backdrop element
+	.components-input-control__backdrop {
+		border-color: var(--border) !important;
+		border-radius: var(--radius) !important;
+	}
+
+	.components-input-control__container:focus-within .components-input-control__backdrop {
+		border-color: var(--text) !important;
+		box-shadow: 0 0 0 3px var(--focus) !important;
+	}
+
+	// Toggles, checkboxes, ranges: neutral dark
+	.components-form-toggle.is-checked .components-form-toggle__track {
+		background: var(--text);
+		border-color: var(--text);
+	}
+
+	.components-checkbox-control__input[type="checkbox"]:checked {
+		background: var(--text);
+		border-color: var(--text);
+	}
+
+	.components-checkbox-control__checked {
+		fill: var(--surface);
+	}
+
+	.components-range-control__track,
+	.components-range-control__thumb-wrapper span {
+		background-color: var(--text);
+	}
+
+	// Buttons (dashboard .button)
+	.components-button.is-secondary,
+	.components-button.is-tertiary {
+		height: 34px;
+		padding: 0 14px;
+		font-size: 13px;
+		font-weight: var(--fw-semibold);
+		color: var(--text);
+		background: var(--surface);
+		border-radius: var(--radius);
+		box-shadow: inset 0 0 0 1px var(--border), var(--shadow);
+		transition: background-color .2s, box-shadow .2s, transform .1s;
+
+		&:hover {
+			color: var(--text);
+			background: var(--muted-bg);
+			box-shadow: inset 0 0 0 1px var(--border-strong), var(--shadow);
+		}
+
+		&:active {
+			transform: scale(.97);
+		}
+	}
+
+	code,
+	pre {
+		font-family: Menlo, Consolas, monospace;
+	}
+
+	// Links: brand underline that fills on hover (dashboard a:not([class]))
+	a:not([class]) {
+		color: var(--text);
+		text-decoration: underline;
+		text-decoration-color: var(--brand);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+		background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 100% / 100% 0;
+		transition: background-size .25s var(--ease);
+
+		&:hover {
+			background-size: 100% 100%;
+		}
+
+		&:focus {
+			box-shadow: none;
+		}
+	}
+}
+
+// Fields side by side
+.vlt-grid-editor__device-label {
+	display: inline-flex;
+	gap: 5px;
+	align-items: center;
+
+	// Dashicons render as a font glyph (or an svg) — tint both
+	.dashicons,
+	svg {
+		flex: none;
+		width: 16px;
+		height: 16px;
+		font-size: 16px;
+		color: var(--muted);
+		fill: currentColor;
+	}
+}
+
+.vlt-grid-editor__row {
+	display: grid;
+	gap: 16px;
+
+	&.is-2 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+
+	&.is-3 {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 8px;
+	}
+}
+
+// Group of fields inside a section: small caption with a hairline — a sub-heading, never mistaken for a section title
+.vlt-grid-editor__group + .vlt-grid-editor__group {
+	margin-top: 24px;
+}
+
+.vlt-grid-editor__group-title {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 12px;
+	font-size: 11px;
+	font-weight: var(--fw-medium);
+	line-height: normal;
+	color: var(--muted);
+	text-transform: uppercase;
+	letter-spacing: .06em;
+
+	&::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: var(--border);
+	}
+}
+
+// 16px under every section title (WP leaves only 5px; the margins collapse)
+.vlt-grid-editor__panel > .components-panel__body-title + * {
+	margin-top: 16px;
+}
+
+.vlt-grid-editor__group-body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 16px;
+}
+
+// Long names (no spaces) are cut with an ellipsis instead of widening the sidebar
+.vlt-grid-editor__sidebar {
+	.components-panel__body,
+	.components-base-control,
+	.components-form-token-field {
+		min-width: 0;
+	}
+
+	.components-form-token-field__token {
+		max-width: 100%;
+		min-width: 0;
+	}
+
+	.components-form-token-field__token-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.components-form-token-field__suggestion {
+		overflow-wrap: anywhere;
+	}
+
+	select.components-select-control__input {
+		text-overflow: ellipsis;
+	}
+}
+
+// Section title: icon + name (+ lock badge)
+.vlt-grid-editor__panel-title {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	min-width: 0;
+
+	> svg,
+	> .dashicon {
+		flex: none;
+		color: var(--muted);
+	}
+
+	.is-opened & > svg,
+	.is-opened & > .dashicon {
+		color: var(--text);
+	}
+}
+
+// Panel content spacing between blocks
+.vlt-grid-editor__panel.components-panel__body.is-opened > *:not(.components-panel__body-title) + * {
+	margin-top: 16px;
+}
+
+// Note (dashboard .notice / store .vlt-note)
+.vlt-grid-editor__hint {
+	--c: var(--accent);
+	padding: 12px 16px;
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--text-2);
+	background: color-mix(in srgb, var(--c) 6%, var(--surface));
+	border: 1px solid var(--border);
+	border-left: 3px solid var(--c);
+
+	&.is-warning {
+		--c: var(--warning);
+	}
+
+	&.is-error {
+		--c: var(--danger);
+	}
+
+	&.is-success {
+		--c: var(--success);
+	}
+}
+
+// Shortcodes: read-only field with "Copy" inside (dashboard .vlt-form-group--copy)
+.vlt-grid-editor__shortcodes {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr); // let the one-line code shrink instead of widening the sidebar
+	gap: 14px;
+}
+
+.vlt-grid-editor__copy {
+	position: relative;
+	display: flex;
+	align-items: center;
+	min-height: 40px;
+	padding: 8px 40px 8px 12px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+
+	// One line that fades out towards the copy icon (Copy still copies all of it)
+	code {
+		flex: 1;
+		min-width: 0;
+		padding: 0;
+		overflow: hidden;
+		font-size: 12px;
+		line-height: 1.5;
+		color: var(--text);
+		white-space: nowrap;
+		background: none;
+		-webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+		mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+	}
+
+	button {
+		position: absolute;
+		top: 50%;
+		right: 4px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		margin-top: -16px;
+		color: var(--muted);
+		cursor: pointer;
+		background: none;
+		border: 0;
+		border-radius: var(--radius-sm);
+		transition: color .15s, background-color .15s;
+
+		&:hover {
+			color: var(--text);
+			background: var(--muted-bg);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--ring);
+			outline-offset: 0;
+		}
+
+		&.is-copied {
+			color: var(--brand-text);
+		}
+	}
+}
+
+// Dashboard badge (.vlt-badge.false look), in the warning colour
+.vlt-grid-editor__lock {
+	display: inline-flex;
+	gap: 5px;
+	align-items: center;
+	margin-left: 8px;
+	padding: 1px 7px;
+	font-size: 10px;
+	font-weight: 500;
+	line-height: 1.5;
+	color: #c2410c;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	vertical-align: 1px;
+	border: 1px solid color-mix(in srgb, #ea580c 35%, transparent);
+	border-radius: 999px;
+
+	&::before {
+		content: "";
+		width: 5px;
+		height: 5px;
+		background: #ea580c;
+		border-radius: 50%;
+	}
+}
+
+// Same spacing as a section's own blocks (beats the 7px top margin of muted notes)
+.vlt-grid-editor__panel.is-opened .vlt-grid-editor__locked > * + * {
+	margin-top: 16px;
+}
+
+.vlt-grid-editor__locked {
+	opacity: .45;
+	filter: grayscale(1);
+	pointer-events: none;
+	user-select: none;
+}
+
+// Inserts
+.vlt-grid-editor__insert {
+	display: grid;
+	gap: 12px;
+	padding: 12px;
+	background: var(--muted-bg);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+.vlt-grid-editor__insert + .vlt-grid-editor__insert {
+	margin-top: 8px;
+}
+
+.vlt-grid-editor__insert + .components-button {
+	margin-top: 16px;
+}
+
+.vlt-grid-editor__insert-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: -4px -4px -4px 0;
+
+	.vlt-grid-editor__label {
+		margin: 0;
+	}
+}
+
+// Terms
+.vlt-grid-editor__terms {
+	margin: 0;
+	padding: 0;
+	border: 0;
+
+	.components-checkbox-control + .components-checkbox-control {
+		margin-top: 8px;
+	}
+}
+
+// Media thumbnails
+.vlt-grid-editor__thumbs {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 6px;
+	margin: 8px 0 0;
+	padding: 0;
+	list-style: none;
+
+	img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 1;
+		object-fit: cover;
+		border-radius: var(--radius-sm);
+	}
+
+	button {
+		position: relative;
+		display: block;
+		width: 100%;
+		padding: 0;
+		cursor: pointer;
+		background: none;
+		border: 0;
+		border-radius: var(--radius-sm);
+		transition: box-shadow .15s;
+
+		&:hover {
+			box-shadow: 0 0 0 1px var(--border-strong);
+		}
+
+		&.is-active {
+			box-shadow: 0 0 0 2px var(--text), 0 0 0 5px var(--focus);
+		}
+
+		// Has its own title / link / categories in this layout
+		&.is-edited::after {
+			content: "";
+			position: absolute;
+			top: 4px;
+			right: 4px;
+			width: 8px;
+			height: 8px;
+			background: var(--text);
+			border: 2px solid var(--surface);
+			border-radius: 50%;
+		}
+	}
+}
+
+.vlt-grid-editor__images > .vlt-grid-editor__muted {
+	margin: 8px 0 0;
+}
+
+// Overrides of one image
+.vlt-grid-editor__image {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr); // long values must not widen the sidebar
+	gap: 12px;
+	margin-top: 12px;
+	padding: 12px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+
+	.vlt-grid-editor__muted {
+		margin: 0;
+	}
+}
+
+.vlt-grid-editor__image-head {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+
+	img {
+		width: 32px;
+		height: 32px;
+		object-fit: cover;
+		border-radius: var(--radius-sm);
+	}
+
+	span {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		font-weight: 500;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+// Tiles patterns: sketch-only cards of equal height (the name is in the tooltip / aria-label)
+.vlt-grid-editor__patterns {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.vlt-grid-editor__pattern {
+	container-type: inline-size; // the sketch's row height follows the card width
+	padding: 6px;
+	cursor: pointer;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	transition: border-color .15s, box-shadow .15s;
+
+	&:hover {
+		border-color: var(--border-strong);
+	}
+
+	&.is-selected {
+		border-color: var(--text);
+		box-shadow: 0 0 0 3px var(--focus);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
+	}
+}
+
+.vlt-grid-editor__pattern.is-inherit {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 70px;
+	border-style: dashed;
+}
+
+.vlt-grid-editor__pattern-inherit {
+	font-size: 12px;
+	font-weight: var(--fw-medium);
+	line-height: 1.3;
+	color: var(--text-2);
+	text-align: center;
+}
+
+// Fixed height, rows stretch to fill it; gaps are drawn as borders so tall patterns aren't eaten by gap space
+.vlt-grid-editor__sketch {
+	display: grid;
+	align-content: start;
+	column-gap: 2px; // no row gap: tiles span up to hundreds of rows and it would add up — their borders draw it
+	height: 56px;
+	overflow: hidden;
+
+	span {
+		background: var(--muted-bg);
+		border: 1px solid var(--surface);
+		border-radius: 3px;
+		box-shadow: inset 0 0 0 1px var(--border);
+	}
+
+	.is-selected & span {
+		background: var(--text-2);
+		box-shadow: none;
+	}
+}
+
+// Custom CSS
+.vlt-grid-editor__css-field {
+	position: relative;
+
+	// Above CodeMirror, subtle until hovered
+	.vlt-grid-editor__css-expand.components-button {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		z-index: 5;
+		color: var(--muted);
+		background: var(--surface);
+		border-radius: var(--radius-sm);
+		box-shadow: inset 0 0 0 1px var(--border);
+		opacity: .8;
+
+		&:hover,
+		&:focus-visible {
+			color: var(--text);
+			opacity: 1;
+		}
+	}
+}
+
+.vlt-grid-editor__css {
+	box-sizing: border-box;
+	width: 100%;
+	font-family: Menlo, Consolas, monospace;
+	font-size: 12px;
+}
+
+.vlt-grid-editor__sidebar .CodeMirror,
+.vlt-grid-editor__css-modal .CodeMirror {
+	font-family: Menlo, Consolas, monospace;
+	font-size: 12px;
+	line-height: 1.5;
+	background: var(--muted-bg);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+
+	.CodeMirror-gutters {
+		background: var(--muted-bg);
+		border-right: 1px dashed var(--border-strong);
+	}
+
+	&.CodeMirror-focused {
+		border-color: var(--text);
+		box-shadow: 0 0 0 3px var(--focus);
+	}
+}
+
+.vlt-grid-editor__classes {
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		margin: 0;
+		padding-left: calc(var(--vlt-depth, 0) * 12px);
+	}
+
+	// Same as dashboard links (a:not([class])): brand underline that fills on hover
+	button {
+		padding: 1px 0;
+		font-family: Menlo, Consolas, monospace;
+		font-size: 11px;
+		color: var(--text);
+		cursor: pointer;
+		background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 100% / 100% 0;
+		border: 0;
+		text-decoration: underline;
+		text-decoration-color: var(--brand);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+		transition: background-size .25s var(--ease);
+
+		&:hover {
+			background-size: 100% 100%;
+		}
+	}
+}
+
+.vlt-grid-editor__help {
+	font-size: 12px;
+	color: var(--muted);
+
+	p {
+		margin: 0 0 6px;
+	}
+
+	code {
+		padding: 1px 4px;
+		font-size: 11px;
+		color: var(--text);
+		background: var(--muted-bg);
+		border-radius: var(--radius-sm);
+	}
+
+	pre {
+		margin: 0;
+		padding: 12px 14px;
+		font-size: 11px;
+		line-height: 1.6;
+		color: var(--text);
+		white-space: pre-wrap;
+		background: var(--muted-bg);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+	}
+}
+
+.vlt-grid-editor__css-modal-body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 220px;
+	gap: 24px;
+	align-items: start;
+}
+
+// Device note under the switch (layout types without columns): icon, device, its screens — one line
+.vlt-grid-editor__device-hint {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	margin: 0;
+}

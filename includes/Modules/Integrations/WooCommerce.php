@@ -30,23 +30,38 @@ class WooCommerce extends BaseModule {
 	 * Register module
 	 */
 	public function register() {
-		// Disable WooCommerce default styles
-		add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
-
-		// Dequeue unnecessary scripts
+		// Both opt-ins are read when WooCommerce enqueues, not here: modules register on plugins_loaded, before the theme adds its filters
+		add_filter( 'woocommerce_enqueue_styles', [ $this, 'disable_styles' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'dequeue_scripts' ], 100 );
 	}
 
 	/**
-	 * Dequeue unnecessary WooCommerce scripts
+	 * Disable WooCommerce default styles — opt-in, nothing is removed by default
+	 *
+	 * Example: add_filter( 'vlt_toolkit_woocommerce_disable_styles', '__return_true' );
+	 *
+	 * @param array $styles WooCommerce styles
+	 *
+	 * @return array
+	 */
+	public function disable_styles( $styles ) {
+		return apply_filters( 'vlt_toolkit_woocommerce_disable_styles', false ) ? [] : $styles;
+	}
+
+	/**
+	 * Dequeue WooCommerce scripts — opt-in, nothing is removed by default
+	 *
+	 * Example: add_filter( 'vlt_toolkit_woocommerce_disable_scripts', '__return_true' );
 	 */
 	public function dequeue_scripts() {
-		// Dequeue selectWoo script
-		wp_dequeue_script( 'selectWoo' );
-		wp_deregister_script( 'selectWoo' );
+		if ( !apply_filters( 'vlt_toolkit_woocommerce_disable_scripts', false ) ) {
+			return;
+		}
 
-		// Allow themes/plugins to dequeue additional scripts
-		do_action( 'vlt_toolkit_woocommerce_dequeue_scripts' );
+		foreach ( [ 'selectWoo' ] as $handle ) {
+			wp_dequeue_script( $handle );
+			wp_deregister_script( $handle );
+		}
 	}
 
 	/**

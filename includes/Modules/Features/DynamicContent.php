@@ -35,6 +35,8 @@ class DynamicContent extends BaseModule {
 		add_filter( 'the_content', [ __CLASS__, 'parse' ], 999 );
 		add_filter( 'the_excerpt', [ __CLASS__, 'parse' ], 999 );
 		add_filter( 'widget_text', [ __CLASS__, 'parse' ], 999 );
+		// Contact Form 7 response messages (sent / errors / validation)
+		add_filter( 'wpcf7_display_message', [ __CLASS__, 'parse' ], 999 );
 	}
 
 	/**

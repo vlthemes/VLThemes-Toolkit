@@ -67,19 +67,6 @@ class Toolkit {
 	}
 
 	/**
-	 * Enqueue elementor editor admin scripts
-	 */
-	public function elementor_affiliate_script() {
-		wp_enqueue_script(
-			'vlt-elementor-editor-admin',
-			$this->plugin_assets_dir . 'js/elementor-editor.js',
-			[],
-			VLT_TOOLKIT_VERSION,
-			true,
-		);
-	}
-
-	/**
 	 * Register all helper assets
 	 *
 	 * Registers scripts and styles but doesn't enqueue them
@@ -140,10 +127,6 @@ class Toolkit {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		add_action( 'customize_controls_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 
-		// Elementor affiliate links
-		add_action( 'admin_footer', [ $this, 'elementor_affiliate_script' ] );
-		add_action( 'elementor/editor/footer', [ $this, 'elementor_affiliate_script' ] );
-
 		// Register all helper assets (don't enqueue yet)
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ], 1 );
 	}
@@ -177,19 +160,17 @@ class Toolkit {
 			'Features\\CustomFonts',
 			'Features\\DemoImport',
 			'Features\\SocialIcons',
+			'Features\\SpriteIcons',
 			'Features\\TemplateParts',
 			'Features\\PostViews',
 			'Features\\AOS',
 			'Features\\Breadcrumbs',
 			'Features\\DynamicContent',
-			'Features\\AI',
-			'Features\\Noise',
 			// Helper modules
 			'Helpers\\ImageHelper',
 			'Helpers\\ContentHelper',
 			'Helpers\\MediaHelper',
 			// Integrations
-			'Integrations\\Elementor',
 			'Integrations\\ContactForm7',
 			'Integrations\\VisualPortfolio',
 			'Integrations\\WooCommerce',

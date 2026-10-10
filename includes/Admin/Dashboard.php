@@ -60,6 +60,13 @@ class Dashboard {
 	public $products_url;
 
 	/**
+	 * Current theme product page URL
+	 *
+	 * @var string
+	 */
+	public $product_url;
+
+	/**
 	 * Documentation URL
 	 *
 	 * @var string
@@ -138,6 +145,7 @@ class Dashboard {
 		// Set helper links with filters for customization
 		$this->site_url           = apply_filters( 'vlt_toolkit_site_url', 'https://vlthemes.me/' );
 		$this->products_url       = apply_filters( 'vlt_toolkit_products_url', $this->site_url . 'products/' );
+		$this->product_url        = apply_filters( 'vlt_toolkit_product_url', $this->products_url . 'wordpress/' . $this->theme_slug . '/', $this->theme_slug );
 		$this->docs_url           = apply_filters( 'vlt_toolkit_docs_url', $this->site_url . 'docs/', $this->theme_slug );
 		$this->knowledge_base_url = apply_filters( 'vlt_toolkit_knowledge_base_url', $this->site_url . 'kb/' );
 		$this->license_help_url   = apply_filters( 'vlt_toolkit_license_help_url', $this->knowledge_base_url . 'where-to-find-my-purchase-and-download-link/' );
@@ -265,17 +273,15 @@ class Dashboard {
 			[ $this, 'render_status_page' ],
 		);
 
-		// Template Parts - only if Elementor and ACF are active
-		if ( defined( 'ELEMENTOR_VERSION' ) && function_exists( 'acf_add_local_field_group' ) ) {
-			add_submenu_page(
-				$this->dashboard_slug,
-				esc_html__( 'Template Parts', 'toolkit' ),
-				esc_html__( 'Template Parts', 'toolkit' ),
-				'manage_options',
-				'edit.php?post_type=vlt_tp',
-				'',
-			);
-		}
+		// Template Parts
+		add_submenu_page(
+			$this->dashboard_slug,
+			esc_html__( 'Template Parts', 'toolkit' ),
+			esc_html__( 'Template Parts', 'toolkit' ),
+			'manage_options',
+			'edit.php?post_type=vlt_tp',
+			'',
+		);
 
 		// Help Center
 		add_submenu_page(
@@ -388,13 +394,6 @@ class Dashboard {
 	 */
 	public function render_helper_page() {
 		$this->render_template( 'template-helper' );
-	}
-
-	/**
-	 * Render elementor page
-	 */
-	public function render_elementor_page() {
-		$this->render_template( 'template-elementor' );
 	}
 
 	/**

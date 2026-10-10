@@ -1,0 +1,225 @@
+@use "abstracts/variables" as *;
+@use "abstracts/mixins" as *;
+
+/* Template Parts: Template Settings meta box — matches the dashboard's store design */
+
+:root {
+	@include base-tokens;
+	@include tokens(light);
+}
+
+.vlt-tp-field {
+	margin-bottom: 20px;
+	font-family: var(--font);
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
+	> label,
+	> strong {
+		display: block;
+		margin-bottom: 7px;
+		font-size: 13px;
+		font-weight: var(--fw-semibold);
+		color: var(--text);
+	}
+
+	.description {
+		margin: 0 0 10px;
+		font-size: 12px;
+		color: var(--muted);
+	}
+
+	select,
+	textarea {
+		width: 100%;
+		padding: 0 12px;
+		font-family: var(--font);
+		font-size: 14px;
+		color: var(--text);
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		outline: none;
+		box-shadow: var(--shadow);
+		transition: border-color .15s, box-shadow .15s;
+
+		&:hover {
+			border-color: var(--border-strong);
+		}
+
+		&:focus {
+			border-color: var(--text);
+			box-shadow: 0 0 0 3px var(--mark);
+		}
+	}
+
+	select {
+		height: 42px;
+	}
+
+	textarea {
+		padding: 10px 12px;
+		line-height: 1.5;
+	}
+}
+
+.vlt-tp-rules-wrap {
+	padding: 20px 0;
+	margin: 20px 0;
+	border-top: 1px dashed var(--border-strong);
+	border-bottom: 1px dashed var(--border-strong);
+}
+
+.vlt-tp-repeater {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.vlt-tp-rule-row {
+	display: grid;
+	grid-template-columns: 260px 1fr 42px;
+	align-items: start;
+	gap: 8px;
+}
+
+.vlt-tp-remove-rule {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	font-size: 18px;
+	line-height: 1;
+	color: var(--muted);
+	cursor: pointer;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	transition: color .15s, background-color .15s, border-color .15s;
+
+	&:hover {
+		color: var(--danger);
+		background: var(--muted-bg);
+		border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+	}
+
+	&:active {
+		transform: scale(.97);
+	}
+}
+
+.vlt-tp-add-rule {
+	margin-top: 4px;
+}
+
+/* "Specific Target" AJAX picker */
+.vlt-tp-picker {
+	position: relative;
+}
+
+.vlt-tp-picker-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 8px;
+
+	&:empty {
+		margin-bottom: 0;
+	}
+}
+
+.vlt-tp-picker-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: var(--chip-h);
+	padding: 0 6px 0 10px;
+	font-size: 12px;
+	font-weight: var(--fw-medium);
+	color: var(--text-2);
+	background: var(--muted-bg);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-pill);
+}
+
+.vlt-tp-picker-chip-remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1;
+	color: var(--text-2);
+	cursor: pointer;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 50%;
+	transition: color .15s, background-color .15s, border-color .15s;
+
+	&:hover {
+		color: var(--danger);
+		border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+	}
+}
+
+.vlt-tp-picker-search {
+	width: 100%;
+	height: 42px;
+	padding: 0 12px;
+	font-family: var(--font);
+	font-size: 14px;
+	color: var(--text);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	outline: none;
+	box-shadow: var(--shadow);
+	transition: border-color .15s, box-shadow .15s;
+
+	&::placeholder {
+		color: var(--muted);
+	}
+
+	&:hover {
+		border-color: var(--border-strong);
+	}
+
+	&:focus {
+		border-color: var(--text);
+		box-shadow: 0 0 0 3px var(--mark);
+	}
+}
+
+.vlt-tp-picker-results {
+	position: absolute;
+	z-index: 10;
+	left: 0;
+	right: 0;
+	margin: 4px 0 0;
+	padding: 6px 0;
+	list-style: none;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow-lg);
+	max-height: 220px;
+	overflow-y: auto;
+}
+
+.vlt-tp-picker-result {
+	padding: 8px 12px;
+	font-size: 13px;
+	color: var(--text);
+	cursor: pointer;
+	transition: background-color .15s;
+
+	&:hover {
+		background: var(--muted-bg);
+	}
+}

@@ -1,34 +1,20 @@
 {
   "devDependencies": {
     "adm-zip": "^0.5.16",
-    "sass": "^1.94.0",
-    "vite": "^6.4.1"
+    "sass": "^1.94.0"
   },
   "name": "vlthemes-toolkit",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
   "dependencies": {
-    "aos": "^2.3.4",
-    "esbuild": "^0.25.12",
-    "fdir": "^6.5.0",
-    "gsap": "^3.13.0",
-    "jquery-match-height": "^0.7.2",
-    "nanoid": "^3.3.11",
-    "picocolors": "^1.1.1",
-    "picomatch": "^4.0.3",
-    "postcss": "^8.5.6",
-    "rollup": "^4.53.1",
-    "sharer.js": "^0.5.3",
-    "source-map-js": "^1.2.1",
-    "tinyglobby": "^0.2.15"
+    "sharer.js": "^0.5.3"
   },
   "scripts": {
     "scss": "node assets/scss/build.mjs",
     "scss:watch": "node assets/scss/build.mjs --watch",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "node assets/scss/build.mjs --watch",
+    "build": "node build.mjs",
     "php-cs-fixer": "/Users/VLThemes/.composer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --verbose",
     "php-cs-fixer:dry": "/Users/VLThemes/.composer/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --verbose --dry-run --diff"
   },

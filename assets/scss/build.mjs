@@ -40,7 +40,7 @@ export function compileAll() {
 	return ok;
 }
 
-// Run directly (not when imported by vite.config.js)
+// Run directly (not when imported by the root build.mjs)
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
 	const ok = compileAll();
 

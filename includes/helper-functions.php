@@ -76,6 +76,33 @@ if ( !function_exists( 'vlt_toolkit_get_post_share_buttons' ) ) {
 }
 
 // ========================================
+// Sprite Icons Functions
+// ========================================
+
+if ( !function_exists( 'vlt_toolkit_get_icon' ) ) {
+	/**
+	 * Get icon markup referencing the SVG sprite
+	 *
+	 * @param string $id   Icon id without the "i-" prefix
+	 * @param array  $args Arguments: class, label
+	 *
+	 * @return string
+	 */
+	function vlt_toolkit_get_icon( $id, $args = [] ) {
+		return VLT\Toolkit\Modules\Features\SpriteIcons::get_icon( $id, $args );
+	}
+}
+
+if ( !function_exists( 'vlt_toolkit_get_icons' ) ) {
+	/**
+	 * Get all sprite icons as standalone SVG markup [ id => svg ]
+	 */
+	function vlt_toolkit_get_icons() {
+		return VLT\Toolkit\Modules\Features\SpriteIcons::get_icons();
+	}
+}
+
+// ========================================
 // Post Views Functions
 // ========================================
 
@@ -99,6 +126,18 @@ if ( !function_exists( 'vlt_toolkit_get_post_views' ) ) {
 	 */
 	function vlt_toolkit_get_post_views( $post_id = null ) {
 		return VLT\Toolkit\Modules\Features\PostViews::get_views( $post_id );
+	}
+}
+
+if ( !function_exists( 'vlt_toolkit_get_post_views_label' ) ) {
+	/**
+	 * Get "1,234 views" label
+	 *
+	 * @param int|null $post_id Post ID or null for current post
+	 * @return string
+	 */
+	function vlt_toolkit_get_post_views_label( $post_id = null ) {
+		return VLT\Toolkit\Modules\Features\PostViews::get_views_label( $post_id );
 	}
 }
 
@@ -182,75 +221,8 @@ if ( !function_exists( 'vlt_toolkit_is_woocommerce_page' ) ) {
 }
 
 // ========================================
-// Elementor Functions
-// ========================================
-
-if ( !function_exists( 'vlt_toolkit_render_elementor_template' ) ) {
-	/**
-	 * Render Elementor template by ID
-	 */
-	function vlt_toolkit_render_elementor_template( $template_id ) {
-		return VLT\Toolkit\Modules\Integrations\Elementor::render_template( $template_id );
-	}
-}
-
-if ( !function_exists( 'vlt_toolkit_is_built_with_elementor' ) ) {
-	/**
-	 * Check if current post/page is built with Elementor
-	 */
-	function vlt_toolkit_is_built_with_elementor() {
-		return VLT\Toolkit\Modules\Integrations\Elementor::is_built_with_elementor();
-	}
-}
-
-// ========================================
 // Populate Functions
 // ========================================
-
-if ( !function_exists( 'vlt_toolkit_populate_post_name' ) ) {
-	/**
-	 * Get post names by post type
-	 */
-	function vlt_toolkit_populate_post_name( $post_type = 'post' ) {
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_post_name( $post_type );
-	}
-}
-
-if ( !function_exists( 'vlt_toolkit_populate_taxonomies' ) ) {
-	/**
-	 * Get taxonomies by taxonomy name
-	 */
-	function vlt_toolkit_populate_taxonomies( $taxonomy = 'category' ) {
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_taxonomies( $taxonomy );
-	}
-}
-
-if ( !function_exists( 'vlt_toolkit_populate_available_menus' ) ) {
-	/**
-	 * Get available menus
-	 */
-	function vlt_toolkit_populate_available_menus() {
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_available_menus();
-	}
-}
-
-if ( !function_exists( 'vlt_toolkit_populate_elementor_templates' ) ) {
-	/**
-	 * Get list of Elementor templates
-	 */
-	function vlt_toolkit_populate_elementor_templates( $type = null ) {
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_elementor_templates( $type );
-	}
-}
-
-if ( !function_exists( 'vlt_toolkit_populate_elementor_template_types' ) ) {
-	/**
-	 * Get list of Elementor template types
-	 */
-	function vlt_toolkit_populate_elementor_template_types() {
-		return VLT\Toolkit\Modules\Integrations\Elementor\Helpers::populate_elementor_template_types();
-	}
-}
 
 if ( !function_exists( 'vlt_toolkit_populate_vp_portfolios' ) ) {
 	/**

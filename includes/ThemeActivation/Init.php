@@ -316,7 +316,7 @@ if ( !class_exists( 'VLThemesThemeActivation' ) ) {
 			}
 
 			$dashboard = VLT\Toolkit\Admin\Dashboard::instance();
-			$renew     = $license['renew_url'] ?: $dashboard->products_url . get_template() . '/';
+			$renew     = $license['renew_url'] ?: $dashboard->product_url;
 			$envato    = 'envato' === $license['type'];
 			$date      = date_i18n( 'j F Y', $until );
 			$masked    = $license['key'] ? substr( $license['key'], 0, 4 ) . str_repeat( '•', 8 ) . substr( $license['key'], -4 ) : '';

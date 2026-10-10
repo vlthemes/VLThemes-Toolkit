@@ -169,6 +169,14 @@ class SocialIcons extends BaseModule {
 	 * Enqueue CSS and JS assets
 	 */
 	public function enqueue_assets() {
+		if ( !wp_style_is( 'socicons', 'registered' ) ) {
+			wp_register_style( 'socicons', VLT_TOOLKIT_URL . 'assets/fonts/socicons/socicons.css', [], VLT_TOOLKIT_VERSION );
+		}
+
+		if ( !wp_script_is( 'sharer', 'registered' ) ) {
+			wp_register_script( 'sharer', VLT_TOOLKIT_URL . 'assets/vendors/js/sharer.js', [], VLT_TOOLKIT_VERSION, true );
+		}
+
 		wp_enqueue_style( 'socicons' );
 		wp_enqueue_script( 'sharer' );
 	}

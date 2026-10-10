@@ -4,6 +4,7 @@ namespace VLT\Toolkit\Modules\Integrations;
 
 use VLT\Toolkit\Modules\BaseModule;
 use VLT\Toolkit\Modules\Integrations\ACF\ACFProUpdater;
+use VLT\Toolkit\Modules\Integrations\ACF\UserAvatar;
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -98,9 +99,11 @@ class ACF extends BaseModule {
 	 */
 	private function init_submodules() {
 		require_once __DIR__ . '/ACF/ACFProUpdater.php';
+		require_once __DIR__ . '/ACF/UserAvatar.php';
 
 		$this->submodules = [
 			'acf_pro_updater' => new ACFProUpdater(),
+			'user_avatar'     => new UserAvatar(),
 		];
 	}
 }

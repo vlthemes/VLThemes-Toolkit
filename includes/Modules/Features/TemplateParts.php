@@ -31,15 +31,15 @@ class TemplateParts extends BaseModule {
 		// Register custom post type
 		add_action( 'init', [ $this, 'register_post_type' ] );
 
-		// Register ACF field groups
-		add_action( 'acf/init', [ $this, 'register_acf_fields' ] );
-
-		// Populate ACF field choices
-		add_filter( 'acf/load_field/key=field_tp_rule', [ $this, 'populate_rule_choices' ] );
-		add_filter( 'acf/load_field/key=field_tp_exclude_rule', [ $this, 'populate_rule_choices' ] );
-
-		// Add shortcode meta box
+		// Add settings & shortcode meta boxes
+		add_action( 'add_meta_boxes', [ $this, 'add_settings_meta_box' ] );
 		add_action( 'add_meta_boxes', [ $this, 'add_shortcode_meta_box' ] );
+
+		// Save settings meta box fields
+		add_action( 'save_post_vlt_tp', [ $this, 'save_settings_meta_box' ] );
+
+		// AJAX search for the "Specific Target" picker
+		add_action( 'wp_ajax_vlt_tp_search_specifics', [ $this, 'ajax_search_specifics' ] );
 
 		// Add template content filters
 		add_filter( 'vlt_toolkit_tp_header', [ $this, 'get_header_content' ] );
@@ -100,7 +100,7 @@ class TemplateParts extends BaseModule {
 			'capability_type'     => 'post',
 			'hierarchical'        => false,
 			'menu_icon'           => 'dashicons-editor-kitchensink',
-			'supports'            => [ 'title', 'elementor' ],
+			'supports'            => [ 'title', 'editor', 'elementor' ],
 			'menu_position'       => 5,
 			'capabilities'        => [
 				'edit_post'              => 'manage_options',
@@ -127,14 +127,12 @@ class TemplateParts extends BaseModule {
 	public function load_canvas_template( $single_template ) {
 		global $post;
 
-		if ( 'vlt_tp' == $post->post_type ) {
+		if ( 'vlt_tp' == $post->post_type && defined( 'ELEMENTOR_PATH' ) ) {
 			$elementor_canvas = ELEMENTOR_PATH . '/modules/page-templates/templates/canvas.php';
 
 			if ( file_exists( $elementor_canvas ) ) {
 				return $elementor_canvas;
 			}
-
-			return;
 		}
 
 		return $single_template;
@@ -173,10 +171,6 @@ class TemplateParts extends BaseModule {
 			return '';
 		}
 
-		if ( !class_exists( '\Elementor\Plugin' ) ) {
-			return '';
-		}
-
 		$template_id = intval( $atts['id'] );
 
 		// Verify it's a vlt_tp post type
@@ -184,8 +178,15 @@ class TemplateParts extends BaseModule {
 			return '';
 		}
 
-		// Get Elementor content
-		$content = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $template_id );
+		// Build with Elementor when available and the post was actually built with it,
+		// otherwise fall back to the post's regular content so the feature works standalone.
+		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::instance()->documents->get( $template_id )->is_built_with_elementor() ) {
+			$content = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $template_id );
+		} else {
+			$post = get_post( $template_id );
+
+			$content = $post ? apply_filters( 'the_content', $post->post_content ) : '';
+		}
 
 		if ( empty( $content ) ) {
 			return '';
@@ -211,7 +212,14 @@ class TemplateParts extends BaseModule {
 			return;
 		}
 
-		// Register and enqueue Template Parts admin script
+		// Register and enqueue Template Parts admin assets
+		wp_enqueue_style(
+			'vlt-tp-admin',
+			VLT_TOOLKIT_URL . 'assets/css/feature-template-parts.css',
+			[],
+			VLT_TOOLKIT_VERSION,
+		);
+
 		wp_enqueue_script(
 			'vlt-tp-admin',
 			VLT_TOOLKIT_URL . 'assets/js/feature-template-parts.js',
@@ -227,175 +235,319 @@ class TemplateParts extends BaseModule {
 			[
 				'tp_edit_url'      => admin_url( 'edit.php?post_type=vlt_tp' ),
 				'tp_view_all_text' => esc_html__( 'View All', 'toolkit' ),
+				'ajax_url'         => admin_url( 'admin-ajax.php' ),
+				'search_nonce'     => wp_create_nonce( 'vlt_tp_search_specifics' ),
 			],
 		);
 	}
 
 	/**
-	 * Register ACF field groups for template parts
+	 * Add the template settings meta box
 	 */
-	public function register_acf_fields() {
-		if ( !function_exists( 'acf_add_local_field_group' ) ) {
+	public function add_settings_meta_box() {
+		add_meta_box(
+			'vlt_tp_settings',
+			esc_html__( 'Template Settings', 'toolkit' ),
+			[ $this, 'render_settings_meta_box' ],
+			'vlt_tp',
+			'normal',
+			'high',
+		);
+	}
+
+	/**
+	 * Render the template settings meta box
+	 *
+	 * Replaces the previous ACF field group with plain post meta, so the
+	 * feature works without requiring Advanced Custom Fields to be active.
+	 *
+	 * @param WP_Post $post current post object
+	 */
+	public function render_settings_meta_box( $post ) {
+		wp_nonce_field( 'vlt_tp_save_settings', 'vlt_tp_settings_nonce' );
+
+		$template_type = get_post_meta( $post->ID, 'template_type', true ) ?: 'header';
+		$display_rules = get_post_meta( $post->ID, 'display_rules', true );
+		$exclude_rules = get_post_meta( $post->ID, 'exclude_rules', true );
+		$note          = get_post_meta( $post->ID, 'note', true );
+
+		$display_rules = is_array( $display_rules ) ? $display_rules : [];
+		$exclude_rules = is_array( $exclude_rules ) ? $exclude_rules : [];
+
+		$template_types = [
+			'header'       => esc_html__( 'Header', 'toolkit' ),
+			'footer'       => esc_html__( 'Footer', 'toolkit' ),
+			'above_footer' => esc_html__( 'Above Footer', 'toolkit' ),
+			'404'          => esc_html__( '404 Page', 'toolkit' ),
+			'submenu'      => esc_html__( 'Submenu', 'toolkit' ),
+			'custom'       => esc_html__( 'Custom', 'toolkit' ),
+		];
+
+		$rule_choices = $this->prepare_rule_choices();
+		$rules_hidden = in_array( $template_type, [ '404', 'custom', 'submenu' ], true );
+		?>
+<div class="vlt-tp-field">
+	<label for="vlt_tp_template_type"><strong><?php esc_html_e( 'Template Type', 'toolkit' ); ?></strong></label>
+	<select name="vlt_tp_template_type" id="vlt_tp_template_type">
+		<?php foreach ( $template_types as $value => $label ) : ?>
+		<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $template_type, $value ); ?>><?php echo esc_html( $label ); ?></option>
+		<?php endforeach; ?>
+	</select>
+</div>
+
+<div class="vlt-tp-rules-wrap" data-rules-hidden-for="404,custom,submenu" style="<?php echo $rules_hidden ? 'display:none;' : ''; ?>">
+
+	<div class="vlt-tp-field">
+		<strong><?php esc_html_e( 'Display Rules', 'toolkit' ); ?></strong>
+		<p class="description"><?php esc_html_e( 'Add locations for where this template should appear.', 'toolkit' ); ?></p>
+		<?php $this->render_rules_repeater( 'display_rules', $display_rules, $rule_choices ); ?>
+	</div>
+
+	<div class="vlt-tp-field">
+		<strong><?php esc_html_e( 'Exclude Rules', 'toolkit' ); ?></strong>
+		<p class="description"><?php esc_html_e( 'Add locations for where this template should not appear.', 'toolkit' ); ?></p>
+		<?php $this->render_rules_repeater( 'exclude_rules', $exclude_rules, $rule_choices ); ?>
+	</div>
+
+</div>
+
+<div class="vlt-tp-field">
+	<label for="vlt_tp_note"><strong><?php esc_html_e( 'Note', 'toolkit' ); ?></strong></label>
+	<p class="description"><?php esc_html_e( 'This note is only visible in the admin area.', 'toolkit' ); ?></p>
+	<textarea name="vlt_tp_note" id="vlt_tp_note" rows="4" style="width:100%;" placeholder="<?php esc_attr_e( 'Add a note for this template...', 'toolkit' ); ?>"><?php echo esc_textarea( $note ); ?></textarea>
+</div>
+<?php
+	}
+
+	/**
+	 * Render a repeater table of rules (used for both display_rules and exclude_rules)
+	 *
+	 * @param string $name    meta key / field name prefix ('display_rules' or 'exclude_rules')
+	 * @param array  $rules   current rule rows, each ['rule' => string, 'specifics' => int[]]
+	 * @param array  $choices grouped rule choices from prepare_rule_choices()
+	 */
+	private function render_rules_repeater( $name, $rules, $choices ) {
+		if ( empty( $rules ) ) {
+			$rules = [ [ 'rule' => '', 'specifics' => [] ] ];
+		}
+		?>
+<div class="vlt-tp-repeater" data-repeater-name="<?php echo esc_attr( $name ); ?>">
+	<?php foreach ( array_values( $rules ) as $index => $rule ) : ?>
+		<?php $this->render_rule_row( $name, $index, $rule, $choices ); ?>
+	<?php endforeach; ?>
+</div>
+<template class="vlt-tp-repeater-template">
+	<?php $this->render_rule_row( $name, '__INDEX__', [ 'rule' => '', 'specifics' => [] ], $choices ); ?>
+</template>
+<button type="button" class="button vlt-tp-add-rule"><?php esc_html_e( 'Add Rule', 'toolkit' ); ?></button>
+<?php
+	}
+
+	/**
+	 * Render a single repeater row (one display/exclude rule)
+	 *
+	 * @param string     $name    meta key / field name prefix
+	 * @param int|string $index   row index (or '__INDEX__' placeholder for the JS clone template)
+	 * @param array      $rule    rule data ['rule' => string, 'specifics' => int[]]
+	 * @param array      $choices grouped rule choices from prepare_rule_choices()
+	 */
+	private function render_rule_row( $name, $index, $rule, $choices ) {
+		$rule_value = $rule['rule'] ?? '';
+		$specifics  = $rule['specifics'] ?? [];
+		$specifics  = is_array( $specifics ) ? $specifics : [ $specifics ];
+		?>
+<div class="vlt-tp-rule-row">
+	<div class="vlt-tp-rule-row__rule">
+		<select name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( $index ); ?>][rule]" class="vlt-tp-rule-select">
+			<option value="">&mdash; <?php esc_html_e( 'Select Rule', 'toolkit' ); ?> &mdash;</option>
+			<?php foreach ( $choices as $group_label => $options ) : ?>
+			<optgroup label="<?php echo esc_attr( $group_label ); ?>">
+				<?php foreach ( $options as $value => $label ) : ?>
+				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $rule_value, $value ); ?>><?php echo esc_html( $label ); ?></option>
+				<?php endforeach; ?>
+			</optgroup>
+			<?php endforeach; ?>
+		</select>
+	</div>
+	<div class="vlt-tp-rule-row__specifics vlt-tp-specifics-cell" style="<?php echo 'specifics' === $rule_value ? '' : 'display:none;'; ?>">
+		<div class="vlt-tp-picker" data-field-name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( $index ); ?>][specifics][]">
+			<div class="vlt-tp-picker-chips">
+				<?php foreach ( $this->get_specifics_options( $specifics ) as $id => $label ) : ?>
+				<span class="vlt-tp-picker-chip" data-id="<?php echo esc_attr( $id ); ?>">
+					<?php echo esc_html( $label ); ?>
+					<input type="hidden" name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( $index ); ?>][specifics][]" value="<?php echo esc_attr( $id ); ?>">
+					<button type="button" class="vlt-tp-picker-chip-remove" aria-label="<?php esc_attr_e( 'Remove', 'toolkit' ); ?>">&times;</button>
+				</span>
+				<?php endforeach; ?>
+			</div>
+			<input type="text" class="vlt-tp-picker-search" placeholder="<?php esc_attr_e( 'Type to search for pages, posts or terms…', 'toolkit' ); ?>">
+			<ul class="vlt-tp-picker-results" hidden></ul>
+		</div>
+	</div>
+	<div class="vlt-tp-rule-row__remove">
+		<button type="button" class="vlt-tp-remove-rule" aria-label="<?php esc_attr_e( 'Remove rule', 'toolkit' ); ?>">&times;</button>
+	</div>
+</div>
+<?php
+	}
+
+	/**
+	 * Resolve the currently selected specific targets into id => label pairs
+	 *
+	 * Only resolves the already-selected items (for initial render); the
+	 * admin JS performs an AJAX search for additional posts/terms.
+	 *
+	 * @param array $ids post or term IDs currently selected
+	 *
+	 * @return array id => label
+	 */
+	private function get_specifics_options( $ids ) {
+		$options = [];
+
+		foreach ( $ids as $id ) {
+			$id = (int) $id;
+
+			if ( !$id ) {
+				continue;
+			}
+
+			$post = get_post( $id );
+
+			if ( $post ) {
+				$options[ $id ] = $post->post_title;
+
+				continue;
+			}
+
+			$term = get_term( $id );
+
+			if ( $term && !is_wp_error( $term ) ) {
+				$options[ $id ] = $term->name;
+			}
+		}
+
+		return $options;
+	}
+
+	/**
+	 * AJAX handler: search posts and terms for the "Specific Target" picker
+	 *
+	 * Replaces ACF's post_object field search, without requiring ACF.
+	 */
+	public function ajax_search_specifics() {
+		check_ajax_referer( 'vlt_tp_search_specifics', 'nonce' );
+
+		if ( !current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( [], 403 );
+		}
+
+		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
+
+		if ( '' === $search ) {
+			wp_send_json_success( [] );
+		}
+
+		$results = [];
+
+		$posts = get_posts(
+			[
+				'post_type'      => 'any',
+				'post_status'    => 'publish',
+				's'              => $search,
+				'posts_per_page' => 20,
+			],
+		);
+
+		foreach ( $posts as $post ) {
+			$results[] = [
+				'id'    => $post->ID,
+				'label' => $post->post_title . ' (' . get_post_type_object( $post->post_type )->labels->singular_name . ')',
+			];
+		}
+
+		$terms = get_terms(
+			[
+				'taxonomy'   => get_taxonomies( [ 'public' => true ] ),
+				'name__like' => $search,
+				'number'     => 20,
+				'hide_empty' => false,
+			],
+		);
+
+		if ( !is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$results[] = [
+					'id'    => $term->term_id,
+					'label' => $term->name . ' (' . get_taxonomy( $term->taxonomy )->labels->singular_name . ')',
+				];
+			}
+		}
+
+		wp_send_json_success( $results );
+	}
+
+	/**
+	 * Save the template settings meta box fields
+	 *
+	 * @param int $post_id post ID
+	 */
+	public function save_settings_meta_box( $post_id ) {
+		if ( !isset( $_POST['vlt_tp_settings_nonce'] ) || !wp_verify_nonce( $_POST['vlt_tp_settings_nonce'], 'vlt_tp_save_settings' ) ) {
 			return;
 		}
 
-		acf_add_local_field_group(
-			[
-				'key'    => 'group_vlt_tp_settings',
-				'title'  => esc_html__( 'Template Settings', 'toolkit' ),
-				'fields' => [
-					[
-						'key'      => 'field_template_type',
-						'label'    => esc_html__( 'Template Type', 'toolkit' ),
-						'name'     => 'template_type',
-						'type'     => 'select',
-						'required' => 1,
-						'choices'  => [
-							'header'       => esc_html__( 'Header', 'toolkit' ),
-							'footer'       => esc_html__( 'Footer', 'toolkit' ),
-							'above_footer' => esc_html__( 'Above Footer', 'toolkit' ),
-							'404'          => esc_html__( '404 Page', 'toolkit' ),
-							'submenu'      => esc_html__( 'Submenu', 'toolkit' ),
-							'custom'       => esc_html__( 'Custom', 'toolkit' ),
-						],
-						'default_value' => 'header',
-					],
-					[
-						'key'               => 'field_display_rules',
-						'label'             => esc_html__( 'Display Rules', 'toolkit' ),
-						'instructions'      => esc_html__( 'Add locations for where this template should appear.', 'toolkit' ),
-						'name'              => 'display_rules',
-						'type'              => 'repeater',
-						'layout'            => 'block',
-						'button_label'      => esc_html__( 'Add Rule', 'toolkit' ),
-						'conditional_logic' => [
-							[
-								[
-									'field'    => 'field_template_type',
-									'operator' => '!=',
-									'value'    => '404',
-								],
-								[
-									'field'    => 'field_template_type',
-									'operator' => '!=',
-									'value'    => 'custom',
-								],
-								[
-									'field'    => 'field_template_type',
-									'operator' => '!=',
-									'value'    => 'submenu',
-								],
-							],
-						],
-						'sub_fields' => [
-							[
-								'key'     => 'field_tp_rule',
-								'label'   => esc_html__( 'Rule', 'toolkit' ),
-								'name'    => 'rule',
-								'type'    => 'select',
-								'choices' => [], // Populated dynamically
-							],
-							[
-								'key'               => 'field_tp_specifics',
-								'label'             => esc_html__( 'Specific Target', 'toolkit' ),
-								'name'              => 'specifics',
-								'type'              => 'post_object',
-								'post_type'         => [], // All post types
-								'taxonomy'          => [], // All taxonomies
-								'allow_null'        => 0,
-								'multiple'          => 1,
-								'return_format'     => 'object',
-								'conditional_logic' => [
-									[
-										[
-											'field'    => 'field_tp_rule',
-											'operator' => '==',
-											'value'    => 'specifics',
-										],
-									],
-								],
-							],
-						],
-					],
-					[
-						'key'               => 'field_exclude_rules',
-						'label'             => esc_html__( 'Exclude Rules', 'toolkit' ),
-						'instructions'      => esc_html__( 'Add locations for where this template should not appear.', 'toolkit' ),
-						'name'              => 'exclude_rules',
-						'type'              => 'repeater',
-						'layout'            => 'block',
-						'button_label'      => esc_html__( 'Add Exclusion', 'toolkit' ),
-						'conditional_logic' => [
-							[
-								[
-									'field'    => 'field_template_type',
-									'operator' => '!=',
-									'value'    => '404',
-								],
-								[
-									'field'    => 'field_template_type',
-									'operator' => '!=',
-									'value'    => 'custom',
-								],
-								[
-									'field'    => 'field_template_type',
-									'operator' => '!=',
-									'value'    => 'submenu',
-								],
-							],
-						],
-						'sub_fields' => [
-							[
-								'key'     => 'field_tp_exclude_rule',
-								'label'   => esc_html__( 'Rule', 'toolkit' ),
-								'name'    => 'rule',
-								'type'    => 'select',
-								'choices' => [], // Populated dynamically
-							],
-							[
-								'key'               => 'field_tp_exclude_specifics',
-								'label'             => esc_html__( 'Specific Target', 'toolkit' ),
-								'name'              => 'specifics',
-								'type'              => 'post_object',
-								'post_type'         => [], // All post types
-								'taxonomy'          => [], // All taxonomies
-								'allow_null'        => 0,
-								'multiple'          => 1,
-								'return_format'     => 'object',
-								'conditional_logic' => [
-									[
-										[
-											'field'    => 'field_tp_exclude_rule',
-											'operator' => '==',
-											'value'    => 'specifics',
-										],
-									],
-								],
-							],
-						],
-					],
-					[
-						'key'          => 'field_vlt_tp_note',
-						'label'        => esc_html__( 'Note', 'toolkit' ),
-						'name'         => 'note',
-						'type'         => 'textarea',
-						'instructions' => esc_html__( 'This note is only visible in the admin area.', 'toolkit' ),
-						'required'     => 0,
-						'rows'         => 4,
-						'placeholder'  => esc_html__( 'Add a note for this template...', 'toolkit' ),
-					],
-				],
-				'location' => [
-					[
-						[
-							'param'    => 'post_type',
-							'operator' => '==',
-							'value'    => 'vlt_tp',
-						],
-					],
-				],
-			],
-		);
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( !current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$template_type = isset( $_POST['vlt_tp_template_type'] ) ? sanitize_text_field( wp_unslash( $_POST['vlt_tp_template_type'] ) ) : 'header';
+		update_post_meta( $post_id, 'template_type', $template_type );
+
+		update_post_meta( $post_id, 'display_rules', $this->sanitize_rules( $_POST['display_rules'] ?? [] ) );
+		update_post_meta( $post_id, 'exclude_rules', $this->sanitize_rules( $_POST['exclude_rules'] ?? [] ) );
+
+		$note = isset( $_POST['vlt_tp_note'] ) ? sanitize_textarea_field( wp_unslash( $_POST['vlt_tp_note'] ) ) : '';
+		update_post_meta( $post_id, 'note', $note );
+	}
+
+	/**
+	 * Sanitize raw repeater POST data into the stored rule format
+	 *
+	 * @param array $raw_rules raw $_POST rows, each ['rule' => string, 'specifics' => array]
+	 *
+	 * @return array sanitized rows, empty rows dropped
+	 */
+	private function sanitize_rules( $raw_rules ) {
+		if ( !is_array( $raw_rules ) ) {
+			return [];
+		}
+
+		$rules = [];
+
+		foreach ( $raw_rules as $raw_rule ) {
+			$rule_value = isset( $raw_rule['rule'] ) ? sanitize_text_field( wp_unslash( $raw_rule['rule'] ) ) : '';
+
+			if ( '' === $rule_value ) {
+				continue;
+			}
+
+			$specifics = [];
+
+			if ( !empty( $raw_rule['specifics'] ) && is_array( $raw_rule['specifics'] ) ) {
+				$specifics = array_map( 'intval', $raw_rule['specifics'] );
+			}
+
+			$rules[] = [
+				'rule'      => $rule_value,
+				'specifics' => $specifics,
+			];
+		}
+
+		return $rules;
 	}
 
 	/**
@@ -426,19 +578,6 @@ class TemplateParts extends BaseModule {
     onclick="this.select(); document.execCommand('copy'); this.style.background='#d4edda'; setTimeout(() => this.style.background='#f0f0f1', 1000);"
     title="<?php esc_attr_e( 'Click to copy', 'toolkit' ); ?>" />
 <?php
-	}
-
-	/**
-	 * Populate rule choices dynamically
-	 *
-	 * @param array $field ACF field array
-	 *
-	 * @return array
-	 */
-	public function populate_rule_choices( $field ) {
-		$field['choices'] = $this->prepare_rule_choices();
-
-		return $field;
 	}
 
 	/**
@@ -510,8 +649,8 @@ class TemplateParts extends BaseModule {
 		switch ( $column ) {
 			case 'display_rules':
 				// Get both display and exclude rules
-				$display_rules = get_field( 'display_rules', $post_id );
-				$exclude_rules = get_field( 'exclude_rules', $post_id );
+				$display_rules = get_post_meta( $post_id, 'display_rules', true );
+				$exclude_rules = get_post_meta( $post_id, 'exclude_rules', true );
 				$choices       = $this->prepare_rule_choices();
 
 				$output = [];
@@ -669,7 +808,7 @@ class TemplateParts extends BaseModule {
 				break;
 
 			case 'note':
-				$note = get_field( 'note', $post_id );
+				$note = get_post_meta( $post_id, 'note', true );
 
 				if ( $note ) {
 					echo wp_kses_post( nl2br( $note ) );
@@ -711,7 +850,7 @@ class TemplateParts extends BaseModule {
 			return $post_states;
 		}
 
-		$type = get_field( 'template_type', $post->ID );
+		$type = get_post_meta( $post->ID, 'template_type', true );
 
 		if ( $type ) {
 			$types = [
@@ -816,7 +955,7 @@ class TemplateParts extends BaseModule {
 	}
 
 	/**
-	 * Get post types rules for ACF choices
+	 * Get post types rules for the rule choices dropdown
 	 *
 	 * @return array
 	 */
@@ -851,7 +990,6 @@ class TemplateParts extends BaseModule {
 	 */
 	private function prepare_rule_choices() {
 		return [
-			''      => '- Select Rule -',
 			'Basic' => [
 				'basic-global'    => 'Entire Website',
 				'basic-singulars' => 'All Singulars',
@@ -881,15 +1019,15 @@ class TemplateParts extends BaseModule {
 	 * @return bool
 	 */
 	private function should_display_template( $template_id ) {
-		$template_type = get_field( 'template_type', $template_id );
+		$template_type = get_post_meta( $template_id, 'template_type', true );
 
 		// For 404 templates, only display on 404 pages (no rules needed)
 		if ( '404' === $template_type ) {
 			return is_404();
 		}
 
-		$display_rules = get_field( 'display_rules', $template_id );
-		$exclude_rules = get_field( 'exclude_rules', $template_id );
+		$display_rules = get_post_meta( $template_id, 'display_rules', true );
+		$exclude_rules = get_post_meta( $template_id, 'exclude_rules', true );
 
 		// Check exclusion rules first (only if not empty)
 		if ( $exclude_rules && is_array( $exclude_rules ) && count( $exclude_rules ) > 0 ) {
@@ -1115,7 +1253,7 @@ class TemplateParts extends BaseModule {
 	 * @return int Priority value (higher = more specific)
 	 */
 	private function get_template_priority( $template_id ) {
-		$display_rules = get_field( 'display_rules', $template_id );
+		$display_rules = get_post_meta( $template_id, 'display_rules', true );
 
 		if ( !$display_rules || !is_array( $display_rules ) ) {
 			return 0;
